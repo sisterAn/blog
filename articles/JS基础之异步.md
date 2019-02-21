@@ -1592,6 +1592,39 @@ console.log(iterator.next()); // { value: undefined, done: true },
 console.log(result);          // "foo"
 ```
 
+#### generator 执行异步函数
+
+下面看一个例子：
+
+```js
+function asyncFun() {
+    return new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            resolve('promise')
+        }, 3000)
+    })
+}
+function *generator() {
+    var result = yield asyncFun()
+    console.log(result)
+}
+```
+
+在这个例子中，yield 后跟着一个异步函数 asyncFun ，我们如何操作才能使整个流程顺序执行喃？
+
+```js
+var gen = generator()
+var afun = gen.next()
+afun.value.then( res => {
+    console.log(res)
+}).then( res => {
+    gen.next('success')
+})
+// 3s后打印：promise success
+```
+
+上面代码中，首先执行 Generator 函数，获取遍历器对象 gen，然后使用`next`方法 ，执行异步任务的第一阶段。由于 asyncFun 函数返回的是一个 Promise 对象，因此要用`then`方法调用下一个`next`方法。
+
 ### Generator 实现及源码解读
 
 #### Generatror 函数构建版本一

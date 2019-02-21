@@ -12,7 +12,7 @@
 * [JS基础之 instanceof](https://github.com/LuNaHaiJiao/blog/issues/6)
 * [ES6入门随笔](https://github.com/LuNaHaiJiao/blog/issues/7)
 * [JS基础之call、apply、bind](https://github.com/LuNaHaiJiao/blog/issues/8)
-* ['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/LuNaHaiJiao/blog/issues/19)
+* [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/LuNaHaiJiao/blog/issues/19)
 * [深入diff 算法](https://github.com/LuNaHaiJiao/blog/issues/22)
 * [Set、WeakSet、Map及WeakMap](https://github.com/LuNaHaiJiao/blog/issues/24)
 * [深度优先遍历与广度优先遍历](https://github.com/LuNaHaiJiao/blog/issues/25)

@@ -35,6 +35,25 @@ co(gen).then(function(err, result) {
 
 在上例中，co 函数库可以让你不用编写 generator 函数的执行器，generator 函数只要放在 co 函数里，就会自动执行。
 
+所以，我们可以模拟 co 的实现：
+
+```js
+function myCo(generator) {
+    var gen = generator()
+    function next(data) {
+        var result = gen.next(data)
+        if (result.done) return result.value
+        result.value.then(function (data) {
+            next(data)
+        })
+    }
+    next()
+}
+myCo(gen)
+```
+
+
+
 再看一个例子：
 
 ```js
