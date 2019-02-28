@@ -21,8 +21,6 @@
 * [探讨 requestAnimationFrame](https://github.com/LuNaHaiJiao/blog/issues/30)
 * [ES6 之 Proxy](https://github.com/LuNaHaiJiao/blog/issues/31)
 
-
-
 ### 小程序
 
 - [小程序 自定义富文本编辑器](https://github.com/LuNaHaiJiao/blog/issues/9)
