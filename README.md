@@ -20,6 +20,7 @@
 * [数组扁平化、去重、排序](https://github.com/LuNaHaiJiao/blog/issues/28)
 * [探讨 requestAnimationFrame](https://github.com/LuNaHaiJiao/blog/issues/30)
 * [ES6 之 Proxy](https://github.com/LuNaHaiJiao/blog/issues/31)
+* [React 生命周期](https://github.com/sisterAn/blog/issues/34)
 
 ### 小程序
 
