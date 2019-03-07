@@ -172,3 +172,7 @@ node_modules
 
 ## 3. 介绍下观察者模式和订阅-发布模式的区别，各自适用于什么场景
 
+
+
+## 4. cookie 和 token 都存放在 header 中，为什么不会劫持 token？
+
