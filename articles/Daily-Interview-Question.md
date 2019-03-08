@@ -176,3 +176,4 @@ node_modules
 
 ## 4. cookie 和 token 都存放在 header 中，为什么不会劫持 token？
 
+cookie 每次请求都会带上 内容主要包括：名字，值，过期时间，路径和域,cookie是有状态的，被劫持不安全, 可以设置httpOnly 防止 cors，token可以设置失效时间, 是无状态的，被劫持后危险性要低一些, 在跨端能力上更好
