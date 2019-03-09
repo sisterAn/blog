@@ -29,7 +29,7 @@ let arr = [1, 2, 3, 2, 1, 1]
 
 Set 对象允许你储存任何类型的唯一值，无论是原始值或者是对象引用。
 
-向 Set 加入值的时候，不会发生类型转换，所以`5`和`"5"`是两个不同的值。Set 内部判断两个值是否不同，使用的算法叫做“Same-value-zero equality”，它类似于**精确相等**运算符（`===`），主要的区别是**`NaN`等于自身，而精确相等运算符认为`NaN`不等于自身。**
+向 Set 加入值的时候，不会发生类型转换，所以`5`和`"5"`是两个不同的值。Set 内部判断两个值是否不同，使用的算法叫做“Same-value-zero equality”，它类似于**精确相等**运算符（`===`），主要的区别是** Set 认为`NaN`等于自身，而精确相等运算符认为`NaN`不等于自身。**
 
 ```js
 let set = new Set();
@@ -55,7 +55,7 @@ console.log([...set1])	// [5, "5"]
     ```JS
     let set = new Set([1, 2, 3, 2, 1])
     
-    console.log(set.length)	// 0
+    console.log(set.length)	// undefined
     console.log(set.size)	// 3
     ```
 
@@ -70,7 +70,7 @@ console.log([...set1])	// [5, "5"]
 
     - clear()：清空集合
 
-      - - - 
+      - - -
 
       ```js
       let set = new Set()
@@ -114,10 +114,10 @@ console.log([...set1])	// [5, "5"]
         console.log(item);
       }	// [1, 1]	[2, 2]	[3, 3]
       
-      set.forEach((value, key) {
+      set.forEach((value, key) =>  {
           console.log(key + ' : ' + value)
-      })	// 1 : 1	2 : 2	3 : 3
-      console.log([...set])	// []
+      })	// 1 : 1	2 : 2		3 : 3
+      console.log([...set])	// [1, 2, 3]
       ```
 
       Set 可默认遍历，默认迭代器生成函数是 values() 方法
@@ -130,7 +130,7 @@ console.log([...set1])	// [5, "5"]
 
       ```js
       let set = new Set([1, 2, 3])
-      set = new Set([...set].map(item => item + 1))
+      set = new Set([...set].map(item => item * 2))
       console.log([...set])	// [2, 4, 6]
       
       set = new Set([...set].filter(item => (item >= 4)))
@@ -170,17 +170,16 @@ WeakSet 与 Set 的区别：
   const arr = [[1, 2], [3, 4]]
   const weakset = new WeakSet(arr)
   console.log(weakset)
-  // WeakSet {[1, 2], [3, 4]}
   ```
 
-  
+<img width="677" alt="2019-03-08 9 24 34" src="https://user-images.githubusercontent.com/19721451/54000905-3d36c980-4184-11e9-9ccf-0f13bc6dd414.png">
 
 方法：
 
 - add(value)：在WeakSet 对象中添加一个元素value
 - has(value)：判断 WeakSet 对象中是否包含value
 - delete(value)：删除元素 value
-- clear()：清空所有元素
+- clear()：清空所有元素，**注意该方法已废弃**
 
 ```js
 var ws = new WeakSet()
@@ -196,7 +195,6 @@ ws.has(foo)	// false
 ws.delete(window)	// true
 ws.has(window)	// false
 
-ws.clear()	// 清空
 ```
 
 
@@ -315,8 +313,8 @@ const map = new Map([
             ['name', 'An'],
             ['des', 'JS']
         ]);
-console.log(map.entries())	// MapIterator {"name" => "An", "des" => "JS"}
-console.log(map.keys()) // MapIterator {"name", "des"}
+console.log(map.entries())	// MapIterator {"name" => "An", "des" => "JS"}
+console.log(map.keys()) // MapIterator {"name", "des"}
 ```
 
 Map 结构的默认遍历器接口（`Symbol.iterator`属性），就是`entries`方法。
@@ -383,7 +381,7 @@ map.forEach(function(value, key, map) {
        return obj
    }
    const map = new Map().set('name', 'An').set('des', 'JS')
-   mapToObj(map)
+   mapToObj(map) // {name: "An", des: "JS"}
    ```
 
    
@@ -391,15 +389,15 @@ map.forEach(function(value, key, map) {
 4. Object 转 Map
 
    ```js
-   function objToMap(map) {
+   function objToMap(obj) {
        let map = new Map()
        for (let key of Object.keys(obj)) {
-           map.set(key, obj[k])
+           map.set(key, obj[key])
        }
        return map
    }
    
-   objToMap({'name': 'An', 'des': 'JS'})
+   objToMap({'name': 'An', 'des': 'JS'}) // Map {"name" => "An", "des" => "JS"}
    ```
 
    
@@ -420,11 +418,11 @@ map.forEach(function(value, key, map) {
 6. JSON 转 Map
 
    ```js
-   function jsonToMap(jsonStr) {
+   function jsonToStrMap(jsonStr) {
      return objToMap(JSON.parse(jsonStr));
    }
    
-   jsonToStrMap('{"name": "An", "des": "JS"}')
+   jsonToStrMap('{"name": "An", "des": "JS"}') // Map {"name" => "An", "des" => "JS"}
    ```
 
    
@@ -432,11 +430,11 @@ map.forEach(function(value, key, map) {
 
 ### 4. WeakMap
 
-WeakMap 对象是一组键值对的集合，其中的**键是弱引用**，其中，**键必须是对象，而值可以是任意**。
+WeakMap 对象是一组键值对的集合，其中的**键是弱引用对象，而值可以是任意**。
 
 **注意，WeakMap 弱引用的只是键名，而不是键值。键值依然是正常引用。**
 
-WeakSet 中，每个键对自己所引用对象的引用都是弱引用，在没有其他引用和该键引用同一对象，这个对象将会被垃圾回收（相应的key则变成无效的），所以，WeakSet 的 key 是不可枚举的。
+WeakMap 中，每个键对自己所引用对象的引用都是弱引用，在没有其他引用和该键引用同一对象，这个对象将会被垃圾回收（相应的key则变成无效的），所以，WeakMap 的 key 是不可枚举的。
 
  属性：
 
@@ -477,7 +475,7 @@ myElement.addEventListener('click', function() {
   - 本质上是键值对的集合，类似集合
   - 可以遍历，方法很多可以跟各种数据格式转换
 - WeakMap
-  - 只接受对象最为键名（null除外），不接受其他类型的值作为键名
+  - 只接受对象作为键名（null除外），不接受其他类型的值作为键名
   - 键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的
   - 不能遍历，方法有get、set、has、delete
 
@@ -491,13 +489,13 @@ myElement.addEventListener('click', function() {
        'width': 1,
        'height': 1
    }
-   console.log(properties['width']? true: false)
+   console.log(properties1['width']? true: false) // true
    
    // Set
    const properties2 = new Set()
    properties2.add('width')
    properties2.add('height')
-   console.log(properties2.has('width'))
+   console.log(properties2.has('width')) // true
    ```
 
 2. Object 与 Map
@@ -513,5 +511,3 @@ console.log(data['[object HTMLCollection]']) // "metadata"
 ```
 
 但当以一个DOM节点作为对象 data 的键，对象会被自动转化为字符串[Object HTMLCollection]，所以说，Object 结构提供了 **字符串-值** 对应，Map则提供了 **值-值** 的对应
-
-本文参考自 《ES6标准入门》
