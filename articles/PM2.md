@@ -8,12 +8,10 @@ PM2 是一个带有负载均衡功能的Node应用的进程管理器。由于 no
 npm install -g pm2
 ```
 
-<a name="6955953a"></a>
 #### 集群模式
 
 集群模式使得 node 应用不需要修改任何代码就能够覆盖所有的CPU，
 
-<a name="7f01bd56"></a>
 #### Process File
 
 PM2 是一个进程管理器，它管理着你的应用的所有状态，所以，你可以开始（start）、结束（stop）、重启（restart）或删除（delete）这些进程。
@@ -96,7 +94,6 @@ pm2 start app.js --no-autorestart
 
 详见[PM2官网](http://pm2.keymetrics.io/docs/usage/quick-start/)
 
-<a name="c31306da"></a>
 #### ecosystem 文件
 
 ecosystem.config.js 文件回聚合应用所有的配置及环境变量。这个文件将导出项目所有的配置。
@@ -171,7 +168,6 @@ module.exports = {
 
 更多配置详见 [Ecosystem file reference](https://pm2.io/doc/en/runtime/reference/ecosystem-file/)
 
-<a name="b4d3c72e"></a>
 #### 特点
 
 * 内建负载均衡（使用Node cluster 集群模块、子进程，可以参考朴灵的《深入浅出node.js》一书第九章）
