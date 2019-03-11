@@ -165,6 +165,21 @@ module.exports = {
 };
 ```
 
+4. 主要使用
+
+   ```js
+   // Setup deployment at remote location
+   pm2 deploy production setup
+   
+   // Update remote version
+   pm2 deploy production update
+   
+   // Revert to -1 deployment
+   pm2 deploy production revert 1
+   
+   // execute command on remote machines
+   pm2 deploy production exec "pm2 reload all"
+   ```
 
 更多配置详见 [Ecosystem file reference](https://pm2.io/doc/en/runtime/reference/ecosystem-file/)
 
