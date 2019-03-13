@@ -187,7 +187,7 @@ module.exports = {
 
 * 内建负载均衡（使用Node cluster 集群模块、子进程，可以参考朴灵的《深入浅出node.js》一书第九章）
 * 线程守护，keep alive
-* 0秒停机重载，维护升级的时候不需要停机.
+* 0 秒停机重载，维护升级的时候不需要停机.
 * 现在 Linux (stable) & MacOSx (stable) & Windows (stable).多平台支持
 * 停止不稳定的进程（避免无限循环）
 * 控制台检测

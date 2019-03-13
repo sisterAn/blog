@@ -1229,6 +1229,55 @@ MyPromise.prototype.catch = function (onRejected) {
 }
 ```
 
+额外，附加 `Promise.race` 与 `Promise.all` 实现
+
+```
+// race
+MyPromise.race = function(values) {
+    return new MyPromise(function(resolve, reject) {
+        values.forEach(function(value) {
+            MyPromise.resolve(value).then(resolve, reject)
+        })
+    })
+}
+// all
+MyPromise.all = function(arr) {
+    var args = Array.prototype.slice.call(arr)
+    return new MyPromise(function (resolve, reject) {
+        if (args.length === 0) return resolve([])
+        var remaining = args.length
+        for (var i = 0; i < args.length; i++) {
+            res(i, args[i])
+        }
+        function res(i, val) {
+            if (val && (typeof val === 'object' || typeof val === 'function')) {
+                if (val instanceof MyPromise && val.then === MyPromise.prototype.then) {
+                    if (val.currentState === RESOLVED) return res(i, val.value)
+                    if (val.currentState === REJECTED) reject(val.value)
+                    val.then(function (val) {
+                        res(i, val)
+                    }, reject)
+                    return
+                } else {
+                    var then = val.then
+                    if (typeof then === 'function') {
+                        var p = new MyPromise(then.bind(val))
+                        p.then(function(val) {
+                            res(i, val)
+                        }, reject)
+                        return
+                    }
+                }
+            }
+            args[i] = val
+            if (--remaining === 0) {
+                resolve(args)
+            }
+        }
+    })
+}
+```
+
 终于实现搞定了，继续加油
 
  
