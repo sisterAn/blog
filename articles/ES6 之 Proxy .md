@@ -57,7 +57,7 @@ let handler = {
   	}
 }
 var obj = new Proxy({}, handler)
-obj.a = 5 // setting 5!
+obj.a = 5 // setting a!
 console.log(obj.a) // 1
 ```
 
