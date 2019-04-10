@@ -22,7 +22,7 @@
 * [ES6 之 Proxy](https://github.com/LuNaHaiJiao/blog/issues/31)
 * [React 生命周期](https://github.com/sisterAn/blog/issues/34)
 
-### React源码解读
+### React 源码
 
 ### 小程序
 
