@@ -5,10 +5,13 @@
 ### 随思随想
 
 * [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
+* [探讨 requestAnimationFrame](https://github.com/LuNaHaiJiao/blog/issues/30)
 * [数组扁平化、去重、排序](https://github.com/LuNaHaiJiao/blog/issues/28)
 * [Set、WeakSet、Map及WeakMap](https://github.com/LuNaHaiJiao/blog/issues/24)
-* [CommonJS 规范总结与扩展](https://github.com/LuNaHaiJiao/blog/issues/4)
 * [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/LuNaHaiJiao/blog/issues/19)
+* [深度优先遍历与广度优先遍历](https://github.com/LuNaHaiJiao/blog/issues/25)
+* [CommonJS 规范总结与扩展](https://github.com/LuNaHaiJiao/blog/issues/4)
+* [ES6 之 Proxy](https://github.com/LuNaHaiJiao/blog/issues/31)
 * [React Native 高级进阶\-性能优化](https://github.com/LuNaHaiJiao/blog/issues/1)
 * [ES6随笔](https://github.com/LuNaHaiJiao/blog/issues/7)
 
@@ -17,14 +20,9 @@
 
 * [React 生命周期](https://github.com/sisterAn/blog/issues/34)
 * [深入diff 算法](https://github.com/LuNaHaiJiao/blog/issues/22)
-* [深度优先遍历与广度优先遍历](https://github.com/LuNaHaiJiao/blog/issues/25)
 * [深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
-* [探讨 requestAnimationFrame](https://github.com/LuNaHaiJiao/blog/issues/30)
 * [React Refs and the DOM 揭秘](https://github.com/LuNaHaiJiao/blog/issues/2)
 * [Create React App 的 Webpack 4 配置高级进阶](https://github.com/LuNaHaiJiao/blog/issues/3)
-* [ES6 之 Proxy](https://github.com/LuNaHaiJiao/blog/issues/31)
-
-### React 源码
 
 * [React 源码解读系列（一）](https://github.com/sisterAn/blog/issues/35)
 
