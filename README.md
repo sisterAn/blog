@@ -48,8 +48,8 @@
 * [JS 基础之异步（四）：Generator（生成器、迭代器源码实现）](https://github.com/LuNaHaiJiao/blog/issues/20)
 * [JS 基础之异步（五）：Generator](https://github.com/LuNaHaiJiao/blog/issues/23)
 * [JS 基础之异步（六）：co 函数库](https://github.com/LuNaHaiJiao/blog/issues/27)
-* [setTimeout、Promise、Async/Await](https://github.com/LuNaHaiJiao/blog/issues/21)
 * [JS异步解决方案的发展历程以及优缺点](https://github.com/LuNaHaiJiao/blog/issues/29)
+* [Tasks、microtasks、 queues 和 schedules]Await(https://github.com/LuNaHaiJiao/blog/issues/21)
 
 ### 浏览器
 
