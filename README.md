@@ -49,7 +49,7 @@
 * [JS 基础之异步（五）：Generator](https://github.com/LuNaHaiJiao/blog/issues/23)
 * [JS 基础之异步（六）：co 函数库](https://github.com/LuNaHaiJiao/blog/issues/27)
 * [JS异步解决方案的发展历程以及优缺点](https://github.com/LuNaHaiJiao/blog/issues/29)
-* [Tasks、microtasks、 queues 和 schedules]Await(https://github.com/LuNaHaiJiao/blog/issues/21)
+* [Tasks、microtasks、 queues 和 schedules](https://github.com/LuNaHaiJiao/blog/issues/21)
 
 ### 浏览器
 
