@@ -14,6 +14,7 @@
 * [ES6 之 Proxy](https://github.com/LuNaHaiJiao/blog/issues/31)
 * [React Native 高级进阶\-性能优化](https://github.com/LuNaHaiJiao/blog/issues/1)
 * [ES6随笔](https://github.com/LuNaHaiJiao/blog/issues/7)
+* [你真的会用 git 吗？](https://github.com/LuNaHaiJiao/blog/issues/39)
 
 
 ### React 系列
