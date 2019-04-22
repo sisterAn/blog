@@ -15,7 +15,7 @@
 * [React Native 高级进阶\-性能优化](https://github.com/LuNaHaiJiao/blog/issues/1)
 * [ES6 随笔](https://github.com/LuNaHaiJiao/blog/issues/7)
 * [你真的会用 git 吗？](https://github.com/LuNaHaiJiao/blog/issues/39)
-* [重新认识 npm](https://github.com/LuNaHaiJiao/blog/issues/40)
+* [关于 npm，必须要懂的知识](https://github.com/LuNaHaiJiao/blog/issues/40)
 
 
 ### React 系列
