@@ -28,6 +28,7 @@
 
 * [React 源码解读系列（一）](https://github.com/sisterAn/blog/issues/35)
 * [React 源码解读系列（二）之 createRef](https://github.com/sisterAn/blog/issues/37)
+* [React 源码解读系列（三）之 Component](https://github.com/sisterAn/blog/issues/38)
 
 ### 小程序
 
