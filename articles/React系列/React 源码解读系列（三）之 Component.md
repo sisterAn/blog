@@ -9,11 +9,12 @@
   - `componentDidMount()`：可以处理网络请求、事件订阅等操作
 - 更新阶段
   - `static getDerivedStateFromProps()`：返回null来表明新属性不需要更新任何状态
-  - `shouldComponentUpdate()`：
-    - 可以进行判断来性能优化，默认返回 true
+  - `shouldComponentUpdate(nextProps, nextState)`：
+    - 可以进行判断来性能优化，默认返回 **true**
+    - `shouldComponentUpdate`只是 **浅比较 props 以及 state** 更新，可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
+    - 当 `Component` 初始渲染 以及 调用`forceUpdate()`强制更新时，都不会调用 `shouldComponentUpdate`
+    - 如果在 React 组件中写了`shouldComponentUpdate`方法后不能获得可测量的，并且是可察觉到的性能提升，那就不要写，可以考虑 使用 React.PureComponet 来代替 React.Component。
     - **注意，返回`false`不能阻止子组件当*他们的*状态改变时重新渲染**。
-    - `shouldComponentUpdate`只是浅比较更新，可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
-    - 如果在 React 组件中写了`shouldComponentUpdate`方法后不能获得可测量的，并且是可察觉到的性能提升，那就不要写。
   - `render()`
   - `getSnapshotBeforeUpdate()`：
     - 在最新的渲染输出提交给DOM前将会立即调用，
@@ -23,24 +24,24 @@
     - 其中，snapshot 为`getSnapshotBeforeUpdate`的返回值
     - 如果调用 setState，必须包裹在条件语句中（例如`if(this.state.current !== prevState.current) { … }`），否则将会陷入无限循环。
 - 卸载阶段
-  - componentWillUnmount()：注意，清理掉所有的事件订阅
+  - `componentWillUnmount()`：注意，清理掉所有的事件订阅
 - 错误处理
-  - static getDerivedStateFromError()：在 渲染 阶段调用，不允许副作用
-  - componentDidCatch()：在 提交 期间阶段调用，允许副作用。
+  - `static getDerivedStateFromError()`：在 渲染 阶段调用，不允许副作用
+  - `componentDidCatch()`：在 提交 期间阶段调用，允许副作用。
 
 以上介绍的是 V16.4 之后的版本，之前的请看 [React 生命周期](https://github.com/sisterAn/blog/issues/34)
 
 ##### 补充
 
 - 其他API
-  - setState()：队列方式批量浅合并更新，更多请看[深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
-  - forceUpdate()：该方法不会调用 `shouldComponentUpdate()`
+  - `setState()`：队列方式批量浅合并更新，更多请看[深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
+  - `forceUpdate()`：该方法不会调用 `shouldComponentUpdate()`
 - 类属性
-  - defaultProps()：设置默认属性
-  - displayName()
+  - `defaultProps()`：设置默认属性
+  - `displayName()`
 - 实例属性
-  - props
-  - state
+  - `props`
+  - `state`
 
 ##### 组件相关
 
