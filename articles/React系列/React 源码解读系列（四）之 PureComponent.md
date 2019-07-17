@@ -21,7 +21,7 @@ PureComponent 最早在 React v15.3 版本中发布，主要是为了优化 Reac
 
 - **注意**
 
-  - 使用 React.PureComponent 的组件，它的所有子组件化也必须都为 React.PureComponent。
+  `React.PureComponent` 中的 `shouldComponentUpdate()` 将跳过所有子组件树的 prop 更新，所以使用 React.PureComponent 的组件，它的所有 **子组件也必须都为 React.PureComponent** 。
 
 
 
