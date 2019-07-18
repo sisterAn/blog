@@ -25,10 +25,10 @@
 * [深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
 * [React Refs and the DOM 揭秘](https://github.com/LuNaHaiJiao/blog/issues/2)
 * [Create React App 的 Webpack 4 配置高级进阶](https://github.com/LuNaHaiJiao/blog/issues/3)
-
 * [React 源码解读系列（一）](https://github.com/sisterAn/blog/issues/35)
 * [React 源码解读系列（二）之 createRef](https://github.com/sisterAn/blog/issues/37)
 * [React 源码解读系列（三）之 Component](https://github.com/sisterAn/blog/issues/38)
+* [React 源码解读系列（四）之 PureComponent](https://github.com/sisterAn/blog/issues/42)
 
 ### 小程序
 
