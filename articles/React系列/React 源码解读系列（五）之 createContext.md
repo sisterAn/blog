@@ -148,6 +148,12 @@
 
 ##### 二、深入 context
 
+- 当 Provider 的 value 值发生变化时，它内部的所有消费组件都会 **重新渲染**
+- 当需要在 **Consumer 中触发 Provider 执行更新 context value 操作** 时，可以通过 context 传递一个 **函数** ，使得 consumer 组件触发更新 context
+- 多个 context 可以 **嵌套使用**
+- 注意： **不要在 Provider value 直接赋值** （`<LocaleProvider.Provider value={{name: 'AnGe'}}>`），因为这样会导致，每次 Provider 的父组件进行重渲染时，都会导致 Consumer 组件中重新渲染，因为 `value` 属性总是被赋值为新的对象（Object.is 新旧值检测）
+- 
+
 **locale-context.js**
 
 ```js
@@ -160,33 +166,31 @@ export const locales = {
     name: 'anGe',
     color: 'green',
   },
-};
+}
 
 export const LocaleContext = React.createContext(
   locales.An // 默认值
-);
+)
+
+// 确保传递给 createContext 的默认值数据结构是调用的组件（consumers）所能匹配的！
+export const AddressContext = React.createContext({
+  address: 'Shanghai',
+  updateAddress: () => {}, // Consumer 更新 Provider value 函数
+})
 ```
 
 **app.js**
 
 ```js
-import {LocaleContext, locales} from './locale-context';
+import { locales, LocaleContext, AddressContext } from './locale-context';
 import SubComponent from './SubComponent';
-
-// 一个使用 SubComponent 的中间组件
-function Toolbar(props) {
-  return (
-    <SubComponent onClick={props.changePerson}>
-      Change Person
-    </SubComponent>
-  );
-}
 
 class App extends React.Component {
   state = {
     locale: locales.An,
+    address: 'Beijing',
   }
-    
+  // 更新 locale 函数
   changePerson = () => {
     this.setState(state => ({
       locale:
@@ -195,13 +199,36 @@ class App extends React.Component {
           : locales.An,
     }));
   }
+  // 更新 address 函数
+  updateAddress = () => {
+    this.setState(state => ({
+      address:
+        state.address === 'Beijing'
+          ? 'Shanghai'
+          : 'Beijing',
+    }));
+  }
 
   render() {
+    const {
+      locale,
+      address,
+    } = this.state
+    
+    // addressValue 包含了 updateAddress 更新函数
+    const addressValue = {
+      address: 'Beijing',
+      updateAddress: this.updateAddress
+    }
     return (
       <div>
         // 在 LocaleProvider 内部的 SubComponent 组件使用 state 中的 locale 值
-        <LocaleProvider.Provider value={this.state.theme}>
-          <Toolbar changePerson={this.changePerson} />
+        // 当 LocaleProvider 的 value 值发生变化时，它内部的所有消费组件都会重新渲染
+        <LocaleProvider.Provider value={locale}>
+          // addressValue 都被传递进 AddressContext.Provider
+          <AddressContext.Provider value={addressValue}>
+            <Toolbar changePerson={this.changePerson} />
+          </AddressContext.Provider>
         </LocaleProvider.Provider>
         // 而外部的组件，没有被 LocaleProvider.Provider 包裹，则使用默认的 locale 值
         <div>
@@ -212,31 +239,175 @@ class App extends React.Component {
   }
 }
 
+// 一个使用 SubComponent 的中间组件
+function Toolbar(props) {
+  return (
+    <SubComponent onClick={props.changePerson}>
+      Change Person
+    </SubComponent>
+  );
+}
+
 ReactDOM.render(<App />, document.root);
 ```
 
 **SubComponent.js**
 
 ```js
-import { LocaleContext } from './locale-context';
+import { LocaleContext, AddressContext } from './locale-context';
 
 class SubComponent extends React.Component {
-    
-  static contextType = LocaleContext
-
+  
   render() {
-    let locale = this.context;
-    return (
-      <div
-        {...this.props}
-        style={{color: locale.color}}
-      >
-        {locale.name}
-      </div>
+    const props = this.props;
+    return ( // 一个组件可能会消费多个 context
+      <LocaleContext.Consumer>
+        {locale => (
+          <div
+            {...props}
+            style={{color: locale.color}}
+          >
+            {locale.name}
+            <AddressContext.Consumer> // AddressContext.Consumer 可以从 context 中获取到 address 值 与 updateAddress 函数
+        	  {(address, updateAddress) => ( // 点击 button，执行 AddressContext.Provider 的 updateAddress 函数，更新 address
+        	    <button onClick={updateAddress}>{address}</button>
+    		  )}
+            </AddressContext.Consumer>
+          </div>
+        )}
+      </LocaleContext.Consumer>
     );
   }
 }
 
 export default SubComponent;
+```
+
+##### 源码解读
+
+```js
+export function createContext<T>(
+  defaultValue: T, // context 默认值
+  calculateChangedBits: ?(a: T, b: T) => number, // 计算新老 context 变化函数
+): ReactContext<T> {
+  if (calculateChangedBits === undefined) {
+    calculateChangedBits = null;
+  } else {
+    if (__DEV__) {
+      warningWithoutStack(
+        calculateChangedBits === null ||
+          typeof calculateChangedBits === 'function',
+        'createContext: Expected the optional second argument to be a ' +
+          'function. Instead received: %s',
+        calculateChangedBits,
+      );
+    }
+  }
+
+  // 声明了一个 context 对象
+  const context: ReactContext<T> = {
+    $$typeof: REACT_CONTEXT_TYPE,
+    _calculateChangedBits: calculateChangedBits,
+    // As a workaround to support multiple concurrent renderers, we categorize
+    // some renderers as primary and others as secondary. We only expect
+    // there to be two concurrent renderers at most: React Native (primary) and
+    // Fabric (secondary); React DOM (primary) and React ART (secondary).
+    // Secondary renderers store their context values on separate fields.
+    _currentValue: defaultValue, // 用来记录 context 最新值，当 Provider value 更新时，同步到 _currentValue 上
+    _currentValue2: defaultValue,
+    // Used to track how many concurrent renderers this context currently
+    // supports within in a single renderer. Such as parallel server rendering.
+    _threadCount: 0,
+    // These are circular
+    Provider: (null: any), // context Provider
+    Consumer: (null: any), // context Consumer
+  };
+
+  context.Provider = { // context.Provider 的 _context 为 context
+    $$typeof: REACT_PROVIDER_TYPE,
+    _context: context, 
+  };
+
+  let hasWarnedAboutUsingNestedContextConsumers = false;
+  let hasWarnedAboutUsingConsumerProvider = false;
+
+  if (__DEV__) {
+    // A separate object, but proxies back to the original context object for
+    // backwards compatibility. It has a different $$typeof, so we can properly
+    // warn for the incorrect usage of Context as a Consumer.
+    const Consumer = { //Consumer 的 _context 也为 context
+      $$typeof: REACT_CONTEXT_TYPE,
+      _context: context, 
+      _calculateChangedBits: context._calculateChangedBits,
+    };
+    // $FlowFixMe: Flow complains about not setting a value, which is intentional here
+    Object.defineProperties(Consumer, {
+      Provider: {
+        get() {
+          if (!hasWarnedAboutUsingConsumerProvider) {
+            hasWarnedAboutUsingConsumerProvider = true;
+            warning(
+              false,
+              'Rendering <Context.Consumer.Provider> is not supported and will be removed in ' +
+                'a future major release. Did you mean to render <Context.Provider> instead?',
+            );
+          }
+          return context.Provider;
+        },
+        set(_Provider) {
+          context.Provider = _Provider;
+        },
+      },
+      _currentValue: {
+        get() {
+          return context._currentValue;
+        },
+        set(_currentValue) {
+          context._currentValue = _currentValue;
+        },
+      },
+      _currentValue2: {
+        get() {
+          return context._currentValue2;
+        },
+        set(_currentValue2) {
+          context._currentValue2 = _currentValue2;
+        },
+      },
+      _threadCount: {
+        get() {
+          return context._threadCount;
+        },
+        set(_threadCount) {
+          context._threadCount = _threadCount;
+        },
+      },
+      Consumer: {
+        get() {
+          if (!hasWarnedAboutUsingNestedContextConsumers) {
+            hasWarnedAboutUsingNestedContextConsumers = true;
+            warning(
+              false,
+              'Rendering <Context.Consumer.Consumer> is not supported and will be removed in ' +
+                'a future major release. Did you mean to render <Context.Consumer> instead?',
+            );
+          }
+          return context.Consumer;
+        },
+      },
+    });
+    // $FlowFixMe: Flow complains about missing properties because it doesn't understand defineProperty
+    context.Consumer = Consumer;
+  } else {
+    context.Consumer = context;
+  }
+  // Provider 与 Consumer 均指向 context，也就是说，Provider 与 Consumer 使用同一个变量 _currentValue，当 Consumer 需要渲染时，直接从自身取得 context 最新值 _currentValue 去渲染
+  if (__DEV__) {
+    context._currentRenderer = null;
+    context._currentRenderer2 = null;
+  }
+
+  return context;
+}
 ```
 
