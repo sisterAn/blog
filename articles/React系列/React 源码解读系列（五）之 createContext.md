@@ -1,6 +1,6 @@
-#### context
+## context
 
-#####  一、初识 context 
+### 一、初识 context 
 
 在典型的 React 应用中， **数据** 是通过 props 属性显式的由父及子进行 **传递** 的，但这种方式，对于复杂情况（例如，跨多级传递，多个组件共享）来说，是极其繁琐的。
 
@@ -146,7 +146,7 @@
     </LocaleContext.Consumer>
     ```
 
-##### 二、深入 context
+### 二、深入 context
 
 - 当 Provider 的 value 值发生变化时，它内部的所有消费组件都会 **重新渲染**
 - 当需要在 **Consumer 中触发 Provider 执行更新 context value 操作** 时，可以通过 context 传递一个 **函数** ，使得 consumer 组件触发更新 context
@@ -283,7 +283,7 @@ class SubComponent extends React.Component {
 export default SubComponent;
 ```
 
-##### 源码解读
+### 三、源码解读
 
 ```js
 export function createContext<T>(
