@@ -1,5 +1,5 @@
 
-# 安安哥的小戏台
+# 前端瓶子君
 
 
 ### 随思随想
@@ -68,3 +68,9 @@
 ### CSS
 
 * [CSS渐变之背景、边框、字体渐变](https://github.com/LuNaHaiJiao/blog/issues/14)
+
+
+
+欢迎关注公众号：前端瓶子君
+
+![2](/Users/lilunahaijiao/Downloads/2.jpg)
