@@ -1,4 +1,3 @@
-
 # 前端瓶子君
 
 
@@ -14,7 +13,6 @@
 * [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 * [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 * [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
-* [ES6 随笔](https://github.com/sisterAn/blog/issues/7)
 
 
 ### React 系列
@@ -24,14 +22,36 @@
 * [深入 setState 机制](https://github.com/sisterAn/blog/issues/26)
 * [React Refs and the DOM 揭秘](https://github.com/sisterAn/blog/issues/2)
 * [Create React App 的 Webpack 4 配置高级进阶](https://github.com/sisterAn/blog/issues/3)
-* [React 源码解读系列（一）之 总述](https://github.com/sisterAn/blog/issues/35)
+* [React 源码解读系列（一）之 图谱](https://github.com/sisterAn/blog/issues/35)
 * [React 源码解读系列（二）之 createRef](https://github.com/sisterAn/blog/issues/37)
 * [React 源码解读系列（三）之 Component](https://github.com/sisterAn/blog/issues/38)
 * [React 源码解读系列（四）之 PureComponent](https://github.com/sisterAn/blog/issues/42)
 * [React 源码解读系列（五）之 createContext](https://github.com/sisterAn/blog/issues/43)
 * [React 源码解读系列（六）之 forwardRef](https://github.com/sisterAn/blog/issues/44)
-
-### TS 系列
+* React 源码解读系列（七）之 lazy
+* React 源码解读系列（八）之 memo
+* React 源码解读系列（九）之 error
+* React 源码解读系列（一零）之 warn
+* React 源码解读系列（一一）之 useState
+* React 源码解读系列（一二）之 useEffect
+* React 源码解读系列（一三）之 useLayoutEffect
+* React 源码解读系列（一四）之 useCallback
+* React 源码解读系列（一五）之 useContext
+* React 源码解读系列（一六）之 useImperativeHandle
+* React 源码解读系列（一七）之 useDebugValue
+* React 源码解读系列（一八）之 useMemo
+* React 源码解读系列（一九）之 useReducer
+* React 源码解读系列（二零）之 useRef
+* React 源码解读系列（二一）之 Fragment
+* React 源码解读系列（二二）之 Profiler
+* React 源码解读系列（二三）之 StrictMode
+* React 源码解读系列（二四）之 Suspense
+* React 源码解读系列（二五）之 createElement
+* React 源码解读系列（二六）之 cloneElement
+* React 源码解读系列（二七）之 createFactory
+* React 源码解读系列（二八）之 isValidElement
+* React 源码解读系列（二九）之 version
+* React 源码解读系列（三零）之 unstable_ConcurrentMode
 
 ### 小程序
 
@@ -57,14 +77,52 @@
 * [JS 基础之异步（六）：co 函数库](https://github.com/sisterAn/blog/issues/27)
 * [JS异步解决方案的发展历程以及优缺点](https://github.com/sisterAn/blog/issues/29)
 * [Tasks、microtasks、 queues 和 schedules](https://github.com/sisterAn/blog/issues/21)
+* JS 基础之设计模式（一）：简单工厂模式
+* JS 基础之设计模式（二）：工厂模式
+* JS 基础之设计模式（三）：抽象工厂模式
+* JS 基础之设计模式（四）：单例模式
+* JS 基础之设计模式（五）：建造者模式
+* JS 基础之设计模式（六）：原型模式
+* JS 基础之设计模式（七）：观察者模式
+* JS 基础之设计模式（八）：策略模式
+* JS 基础之设计模式（九）：适配器模式
+* JS 基础之设计模式（十）：装饰器模式
+* JS 基础之设计模式：总结
+* JS 基础之架构模式（一）：MVC模式
+* JS 基础之架构模式（二）：MVP模式
+* JS 基础之架构模式（三）：MVVM模式
 
 ### 浏览器
 
 - [浏览器的重绘与回流（Repaint、Reflow）](https://github.com/sisterAn/blog/issues/33)
 
+### 数据结构与算法
+
+- 复杂度分析：空间复杂度、时间复杂度
+- 线性表：数组、链表、栈、队列
+- 散列表：散列函数、冲突解决、动态扩容、位图
+- 树（一）：二叉树
+- 树（二）：红黑树、AVL树
+- 树（三）：B、B+树
+- 堆：大顶堆、小顶堆、斐波那契堆
+- 图（一）：拓扑排序
+- 图（二）：最短路径
+- 图（二）：关键路径
+- 图（四）：最小生成树、二分树、最大流
+- 基本算法：贪心算法、分治算法、动态规划、回溯算法、枚举算法
+- 排序算法（一）：冒泡排序、插入排序、选择排序、希尔排序
+- 排序算法（二）：归并排序、快速排序、堆排序
+- 排序算法（三）：基数排序、计数排序、桶排序
+- 查找算法：线性表查找、树结构查找、散列表查找
+- 搜索算法：深度优先搜索、广度优先搜索
 
 
 
+### TS 系列
+
+
+
+### 持续更新中。。。
 ### 欢迎关注公众号：前端瓶子君
 
 ![2](https://user-images.githubusercontent.com/19721451/61723822-56d95600-ad9f-11e9-9b91-7f93f6d56f89.jpg)
