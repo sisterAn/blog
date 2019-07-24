@@ -4,7 +4,6 @@
 
 ### 随思随想
 
-* [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 * [数组扁平化、去重、排序](https://github.com/sisterAn/blog/issues/28)
 * [Set、WeakSet、Map及WeakMap](https://github.com/sisterAn/blog/issues/24)
 * [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/sisterAn/blog/issues/19)
@@ -12,6 +11,7 @@
 * [CommonJS 规范总结与扩展](https://github.com/sisterAn/blog/issues/4)
 * [你真的会用 git 吗？](https://github.com/sisterAn/blog/issues/39)
 * [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
+* [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 * [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 * [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
 * [ES6 随笔](https://github.com/sisterAn/blog/issues/7)
