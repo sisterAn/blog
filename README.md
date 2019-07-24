@@ -14,7 +14,6 @@
 * [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
 * [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 * [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
-* [ES6 随笔](https://github.com/sisterAn/blog/issues/7)
 
 
 ### React 系列
