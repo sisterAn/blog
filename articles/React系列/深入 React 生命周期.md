@@ -163,7 +163,7 @@ Hooks 是一个特殊的函数。在 Hooks 之前，**函数组件** 是没有 s
 
 ![1551680577970-8dd9ac01-2e01-4025-8110-b857f246c694](https://user-images.githubusercontent.com/19721451/53748559-849d2b80-3ee0-11e9-9e57-42f090d88c05.png)
 
-#### 2. 生命周期，当真如此简单
+#### 2. 生命周期，误区
 
 **误解一：**`getDerivedStateFromProps` 和 `componentWillReceiveProps` 只会在 `props` **改变** 时才会调用
 
