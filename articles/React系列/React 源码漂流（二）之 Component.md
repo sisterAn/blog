@@ -92,6 +92,12 @@
 
 - **3. 受控组件与非受控组件**
 
+  **受控和非受控主要是取决于组件是否受父级传入的 props 控制**
+
+  用 props 传入数据的话，组件可以被认为是**受控**（因为组件被父级传入的 props 控制）。
+
+  数据只保存在组件内部的 state 的话，是**非受控**组件（因为外部没办法直接控制 state）。
+
   ```js
   export default class AnForm extends React.Component {
     state = {
