@@ -5,10 +5,10 @@
 - 挂载阶段
   - `constructor()`：初始化state，绑定时间处理器方法到一个实例（bind）
   - `static getDerivedStateFromProps()`
-  - `render()`：类组件唯一必须的方法，可以返回 React元素、数组和Fragments、Portals、字符串和数字、bool或null
+  - `render()`：类组件唯一必须的方法，可以返回 React元素、数组和 Fragments、Portals、字符串和数字、bool或null
   - `componentDidMount()`：可以处理网络请求、事件订阅等操作
 - 更新阶段
-  - `static getDerivedStateFromProps()`：返回null来表明新属性不需要更新任何状态
+  - `static getDerivedStateFromProps()`：返回 null 来表明新属性不需要更新任何状态
   - `shouldComponentUpdate(nextProps, nextState)`：
     - 可以进行判断来性能优化，默认返回 **true**
     - `shouldComponentUpdate`只是 **浅比较 props 以及 state** 更新，可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
