@@ -68,9 +68,11 @@ React 生命周期很多人都了解，但通常我们所了解的都是 **单�
   }, [])
   
   useEffect(() => { 
-    document.title = `You clicked ${count} times`; // 在 componentDidMount，以及 count 更改时 componentDidUpdate 执行的内容
+    // 在 componentDidMount，以及 count 更改时 componentDidUpdate 执行的内容
+    document.title = `You clicked ${count} times`; 
     return () => {
-      // 需要在 count 更改时 componentDidUpdate（先于 document.title = ... 执行，遵守先清理后更新）、componentWillUnmount 执行的内容       
+      // 需要在 count 更改时 componentDidUpdate（先于 document.title = ... 执行，遵守先清理后更新）
+      // 以及 componentWillUnmount 执行的内容       
     } // 当函数中 Cleanup 函数会按照在代码中定义的顺序先后执行，与函数本身的特性无关
   }, [count]); // 仅在 count 更改时更新
   ```
