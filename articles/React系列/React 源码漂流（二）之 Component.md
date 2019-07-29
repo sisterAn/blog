@@ -13,16 +13,15 @@
     - 可以进行判断来性能优化，默认返回 **true**
     - `shouldComponentUpdate`只是 **浅比较 props 以及 state** 更新，可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
     - 当 `Component` 初始渲染 以及 调用`forceUpdate()`强制更新时，都不会调用 `shouldComponentUpdate`
-    - 如果在 React 组件中写了`shouldComponentUpdate`方法后不能获得可测量的，并且是可察觉到的性能提升，那就不要写，可以考虑 使用 React.PureComponet 来代替 React.Component。
-    - **注意，返回`false`不能阻止子组件当*他们的*状态改变时重新渲染**。
+    - 如果在 React 组件中写了`shouldComponentUpdate` 方法后不能获得可测量的，并且是可察觉到的性能提升，那就不要写，可以考虑 使用 React.PureComponet 来代替 React.Component。
   - `render()`
   - `getSnapshotBeforeUpdate()`：
-    - 在最新的渲染输出提交给DOM前将会立即调用，
+    - 在最新的渲染输出提交给DOM前将会立即调用
     - 可以用来读取一些实时性较高的数据
     - 返回值将传给`componentDidUpdate`
   - `componentDidUpdate(prevProps, prevState, snapshot)`:
     - 其中，snapshot 为`getSnapshotBeforeUpdate`的返回值
-    - 如果调用 setState，必须包裹在条件语句中（例如`if(this.state.current !== prevState.current) { … }`），否则将会陷入无限循环。
+    - 如果调用 setState，必须包裹在条件语句中（例如 `if(this.state.current !== prevState.current) { … }` ），否则将会陷入无限循环。
 - 卸载阶段
   - `componentWillUnmount()`：注意，清理掉所有的事件订阅
 - 错误处理
