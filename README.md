@@ -17,7 +17,7 @@
 
 ### React 系列
 
-* [深入 React 生命周期](https://github.com/sisterAn/blog/issues/34)
+* [Hooks 与 React 生命周期的关系](https://github.com/sisterAn/blog/issues/34)
 * [深入diff 算法](https://github.com/sisterAn/blog/issues/22)
 * [深入 setState 机制](https://github.com/sisterAn/blog/issues/26)
 * [React Refs and the DOM 揭秘](https://github.com/sisterAn/blog/issues/2)
