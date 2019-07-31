@@ -1,48 +1,4 @@
-### 一、组件生命周期
-
-- 挂载阶段
-  - `constructor()`：初始化state，绑定时间处理器方法到一个实例（bind）
-  - `static getDerivedStateFromProps()`
-  - `render()`：类组件唯一必须的方法，可以返回 React元素、数组和 Fragments、Portals、字符串和数字、bool或null
-  - `componentDidMount()`：可以处理网络请求、事件订阅等操作
-- 更新阶段
-  - `static getDerivedStateFromProps()`：返回 null 来表明新属性不需要更新任何状态
-  - `shouldComponentUpdate(nextProps, nextState)`：
-    - 可以进行判断来性能优化，默认返回 **true**
-    - `shouldComponentUpdate`只是 **浅比较 props 以及 state** 更新，可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
-    - 当 `Component` 初始渲染 以及 调用`forceUpdate()`强制更新时，都不会调用 `shouldComponentUpdate`
-    - 如果在 React 组件中写了`shouldComponentUpdate` 方法后不能获得可测量的，并且是可察觉到的性能提升，那就不要写，可以考虑 使用 React.PureComponet 来代替 React.Component。
-  - `render()`
-  - `getSnapshotBeforeUpdate()`：
-    - 在最新的渲染输出提交给DOM前将会立即调用
-    - 可以用来读取一些实时性较高的数据
-    - 返回值将传给`componentDidUpdate`
-  - `componentDidUpdate(prevProps, prevState, snapshot)`:
-    - 其中，snapshot 为`getSnapshotBeforeUpdate`的返回值
-    - 如果调用 setState，必须包裹在条件语句中（例如 `if(this.state.current !== prevState.current) { … }` ），否则将会陷入无限循环。
-- 卸载阶段
-  - `componentWillUnmount()`：注意，清理掉所有的事件订阅
-- 错误处理
-  - `static getDerivedStateFromError()`：在 渲染 阶段调用，不允许副作用
-  - `componentDidCatch()`：在 提交 期间阶段调用，允许副作用。
-
-以上介绍的是 V16.4 之后的版本，之前的请看 [Hooks 与 React 生命周期的关系](https://github.com/sisterAn/blog/issues/34)
-
-##### 补充
-
-- 其他API
-  - `setState()`：队列方式批量浅合并更新，更多请看 [深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
-  - `forceUpdate()`：该方法不会调用 `shouldComponentUpdate()`
-- 类属性
-  - `defaultProps()`：设置默认属性
-  - `displayName()`
-- 实例属性
-  - `props`
-  - `state`
-
-
-
-### 二、组件
+### 一、组件
 
 #### 1. 纯组件
 
@@ -142,68 +98,68 @@ export default class AnForm extends React.Component {
 }
 ```
 
-- **受控组件**
+##### 受控组件
 
-  与 html 不同的是，在 React 中，`<input>`或`<select>`、`<textarea> `等这类组件，不会主动维持自身状态，并根据用户输入进行更新。它们都要绑定一个`onChange`事件；每当状态发生变化时，都要写入组件的 state 中，在 React 中被称为**受控组件**。
+与 html 不同的是，在 React 中，`<input>`或`<select>`、`<textarea> `等这类组件，不会主动维持自身状态，并根据用户输入进行更新。它们都要绑定一个`onChange`事件；每当状态发生变化时，都要写入组件的 state 中，在 React 中被称为**受控组件**。
+
+```js
+export default class AnForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ""};
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  render() {
+    return <input 
+      			type="text" 
+      			value={this.state.value} 
+      			onChange={this.handleChange} 
+      		/>;
+  }
+}
+```
+
+- **onChange & value 模式**（单选按钮和复选按钮对应的是 checked props）
+
+- react通过这种方式**消除了组件的局部状态，**使得应用的整个**状态可控**。
+
+- 注意 `<input type="file" />`，它是一个**非受控组件**。
+
+- 可以使用计算属性名将多个相似的操作组合成一个。
 
   ```js
-  export default class AnForm extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {value: ""};
-      this.handleChange = this.handleChange.bind(this);
-    }
-    handleChange(event) {
-      this.setState({value: event.target.value});
-    }
-    render() {
-      return <input 
-        			type="text" 
-        			value={this.state.value} 
-        			onChange={this.handleChange} 
-        		/>;
-    }
-  }
+  this.setState({
+    [name]: value
+  });
   ```
 
-  - **onChange & value 模式**（单选按钮和复选按钮对应的是 checked props）
+##### 非受控组件
 
-  - react通过这种方式**消除了组件的局部状态，**使得应用的整个**状态可控**。
+非受控组件不再将数据保存在 state，而使用 refs，将真实数据保存在 DOM 中。
 
-  - 注意 `<input type="file" />`，它是一个**非受控组件**。
-
-  - 可以使用计算属性名将多个相似的操作组合成一个。
-
-    ```js
-    this.setState({
-      [name]: value
-    });
-    ```
-
-- **非受控组件**
-
-  非受控组件不再将数据保存在 state，而使用 refs，将真实数据保存在 DOM 中。
-
-  ```js
-  export default class AnForm extends Component {
-    handleSubmitClick = () => {
-      const name = this._name.value;
-    }
-  
-    render() {
-      return (
-        <div>
-          <input type="text" ref={input => this._name = input} />
-          <button onClick={this.handleSubmitClick}>Sign up</button>
-        </div>
-      );
-    }
+```js
+export default class AnForm extends Component {
+  handleSubmitClick = () => {
+    const name = this._name.value;
   }
-  ```
 
-  - **非受控组件是最简单快速**的实现方式，项目中出现极简的表单时，使用它，但**受控组件才是是最权威的**。
-  - 通常指定一个 **defaultValue/defaultChecked** 默认值来控制初始状态，不使用 value。
-  - 非受控组件相比于受控组件，更容易同时集成 React 和非 React 代码。
+  render() {
+    return (
+      <div>
+        <input type="text" ref={input => this._name = input} />
+        <button onClick={this.handleSubmitClick}>Sign up</button>
+      </div>
+    );
+  }
+}
+```
+
+- **非受控组件是最简单快速**的实现方式，项目中出现极简的表单时，使用它，但**受控组件才是是最权威的**。
+- 通常指定一个 **defaultValue/defaultChecked** 默认值来控制初始状态，不使用 value。
+- 非受控组件相比于受控组件，更容易同时集成 React 和非 React 代码。
 
 - 使用场景
 
@@ -219,115 +175,114 @@ export default class AnForm extends React.Component {
 
 #### 4. 有状态组件与无状态组件
 
-- **有状态组件**
+##### 有状态组件
 
-  通过 state 管理状态
+通过 state 管理状态
 
-  ```js
-  export default class Counter extends React.Component {
-    constructor(props) {
-      super(props)
-      this.state = { clicks: 0 }
-      this.handleClick = this.handleClick.bind(this)
-    }
-    handleClick() {
-      this.setState(state => ({ clicks: state.clicks + 1 }))
-    }
-    render() {
-      return (
-        <Button
-          onClick={this.handleClick}
-          text={`You've clicked me ${this.state.clicks} times!`}
-        />
-      )
-    }
+```js
+export default class Counter extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { clicks: 0 }
+    this.handleClick = this.handleClick.bind(this)
   }
-  ```
+  handleClick() {
+    this.setState(state => ({ clicks: state.clicks + 1 }))
+  }
+  render() {
+    return (
+      <Button
+        onClick={this.handleClick}
+        text={`You've clicked me ${this.state.clicks} times!`}
+      />
+    )
+  }
+}
+```
+##### 无状态组件
 
-- **无状态组件**
+输入输出数据完全由props决定，而且不会产生任何副作用。
 
-  输入输出数据完全由props决定，而且不会产生任何副作用。
+```js
+const Button = props =>
+  <button onClick={props.onClick}>
+    {props.text}
+  </button>
+```
 
-  ```js
-  const Button = props =>
-    <button onClick={props.onClick}>
-      {props.text}
-    </button>
-  ```
-
-  - 无状态组件一般会搭配高阶组件（简称：HOC）一起使用，高阶组件用来托管state，Redux 框架就是通过 store 管理数据源和所有状态，其中所有负责展示的组件都使用无状态函数式的写法。
-  - 一个简单的 无状态(stateless) 按钮组件，仅依赖于 props(属性) ，这也称为**函数式组件**。
+- 无状态组件一般会搭配高阶组件（简称：HOC）一起使用，高阶组件用来托管state，Redux 框架就是通过 store 管理数据源和所有状态，其中所有负责展示的组件都使用无状态函数式的写法。
+- 一个简单的 无状态(stateless) 按钮组件，仅依赖于 props(属性) ，这也称为**函数式组件**。
 
 
 
 #### 5. 展示组件与容器组件
 
-- **展示组件**
+##### 展示组件
 
-  展示组件指不关心数据是怎么加载和变动的，只关注于页面展示效果的组件。
+展示组件指不关心数据是怎么加载和变动的，只关注于页面展示效果的组件。
 
-  ```js
-  class TodoList extends React.Component{
-      constructor(props){
-          super(props);
-      }
-      render(){
-          const {todos} = this.props;
-          return (<div>
-                  <ul>
-                      {todos.map((item,index)=>{
-                          return <li key={item.id}>{item.name}</li>
-                      })}
-                  </ul>
-              </div>)
-      }
-  }
-  ```
+```js
+class TodoList extends React.Component{
+    constructor(props){
+        super(props);
+    }
+    render(){
+        const {todos} = this.props;
+        return (<div>
+                <ul>
+                    {todos.map((item,index)=>{
+                        return <li key={item.id}>{item.name}</li>
+                    })}
+                </ul>
+            </div>)
+    }
+}
+```
 
-  - 只能通过 **props** 的方式**接收数据和进行回调**(callback)操作。
-  - **很少拥有自己的状态**，即使有也是用于展示UI状态的。
-  - 通常允许通过 **this.props.children** 方式来包含其他组件。
-  - **内部可以包含展示组件和容器组件**，通常会包含一些自己的DOM标记和样式(style)
-  - 对应用程序的其他部分没有依赖关系，例如Flux操作或store。
-  - 会被写成函数式组件除非该组件需要自己的状态，生命周期或者做一些性能优化。
+- 只能通过 **props** 的方式**接收数据和进行回调**(callback)操作。
+- **很少拥有自己的状态**，即使有也是用于展示UI状态的。
+- 通常允许通过 **this.props.children** 方式来包含其他组件。
+- **内部可以包含展示组件和容器组件**，通常会包含一些自己的DOM标记和样式(style)
+- 对应用程序的其他部分没有依赖关系，例如Flux操作或store。
+- 会被写成函数式组件除非该组件需要自己的状态，生命周期或者做一些性能优化。
 
-- **容器组件**
+##### 容器组件
 
-  容器组件只关心数据是怎么加载和变动的，而不关注于页面展示效果。
+容器组件只关心数据是怎么加载和变动的，而不关注于页面展示效果。
 
-  ```js
-  //容器组件
-  class TodoListContainer extends React.Component{
-      constructor(props){
-          super(props);
-          this.state = {
-              todos:[]
-          }
-          this.fetchData = this.fetchData.bind(this);
-      }
-      componentDidMount(){
-          this.fetchData();
-      }
-      fetchData(){
-          fetch('/api/todos').then(data =>{
-              this.setState({
-                  todos:data
-              })
-          })
-      }
-      render(){
-          return (<div>
-                  <TodoList todos={this.state.todos} />    
-              </div>)
-      }
-  }
-  ```
+```js
+//容器组件
+class TodoListContainer extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            todos:[]
+        }
+        this.fetchData = this.fetchData.bind(this);
+    }
+    componentDidMount(){
+        this.fetchData();
+    }
+    fetchData(){
+        fetch('/api/todos').then(data =>{
+            this.setState({
+                todos:data
+            })
+        })
+    }
+    render(){
+        return (<div>
+                <TodoList todos={this.state.todos} />    
+            </div>)
+    }
+}
+```
 
-  - **内部可以包含容器组件和展示组件**，但通常没有任何自己的DOM标记，除了一些包装divs，并且从不具有任何样式。
-  - 提供数据和行为给其他的展示组件或容器组件。
-  - 可以调用 Flux 操作并将它们作为回调函数（callback）提供给展示组件。
-  - 往往是**有状态**的，因为它们倾向于**作为数据源**
-  - 通常使用**高阶组件**生成，例如React Redux的connect()
+- **内部可以包含容器组件和展示组件**，但通常没有任何自己的DOM标记，除了一些包装divs，并且从不具有任何样式。
+- 提供数据和行为给其他的展示组件或容器组件。
+- 可以调用 Flux 操作并将它们作为回调函数（callback）提供给展示组件。
+- 往往是**有状态**的，因为它们倾向于**作为数据源**
+- 通常使用**高阶组件**生成，例如React Redux的connect()
 
 
 
@@ -384,7 +339,58 @@ export default function (WrappedComponent) {
 
 
 
-### 三、Component 源码解读
+#### 7. Hook 组件
+
+Hook 是 React 16.8 的新增特性。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。
+
+但与 class 生命周期不同的是，Hook 更接近于实现状态同步，而不是响应生命周期事件。
+
+```js
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  // 声明一个叫 "count" 的 state 变量
+  const [count, setCount] = useState(0);
+    
+  useEffect(()=>{
+    // 需要在 componentDidMount 执行的内容
+    return function cleanup() {
+      // 需要在 componentWillUnmount 执行的内容      
+  	}
+  }, [])
+
+  useEffect(() => { 
+    // 在 componentDidMount，以及 count 更改时 componentDidUpdate 执行的内容
+    document.title = 'You clicked ' + count + ' times'; 
+    return () => {
+      // 需要在 count 更改时 componentDidUpdate（先于 document.title = ... 执行，遵守先清理后更新）
+      // 以及 componentWillUnmount 执行的内容       
+    } // 当函数中 Cleanup 函数会按照在代码中定义的顺序先后执行，与函数本身的特性无关
+  }, [count]); // 仅在 count 更改时更新
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+- Hooks 组件更接近于实现状态同步，而不是响应生命周期事件
+- 只能在**函数最外层**调用 Hook。只能在 **React 的函数组件**中调用 Hook。
+- `useLayoutEffect` 与 `componentDidMount`、`componentDidUpdate` 的调用阶段是一样的。但是，我们推荐你**一开始先用 useEffect**，只有当它出问题的时候再尝试使用 `useLayoutEffect`
+- 与 `componentDidMount` 或 `componentDidUpdate` 不同的是，Hook 在浏览器完成布局与绘制**之后**，传给 `useEffect` 的函数会延迟调用，但会保证在任何新的渲染前执行
+- effect 的清除（cleanup）并不会读取“最新”的 props 。它只能读取到定义它的那次渲染中的 props 值
+- effect 中可以读取到最新的 count 状态值，并不是 count 的值在“不变”的effect中发生了改变，而是effect 函数本身在每一次渲染中都不相同
+- 在 class 组件生命周期的思维模型中，副作用的行为和渲染输出是不同的。UI渲染是被 props 和 state 驱动的，并且能确保步调一致，但副作用并不是这样。这是一类常见问题的来源。
+- 而在 `useEffect` 的思维模型中，默认都是同步的。副作用变成了 React 数据流的一部分。对于每一个 `useEffect` 调用，一旦你处理正确，你的组件能够更好地处理边缘情况。
+
+
+
+### 二、Component 源码解读
 
 首先看一下 React.Component 结构
 
@@ -568,3 +574,6 @@ export default ReactNoopUpdateQueue;
 ```
 
 注意，React API 只是简单的功能介绍，具体的实现是在 react-dom 中，这是因为不同的平台，React API 是一致的，但不同的平台，渲染的流程是不同的，具体的 Component 渲染流程不一致，会根据具体的平台去定制。
+
+组件生命周期请参考  [Hooks 与 React 生命周期的关系](https://github.com/sisterAn/blog/issues/34)
+
