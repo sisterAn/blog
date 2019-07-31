@@ -1,6 +1,6 @@
 #### Component
 
-##### 组件生命周期
+### 一、组件生命周期
 
 - 挂载阶段
   - `constructor()`：初始化state，绑定时间处理器方法到一个实例（bind）
@@ -28,12 +28,12 @@
   - `static getDerivedStateFromError()`：在 渲染 阶段调用，不允许副作用
   - `componentDidCatch()`：在 提交 期间阶段调用，允许副作用。
 
-以上介绍的是 V16.4 之后的版本，之前的请看 [React 生命周期](https://github.com/sisterAn/blog/issues/34)
+以上介绍的是 V16.4 之后的版本，之前的请看 [Hooks 与 React 生命周期的关系](https://github.com/sisterAn/blog/issues/34)
 
 ##### 补充
 
 - 其他API
-  - `setState()`：队列方式批量浅合并更新，更多请看[深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
+  - `setState()`：队列方式批量浅合并更新，更多请看 [深入 setState 机制](https://github.com/LuNaHaiJiao/blog/issues/26)
   - `forceUpdate()`：该方法不会调用 `shouldComponentUpdate()`
 - 类属性
   - `defaultProps()`：设置默认属性
@@ -42,339 +42,349 @@
   - `props`
   - `state`
 
-##### 组件相关
 
-- **1. 纯组件**
 
-  React.PureComponent，和 React.Component类似，都是定义一个组件类。不同是 React.Component 没有实现 `shouldComponentUpdate()`，而 React.PureComponent 通过props和state的**浅比较**实现了。
+### 二、组件
 
-  ```js
-  // React.PureComponent 纯组件
-  class Counter extends React.PureComponent {
-    constructor(props) {
-      super(props);
-      this.state = {count: 0};
-    }
-    render() {
-      return (
-        <button onClick={() => this.setState(state => ({count: state.count + 1}))}>
-          Count: {this.state.count}
-        </button>
-      );
-    }
+#### 1. 纯组件
+
+`React.PureComponent` ，和 `React.Component` 类似，都是定义一个组件类。不同是 `React.Component` 没有实现 `shouldComponentUpdate()`，而 `React.PureComponent` 通过 `props` 和 `state` 的**浅比较**实现了。
+
+```js
+// React.PureComponent 纯组件
+class Counter extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {count: 0};
   }
-  ```
-
-  在下一节中将会详细介绍。
-
-- **2. 函数组件**
-
-  定义React组件的**最简单**方式就是定义一个函数组件，它接受单一的 props 并返回一个React元素。
-
-  ```js
-  // 函数组件
-  function Counter(props) {
-      return <div>Counter: {props.count}</div>
+  render() {
+    return (
+      <button onClick={() => this.setState(state => ({count: state.count + 1}))}>
+        Count: {this.state.count}
+      </button>
+    );
   }
-  // 类组件
-  class Counter extends React.Component {
-    render() {
-      return <div>Counter: {this.props.count}</div>
-    }
+}
+```
+
+在下一节中将会详细介绍。
+
+
+
+#### 2. 函数组件
+
+定义React组件的**最简单**方式就是定义一个函数组件，它接受单一的 props 并返回一个React元素。
+
+```js
+// 函数组件
+function Counter(props) {
+    return <div>Counter: {props.count}</div>
+}
+// 类组件
+class Counter extends React.Component {
+  render() {
+    return <div>Counter: {this.props.count}</div>
   }
-  ```
+}
+```
 
-  - 在 函数组件 中，它的输入输出全部由 props 决定，且不会产生任何副作用，这说明 **函数组件 也是 无状态组件**。
-  - 在函数组件中，无法修改 props，无法使用 state 及组件的生命周期，说明 **函数组件 也是 展示组件**。
-  - 函数组件 的功能只是接收 props，渲染页面，它不执行与 UI 无关的逻辑处理，它只是一个**纯函数**。
-  - 函数组件，相对于类组件来说，更加简洁。无论是复用性还是性能，都**优于类组件**。
+- 在 函数组件 中，它的输入输出全部由 props 决定，且不会产生任何副作用，这说明 **函数组件 也是 无状态组件**。
+- 在函数组件中，无法修改 props，无法使用 state 及组件的生命周期，说明 **函数组件 也是 展示组件**。
+- 函数组件 的功能只是接收 props，渲染页面，它不执行与 UI 无关的逻辑处理，它只是一个**纯函数**。
+- 函数组件，相对于类组件来说，更加简洁。无论是复用性还是性能，都**优于类组件**。
 
-- **3. 受控组件与非受控组件**
 
-  **受控和非受控主要是取决于组件是否受父级传入的 props 控制**
 
-  用 props 传入数据的话，组件可以被认为是**受控**（因为组件被父级传入的 props 控制）。
+#### 3. 受控组件与非受控组件
 
-  数据只保存在组件内部的 state 的话，是**非受控**组件（因为外部没办法直接控制 state）。
+**受控和非受控主要是取决于组件是否受父级传入的 props 控制**
+
+用 props 传入数据的话，组件可以被认为是**受控**（因为组件被父级传入的 props 控制）。
+
+数据只保存在组件内部的 state 的话，是**非受控**组件（因为外部没办法直接控制 state）。
+
+```js
+export default class AnForm extends React.Component {
+  state = {
+    name: ""
+  }
+  handleSubmitClick = () => {
+    console.log("非受控组件: ", this._name.value);
+    console.log("受控组件: ", this.state.name);
+  }
+  handleChange = (e) => {
+    this.setState({
+      name: e.target.value
+    })
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmitClick}>
+      <label>
+        非受控组件:
+        <input 
+        	type="text" 
+        	defaultValue="default" 
+        	ref={input => this._name = input} 
+        />
+      </label>
+      <label>
+        受控组件:
+        <input 
+        	type="text" 
+        	value={this.state.name} 
+        	onChange={this.handleChange}
+        />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+    );
+  }
+}
+```
+
+- **受控组件**
+
+  与 html 不同的是，在 React 中，`<input>`或`<select>`、`<textarea> `等这类组件，不会主动维持自身状态，并根据用户输入进行更新。它们都要绑定一个`onChange`事件；每当状态发生变化时，都要写入组件的 state 中，在 React 中被称为**受控组件**。
 
   ```js
   export default class AnForm extends React.Component {
-    state = {
-      name: ""
+    constructor(props) {
+      super(props);
+      this.state = {value: ""};
+      this.handleChange = this.handleChange.bind(this);
     }
+    handleChange(event) {
+      this.setState({value: event.target.value});
+    }
+    render() {
+      return <input 
+        			type="text" 
+        			value={this.state.value} 
+        			onChange={this.handleChange} 
+        		/>;
+    }
+  }
+  ```
+
+  - **onChange & value 模式**（单选按钮和复选按钮对应的是 checked props）
+
+  - react通过这种方式**消除了组件的局部状态，**使得应用的整个**状态可控**。
+
+  - 注意 `<input type="file" />`，它是一个**非受控组件**。
+
+  - 可以使用计算属性名将多个相似的操作组合成一个。
+
+    ```js
+    this.setState({
+      [name]: value
+    });
+    ```
+
+- **非受控组件**
+
+  非受控组件不再将数据保存在 state，而使用 refs，将真实数据保存在 DOM 中。
+
+  ```js
+  export default class AnForm extends Component {
     handleSubmitClick = () => {
-      console.log("非受控组件: ", this._name.value);
-      console.log("受控组件: ", this.state.name);
-    }
-    handleChange = (e) => {
-      this.setState({
-        name: e.target.value
-      })
+      const name = this._name.value;
     }
   
     render() {
       return (
-        <form onSubmit={this.handleSubmitClick}>
-        <label>
-          非受控组件:
-          <input 
-          	type="text" 
-          	defaultValue="default" 
-          	ref={input => this._name = input} 
-          />
-        </label>
-        <label>
-          受控组件:
-          <input 
-          	type="text" 
-          	value={this.state.name} 
-          	onChange={this.handleChange}
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+        <div>
+          <input type="text" ref={input => this._name = input} />
+          <button onClick={this.handleSubmitClick}>Sign up</button>
+        </div>
       );
     }
   }
   ```
 
-  - **受控组件**
+  - **非受控组件是最简单快速**的实现方式，项目中出现极简的表单时，使用它，但**受控组件才是是最权威的**。
+  - 通常指定一个 **defaultValue/defaultChecked** 默认值来控制初始状态，不使用 value。
+  - 非受控组件相比于受控组件，更容易同时集成 React 和非 React 代码。
 
-    与 html 不同的是，在 React 中，`<input>`或`<select>`、`<textarea> `等这类组件，不会主动维持自身状态，并根据用户输入进行更新。它们都要绑定一个`onChange`事件；每当状态发生变化时，都要写入组件的 state 中，在 React 中被称为**受控组件**。
+- 使用场景
 
-    ```js
-    export default class AnForm extends React.Component {
-      constructor(props) {
-        super(props);
-        this.state = {value: ""};
-        this.handleChange = this.handleChange.bind(this);
-      }
-      handleChange(event) {
-        this.setState({value: event.target.value});
-      }
-      render() {
-        return <input 
-          			type="text" 
-          			value={this.state.value} 
-          			onChange={this.handleChange} 
-          		/>;
-      }
-    }
-    ```
+  | 特征                                                         | 非受控组件 | 受控组件 |
+  | ------------------------------------------------------------ | ---------- | -------- |
+  | one-time value retrieval (e.g. on submit)                    | ✅          | ✅        |
+  | [validating on submit](https://goshakkk.name/submit-time-validation-react/) | ✅          | ✅        |
+  | [instant field validation](https://goshakkk.name/instant-form-fields-validation-react/) | ❌          | ✅        |
+  | [conditionally disabling submit button](https://goshakkk.name/form-recipe-disable-submit-button-react/) | ❌          | ✅        |
+  | enforcing input format                                       | ❌          | ✅        |
+  | several inputs for one piece of data                         | ❌          | ✅        |
+  | [dynamic inputs](https://goshakkk.name/array-form-inputs/)   | ❌          | ✅        |
 
-    - **onChange & value 模式**（单选按钮和复选按钮对应的是 checked props）
+#### 4. 有状态组件与无状态组件
 
-    - react通过这种方式**消除了组件的局部状态，**使得应用的整个**状态可控**。
+- **有状态组件**
 
-    - 注意 `<input type="file" />`，它是一个**非受控组件**。
-
-    - 可以使用计算属性名将多个相似的操作组合成一个。
-
-      ```js
-      this.setState({
-        [name]: value
-      });
-      ```
-
-  - **非受控组件**
-
-    非受控组件不再将数据保存在 state，而使用 refs，将真实数据保存在 DOM 中。
-
-    ```js
-    export default class AnForm extends Component {
-      handleSubmitClick = () => {
-        const name = this._name.value;
-      }
-    
-      render() {
-        return (
-          <div>
-            <input type="text" ref={input => this._name = input} />
-            <button onClick={this.handleSubmitClick}>Sign up</button>
-          </div>
-        );
-      }
-    }
-    ```
-
-    - **非受控组件是最简单快速**的实现方式，项目中出现极简的表单时，使用它，但**受控组件才是是最权威的**。
-    - 通常指定一个 **defaultValue/defaultChecked** 默认值来控制初始状态，不使用 value。
-    - 非受控组件相比于受控组件，更容易同时集成 React 和非 React 代码。
-
-  - 使用场景
-
-    | 特征                                                         | 非受控组件 | 受控组件 |
-    | ------------------------------------------------------------ | ---------- | -------- |
-    | one-time value retrieval (e.g. on submit)                    | ✅          | ✅        |
-    | [validating on submit](https://goshakkk.name/submit-time-validation-react/) | ✅          | ✅        |
-    | [instant field validation](https://goshakkk.name/instant-form-fields-validation-react/) | ❌          | ✅        |
-    | [conditionally disabling submit button](https://goshakkk.name/form-recipe-disable-submit-button-react/) | ❌          | ✅        |
-    | enforcing input format                                       | ❌          | ✅        |
-    | several inputs for one piece of data                         | ❌          | ✅        |
-    | [dynamic inputs](https://goshakkk.name/array-form-inputs/)   | ❌          | ✅        |
-
-- **4. 有状态组件与无状态组件**
-
-  - **有状态组件**
-
-    通过 state 管理状态
-
-    ```js
-    export default class Counter extends React.Component {
-      constructor(props) {
-        super(props)
-        this.state = { clicks: 0 }
-        this.handleClick = this.handleClick.bind(this)
-      }
-      handleClick() {
-        this.setState(state => ({ clicks: state.clicks + 1 }))
-      }
-      render() {
-        return (
-          <Button
-            onClick={this.handleClick}
-            text={`You've clicked me ${this.state.clicks} times!`}
-          />
-        )
-      }
-    }
-    ```
-
-  - **无状态组件**
-
-    输入输出数据完全由props决定，而且不会产生任何副作用。
-
-    ```js
-    const Button = props =>
-      <button onClick={props.onClick}>
-        {props.text}
-      </button>
-    ```
-
-    - 无状态组件一般会搭配高阶组件（简称：HOC）一起使用，高阶组件用来托管state，Redux 框架就是通过 store 管理数据源和所有状态，其中所有负责展示的组件都使用无状态函数式的写法。
-    - 一个简单的 无状态(stateless) 按钮组件，仅依赖于 props(属性) ，这也称为**函数式组件**。
-
-- **5. 展示组件与容器组件**
-
-  - **展示组件**
-
-    展示组件指不关心数据是怎么加载和变动的，只关注于页面展示效果的组件。
-
-    ```js
-    class TodoList extends React.Component{
-        constructor(props){
-            super(props);
-        }
-        render(){
-            const {todos} = this.props;
-            return (<div>
-                    <ul>
-                        {todos.map((item,index)=>{
-                            return <li key={item.id}>{item.name}</li>
-                        })}
-                    </ul>
-                </div>)
-        }
-    }
-    ```
-
-    - 只能通过 **props** 的方式**接收数据和进行回调**(callback)操作。
-    - **很少拥有自己的状态**，即使有也是用于展示UI状态的。
-    - 通常允许通过 **this.props.children** 方式来包含其他组件。
-    - **内部可以包含展示组件和容器组件**，通常会包含一些自己的DOM标记和样式(style)
-    - 对应用程序的其他部分没有依赖关系，例如Flux操作或store。
-    - 会被写成函数式组件除非该组件需要自己的状态，生命周期或者做一些性能优化。
-
-  - **容器组件**
-
-    容器组件只关心数据是怎么加载和变动的，而不关注于页面展示效果。
-
-    ```js
-    //容器组件
-    class TodoListContainer extends React.Component{
-        constructor(props){
-            super(props);
-            this.state = {
-                todos:[]
-            }
-            this.fetchData = this.fetchData.bind(this);
-        }
-        componentDidMount(){
-            this.fetchData();
-        }
-        fetchData(){
-            fetch('/api/todos').then(data =>{
-                this.setState({
-                    todos:data
-                })
-            })
-        }
-        render(){
-            return (<div>
-                    <TodoList todos={this.state.todos} />    
-                </div>)
-        }
-    }
-    ```
-
-    - **内部可以包含容器组件和展示组件**，但通常没有任何自己的DOM标记，除了一些包装divs，并且从不具有任何样式。
-    - 提供数据和行为给其他的展示组件或容器组件。
-    - 可以调用 Flux 操作并将它们作为回调函数（callback）提供给展示组件。
-    - 往往是**有状态**的，因为它们倾向于**作为数据源**
-    - 通常使用**高阶组件**生成，例如React Redux的connect()
-
-- **6. 高阶组件**
-
-  **高阶函数**的定义：接收函数作为输入，或者输出另一个函数的一类函数，被称作高阶函数。
-
-  对于**高阶组件**，它描述的便是接受 React 组件作为输入，输出一个新的 React 组件的组件。
-
-  更通俗的描述为，高阶组件通过包裹（wrapped）被传入的 React 组件，经过一系列处理，最终返回一个**相对增强（enhanced）的 React 组件**，供其他组件调用。使我们的代码更具有复用性、逻辑性和抽象特性，它可以对 render 方法做劫持，也**可以控制  props 、state**。
-
-  实现高阶组件的方法有以下两种：
-
-  - **属性代理（props proxy）**，高阶组件通过被包裹的 React 组件来操作 props。
-  - **反向继承（inheritance inversion）**，高阶组件继承于被包裹的 React 组件。
+  通过 state 管理状态
 
   ```js
-  // 属性代理
-  export default function withHeader(WrappedComponent) {
-    return class HOC extends React.Component { // 继承与 React.component
-      render() {
-        const newProps = {
-          test:'hoc'
-        }
-        // 透传props，并且传递新的newProps
-        return <div>
-          <WrappedComponent {...this.props} {...newProps}/> 
-        </div>
-      }
+  export default class Counter extends React.Component {
+    constructor(props) {
+      super(props)
+      this.state = { clicks: 0 }
+      this.handleClick = this.handleClick.bind(this)
     }
-  }
-  
-  // 反向继承
-  export default function (WrappedComponent) {
-    return class Inheritance extends WrappedComponent { // 继承于被包裹的 React 组件
-      componentDidMount() {
-        // 可以方便地得到state，做一些更深入的修改。
-        console.log(this.state);
-      }
-      render() {
-        return super.render();
-      }
+    handleClick() {
+      this.setState(state => ({ clicks: state.clicks + 1 }))
+    }
+    render() {
+      return (
+        <Button
+          onClick={this.handleClick}
+          text={`You've clicked me ${this.state.clicks} times!`}
+        />
+      )
     }
   }
   ```
 
-  - 注意：不要在 HOC 内修改一个组件的原型（或以其它方式修改组件）
-  - 贯穿传递不相关props属性给被包裹的组件，帮助确保高阶组件最大程度的灵活性和可重用性
-  - 应该使用**最大化的组合性**
-  - 为了便于调试，可以选择一个显示名字，传达它是一个高阶组件的结果，`WrappedComponent.displayName || WrappedComponent.name || 'Component';`
-  - **不要在 render() 方法中创建 HOC**，否则，每一次渲染，都会重新创建渲染 HOC
-  - 必须将原始组件的静态方法在 HOC 中做拷贝，否则 HOC 将没有原始组件的任何静态方法
-  - Refs 属性不能贯穿传递，我们可以使用 React.forwardRef 解决
+- **无状态组件**
 
-##### Component 源码解读
+  输入输出数据完全由props决定，而且不会产生任何副作用。
+
+  ```js
+  const Button = props =>
+    <button onClick={props.onClick}>
+      {props.text}
+    </button>
+  ```
+
+  - 无状态组件一般会搭配高阶组件（简称：HOC）一起使用，高阶组件用来托管state，Redux 框架就是通过 store 管理数据源和所有状态，其中所有负责展示的组件都使用无状态函数式的写法。
+  - 一个简单的 无状态(stateless) 按钮组件，仅依赖于 props(属性) ，这也称为**函数式组件**。
+
+#### 5. 展示组件与容器组件
+
+- **展示组件**
+
+  展示组件指不关心数据是怎么加载和变动的，只关注于页面展示效果的组件。
+
+  ```js
+  class TodoList extends React.Component{
+      constructor(props){
+          super(props);
+      }
+      render(){
+          const {todos} = this.props;
+          return (<div>
+                  <ul>
+                      {todos.map((item,index)=>{
+                          return <li key={item.id}>{item.name}</li>
+                      })}
+                  </ul>
+              </div>)
+      }
+  }
+  ```
+
+  - 只能通过 **props** 的方式**接收数据和进行回调**(callback)操作。
+  - **很少拥有自己的状态**，即使有也是用于展示UI状态的。
+  - 通常允许通过 **this.props.children** 方式来包含其他组件。
+  - **内部可以包含展示组件和容器组件**，通常会包含一些自己的DOM标记和样式(style)
+  - 对应用程序的其他部分没有依赖关系，例如Flux操作或store。
+  - 会被写成函数式组件除非该组件需要自己的状态，生命周期或者做一些性能优化。
+
+- **容器组件**
+
+  容器组件只关心数据是怎么加载和变动的，而不关注于页面展示效果。
+
+  ```js
+  //容器组件
+  class TodoListContainer extends React.Component{
+      constructor(props){
+          super(props);
+          this.state = {
+              todos:[]
+          }
+          this.fetchData = this.fetchData.bind(this);
+      }
+      componentDidMount(){
+          this.fetchData();
+      }
+      fetchData(){
+          fetch('/api/todos').then(data =>{
+              this.setState({
+                  todos:data
+              })
+          })
+      }
+      render(){
+          return (<div>
+                  <TodoList todos={this.state.todos} />    
+              </div>)
+      }
+  }
+  ```
+
+  - **内部可以包含容器组件和展示组件**，但通常没有任何自己的DOM标记，除了一些包装divs，并且从不具有任何样式。
+  - 提供数据和行为给其他的展示组件或容器组件。
+  - 可以调用 Flux 操作并将它们作为回调函数（callback）提供给展示组件。
+  - 往往是**有状态**的，因为它们倾向于**作为数据源**
+  - 通常使用**高阶组件**生成，例如React Redux的connect()
+
+
+
+#### 6. 高阶组件
+
+**高阶函数**的定义：接收函数作为输入，或者输出另一个函数的一类函数，被称作高阶函数。
+
+对于**高阶组件**，它描述的便是接受 React 组件作为输入，输出一个新的 React 组件的组件。
+
+更通俗的描述为，高阶组件通过包裹（wrapped）被传入的 React 组件，经过一系列处理，最终返回一个**相对增强（enhanced）的 React 组件**，供其他组件调用。使我们的代码更具有复用性、逻辑性和抽象特性，它可以对 render 方法做劫持，也**可以控制  props 、state**。
+
+实现高阶组件的方法有以下两种：
+
+- **属性代理（props proxy）**，高阶组件通过被包裹的 React 组件来操作 props。
+- **反向继承（inheritance inversion）**，高阶组件继承于被包裹的 React 组件。
+
+```js
+// 属性代理
+export default function withHeader(WrappedComponent) {
+  return class HOC extends React.Component { // 继承与 React.component
+    render() {
+      const newProps = {
+        test:'hoc'
+      }
+      // 透传props，并且传递新的newProps
+      return <div>
+        <WrappedComponent {...this.props} {...newProps}/> 
+      </div>
+    }
+  }
+}
+
+// 反向继承
+export default function (WrappedComponent) {
+  return class Inheritance extends WrappedComponent { // 继承于被包裹的 React 组件
+    componentDidMount() {
+      // 可以方便地得到state，做一些更深入的修改。
+      console.log(this.state);
+    }
+    render() {
+      return super.render();
+    }
+  }
+}
+```
+
+- 注意：不要在 HOC 内修改一个组件的原型（或以其它方式修改组件）
+- 贯穿传递不相关props属性给被包裹的组件，帮助确保高阶组件最大程度的灵活性和可重用性
+- 应该使用**最大化的组合性**
+- 为了便于调试，可以选择一个显示名字，传达它是一个高阶组件的结果，`WrappedComponent.displayName || WrappedComponent.name || 'Component';`
+- **不要在 render() 方法中创建 HOC**，否则，每一次渲染，都会重新创建渲染 HOC
+- 必须将原始组件的静态方法在 HOC 中做拷贝，否则 HOC 将没有原始组件的任何静态方法
+- Refs 属性不能贯穿传递，我们可以使用 React.forwardRef 解决
+
+
+
+### 三、Component 源码解读
 
 首先看一下 React.Component 结构
 
