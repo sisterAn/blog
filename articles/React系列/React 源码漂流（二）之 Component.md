@@ -1,5 +1,3 @@
-#### Component
-
 ### 一、组件生命周期
 
 - 挂载阶段
@@ -260,6 +258,8 @@ export default class AnForm extends React.Component {
   - 无状态组件一般会搭配高阶组件（简称：HOC）一起使用，高阶组件用来托管state，Redux 框架就是通过 store 管理数据源和所有状态，其中所有负责展示的组件都使用无状态函数式的写法。
   - 一个简单的 无状态(stateless) 按钮组件，仅依赖于 props(属性) ，这也称为**函数式组件**。
 
+
+
 #### 5. 展示组件与容器组件
 
 - **展示组件**
@@ -397,7 +397,8 @@ function Component(props, context, updater) {
   this.props = props; // 属性 props
   this.context = context; // 上下文 context
   // If a component has string refs, we will assign a different object later.
-  this.refs = emptyObject; // 初始化 refs，为 {}，主要在 stringRef 中使用，将 stringRef 节点的实例挂载在 this.refs 上
+  // 初始化 refs，为 {}，主要在 stringRef 中使用，将 stringRef 节点的实例挂载在 this.refs 上
+  this.refs = emptyObject; 
   // We initialize the default updater but the real one gets injected by the
   // renderer.
   this.updater = updater || ReactNoopUpdateQueue; // updater
@@ -407,7 +408,8 @@ Component.prototype.isReactComponent = {};
 
 /**
  * 设置 state 的子集，使用该方法更新 state，避免 state 的值为可突变的状态
- * `shouldComponentUpdate`只是浅比较更新，可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
+ * `shouldComponentUpdate`只是浅比较更新，
+ * 可突变的类型可能导致 `shouldComponentUpdate` 返回 false，无法重新渲染
  * Immutable.js 可以解决这个问题。它通过结构共享提供不可突变的，持久的集合：
  * 不可突变: 一旦创建，集合就不能在另一个时间点改变。
  * 持久性: 可以使用原始集合和一个突变来创建新的集合。原始集合在新集合创建后仍然可用。
@@ -415,10 +417,12 @@ Component.prototype.isReactComponent = {};
  *
  * 并不能保证 `this.state` 通过 `setState` 后不可突变的更新，它可能还返回原来的数值
  * 不能保证 `setrState` 会同步更新 `this.state`
- * `setState` 是通过队列形式来更新 state ，当 执行 `setState` 时，会把 state 浅合并后放入状态队列，然后批量执行，即它不是立即更新的。
+ * `setState` 是通过队列形式来更新 state ，当 执行 `setState` 时，
+ * 会把 state 浅合并后放入状态队列，然后批量执行，即它不是立即更新的。
  * 不过，你可以在 callback 回调函数中获取最新的值
  * 
- * 注意：对于异步渲染，我们应在 `getSnapshotBeforeUpdate` 中读取 `state`、`props`, 而不是 `componentWillUpdate`
+ * 注意：对于异步渲染，我们应在 `getSnapshotBeforeUpdate` 中读取 `state`、`props`,
+ * 而不是 `componentWillUpdate`
  *
  * @param {object|function} partialState Next partial state or function to
  *        produce next partial state to be merged with current state.
@@ -427,7 +431,8 @@ Component.prototype.isReactComponent = {};
  * @protected
  */
 Component.prototype.setState = function(partialState, callback) {
-  // 当 partialState 状态为 object 或 function类型 或 null 时，执行 this.updater.enqueueSetState 方法，否则报错
+  // 当 partialState 状态为 object 或 function类型 或 null 时，
+  // 执行 this.updater.enqueueSetState 方法，否则报错
   invariant(
     typeof partialState === 'object' ||
       typeof partialState === 'function' ||
@@ -435,7 +440,8 @@ Component.prototype.setState = function(partialState, callback) {
     'setState(...): takes an object of state variables to update or a ' +
       'function which returns an object of state variables.',
   );
-  this.updater.enqueueSetState(this, partialState, callback, 'setState'); // 将 `setState` 事务放入队列中
+  // 将 `setState` 事务放入队列中
+  this.updater.enqueueSetState(this, partialState, callback, 'setState'); 
 };
 
 /**
@@ -444,19 +450,23 @@ Component.prototype.setState = function(partialState, callback) {
  * certainty that we are **not** in a DOM transaction.
  * 
  * 默认情况下，当组件的state或props改变时，组件将重新渲染。
- * 如果你的`render()`方法依赖于一些其他的数据，你可以告诉React组件需要通过调用`forceUpdate()`重新渲染。 
- * 调用`forceUpdate()`会导致组件跳过 `shouldComponentUpdate()`,直接调用 `render()`。但会调用 `componentWillUpdate` 和 `componentDidUpdate`。
+ * 如果你的`render()`方法依赖于一些其他的数据，
+ * 你可以告诉React组件需要通过调用`forceUpdate()`重新渲染。 
+ * 调用`forceUpdate()`会导致组件跳过 `shouldComponentUpdate()`,
+ * 直接调用 `render()`。但会调用 `componentWillUpdate` 和 `componentDidUpdate`。
  * 这将触发组件的正常生命周期方法,包括每个子组件的 shouldComponentUpdate() 方法。 
  * forceUpdate 就是重新 render 。
  * 有些变量不在 state 上，当时你又想达到这个变量更新的时候，刷新 render ；
- * 或者 state 里的某个变量层次太深，更新的时候没有自动触发 render 。这些时候都可以手动调用 forceUpdate 自动触发 render
+ * 或者 state 里的某个变量层次太深，更新的时候没有自动触发 render 。
+ * 这些时候都可以手动调用 forceUpdate 自动触发 render
  * 
  * @param {?function} callback 更新完成后的回调函数.
  * @final
  * @protected
  */
 Component.prototype.forceUpdate = function(callback) {
-  this.updater.enqueueForceUpdate(this, callback, 'forceUpdate'); // updater 强制更新
+  // updater 强制更新
+  this.updater.enqueueForceUpdate(this, callback, 'forceUpdate'); 
 };
 ```
 
@@ -468,7 +478,8 @@ const emptyObject = {};
 if (__DEV__) {
   Object.freeze(emptyObject); // __DEV__ 模式下， 冻结 emptyObject
 }
-// Object.freeze() 冻结一个对象，被冻结的对象不能被修改（添加，删除，修改已有属性的可枚举性、可配置性、可写性与属性值，原型）；返回和传入的参数相同的对象。
+// Object.freeze() 冻结一个对象，被冻结的对象不能被修改（添加，删除，
+// 修改已有属性的可枚举性、可配置性、可写性与属性值，原型）；返回和传入的参数相同的对象。
 
 ```
 
@@ -494,7 +505,8 @@ const ReactNoopUpdateQueue = {
   /**
    * 强制更新队列，当且仅当当前不处于 DOM 事物（transaction）中才会被唤起
    *
-   * 当 state 里的某个变量层次太深，更新的时候没有自动触发 render 。这些时候就可以调用该方法强制更新队列
+   * 当 state 里的某个变量层次太深，更新的时候没有自动触发 render 。
+   * 这些时候就可以调用该方法强制更新队列
    *
    * 该方法将跳过 `shouldComponentUpdate()`, 直接调用 `render()`, 但它会唤起
    * `componentWillUpdate` 和 `componentDidUpdate`.
@@ -509,9 +521,11 @@ const ReactNoopUpdateQueue = {
   },
 
   /**
-   * 完全替换state，与 `setState` 不同的是，`setState` 是以修改和新增的方式改变 `state `的，不会改变没有涉及到的 `state`。
+   * 完全替换state，与 `setState` 不同的是，`setState` 是以修改和新增的方式改变 `state `的，
+   * 不会改变没有涉及到的 `state`。
    * 而 `enqueueReplaceState` 则用新的 `state` 完全替换掉老 `state`
-   * 使用它或 `setState` 来改变 state，并且应该把 this.state 设置为不可突变类型对象，并且this.state不会立即更改
+   * 使用它或 `setState` 来改变 state，并且应该把 this.state 设置为不可突变类型对象，
+   * 并且this.state不会立即更改
    * 我们应该在回调函数 callback 中获取最新的 state
    *
    * @param {ReactClass} publicInstance The instance that should rerender.
