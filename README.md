@@ -95,6 +95,7 @@
 ### 浏览器
 
 - [浏览器的重绘与回流（Repaint、Reflow）](https://github.com/sisterAn/blog/issues/33)
+- [HTTP 状态码备忘单](https://github.com/sisterAn/blog/issues/46)
 
 ### 数据结构与算法
 
