@@ -42,7 +42,71 @@ class Counter extends React.PureComponent {
 
   `React.PureComponent` 中的 `shouldComponentUpdate()` 将跳过所有子组件树的 prop 更新（具体原因参考 [Hooks 与 React 生命周期](https://github.com/sisterAn/blog/issues/34)：即：更新阶段，由父至子去判断是否需要重新渲染），所以使用 React.PureComponent 的组件，它的所有 **子组件也必须都为 React.PureComponent** 。
 
-### 二、使用 PureComponent 常见误区
+### 二、PureComponent 与 Stateless Functional Component 
+
+对于 React 开发人员来说，知道何时在代码中使用 **Component**，**PureComponent ** 和 **Stateless Functional Component** 非常重要。
+
+首先，让我们看一下无状态组件。
+
+#### 无状态组件
+
+输入输出数据完全由 `props` 决定，而且不会产生任何副作用。
+
+```js
+const Button = props =>
+  <button onClick={props.onClick}>
+    {props.text}
+  </button>
+```
+
+无状态组件可以通过减少继承 `Component` 而来的生命周期函数而达到性能优化的效果。从本质上来说，无状态组件就是一个单纯的 `render` 函数，所以无状态组件的缺点也是显而易见的。因为它没有 `shouldComponentUpdate` 生命周期函数，所以每次 `state` 更新，它都会重新绘制 `render` 函数。
+
+React 16.8 之后，React 引入 Hooks 。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。
+
+#### 何时使用 `PureComponent`？
+
+`PureComponent` 提高了性能，因为它减少了应用程序中的渲染操作次数，这对于复杂的 UI 来说是一个巨大的胜利，因此建议尽可能使用。此外，还有一些情况需要使用 `Component` 的生命周期方法，在这种情况下，我们不能使用无状态组件。
+
+#### 何时使用无状态组件？
+
+无状态组件易于实施且快速实施。它们适用于非常小的 UI 视图，其中重新渲染成本无关紧要。它们提供更清晰的代码和更少的文件来处理。
+
+### 三、PureComponent 与 React.memo
+
+`React.memo` 为高阶组件。它实现的效果与 `React.PureComponent` 相似，不同的是：
+
+- `React.memo` 用于函数组件
+- `React.PureComponent` 适用于 class 组件
+- `React.PureComponent` 只是浅比较 `props`、`state`，`React.memo` 也是浅比较，但它可以自定义比较函数
+
+#### React.memo
+
+```js
+function MyComponent(props) {
+  /* 使用 props 渲染 */
+}
+
+// 比较函数
+function areEqual(prevProps, nextProps) {
+  /*
+  如果把 nextProps 传入 render 方法的返回结果与
+  将 prevProps 传入 render 方法的返回结果一致则返回 true，
+  否则返回 false
+  返回 true，复用最近一次渲染
+  返回 false，重新渲染
+  */
+}
+
+export default React.memo(MyComponent, areEqual);
+```
+
+- `React.memo` 通过记忆组件渲染结果的方式实现 ，提高组件的性能
+- 只会对 `props` 浅比较，如果相同，React 将跳过渲染组件的操作并直接复用最近一次渲染的结果。
+- 可以将自定义的比较函数作为第二个参数，实现自定义比较
+- 此方法仅作为**性能优化**的方式而存在。但请不要依赖它来“阻止”渲染，这会产生 bug。
+- 与 class 组件中 `shouldComponentUpdate()` 方法不同的是，如果 props 相等，`areEqual`会返回 `true`；如果 props 不相等，则返回 `false`。这与 `shouldComponentUpdate` 方法的返回值相反。
+
+### 四、使用 PureComponent 常见误区
 
 #### 误区一：在渲染方法中创建函数
 
@@ -170,70 +234,6 @@ setTopTenPosts(posts) {
 
 - 突变一般是不好的，但在使用 `PureComponent` 时，问题会更加复杂。
 - 不要在渲染方法中创建新函数、对象或数组，这不导致项目性能显著降低。
-
-### 三、PureComponent 与 Stateless Functional Component 
-
-对于 React 开发人员来说，知道何时在代码中使用 **Component**，**PureComponent ** 和 **Stateless Functional Component** 非常重要。
-
-首先，让我们看一下无状态组件。
-
-#### 无状态组件
-
-输入输出数据完全由 `props` 决定，而且不会产生任何副作用。
-
-```js
-const Button = props =>
-  <button onClick={props.onClick}>
-    {props.text}
-  </button>
-```
-
-无状态组件可以通过减少继承 `Component` 而来的生命周期函数而达到性能优化的效果。从本质上来说，无状态组件就是一个单纯的 `render` 函数，所以无状态组件的缺点也是显而易见的。因为它没有 `shouldComponentUpdate` 生命周期函数，所以每次 `state` 更新，它都会重新绘制 `render` 函数。
-
-React 16.8 之后，React 引入 Hooks 。它可以让你在不编写 class 的情况下使用 state 以及其他的 React 特性。
-
-#### 何时使用 `PureComponent`？
-
-`PureComponent` 提高了性能，因为它减少了应用程序中的渲染操作次数，这对于复杂的 UI 来说是一个巨大的胜利，因此建议尽可能使用。此外，还有一些情况需要使用 `Component` 的生命周期方法，在这种情况下，我们不能使用无状态组件。
-
-#### 何时使用无状态组件？
-
-无状态组件易于实施且快速实施。它们适用于非常小的 UI 视图，其中重新渲染成本无关紧要。它们提供更清晰的代码和更少的文件来处理。
-
-### 四、PureComponent 与 React.memo
-
-`React.memo` 为高阶组件。它实现的效果与 `React.PureComponent` 相似，不同的是：
-
-- `React.memo` 用于函数组件
-- `React.PureComponent` 适用于 class 组件
-- `React.PureComponent` 只是浅比较 `props`、`state`，`React.memo` 也是浅比较，但它可以自定义比较函数
-
-#### React.memo
-
-```js
-function MyComponent(props) {
-  /* 使用 props 渲染 */
-}
-
-// 比较函数
-function areEqual(prevProps, nextProps) {
-  /*
-  如果把 nextProps 传入 render 方法的返回结果与
-  将 prevProps 传入 render 方法的返回结果一致则返回 true，
-  否则返回 false
-  返回 true，复用最近一次渲染
-  返回 false，重新渲染
-  */
-}
-
-export default React.memo(MyComponent, areEqual);
-```
-
-- `React.memo` 通过记忆组件渲染结果的方式实现 ，提高组件的性能
-- 只会对 `props` 浅比较，如果相同，React 将跳过渲染组件的操作并直接复用最近一次渲染的结果。
-- 可以将自定义的比较函数作为第二个参数，实现自定义比较
-- 此方法仅作为**性能优化**的方式而存在。但请不要依赖它来“阻止”渲染，这会产生 bug。
-- 与 class 组件中 `shouldComponentUpdate()` 方法不同的是，如果 props 相等，`areEqual`会返回 `true`；如果 props 不相等，则返回 `false`。这与 `shouldComponentUpdate` 方法的返回值相反。
 
 ### 五、PureComponent 源码解析
 

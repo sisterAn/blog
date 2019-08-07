@@ -77,6 +77,7 @@
 * [JS 基础之异步（六）：co 函数库](https://github.com/sisterAn/blog/issues/27)
 * [JS异步解决方案的发展历程以及优缺点](https://github.com/sisterAn/blog/issues/29)
 * [Tasks、microtasks、 queues 和 schedules](https://github.com/sisterAn/blog/issues/21)
+* [[译]JavaScript：ES2019 的新特性](https://github.com/sisterAn/blog/issues/47)
 * JS 基础之设计模式（一）：简单工厂模式
 * JS 基础之设计模式（二）：工厂模式
 * JS 基础之设计模式（三）：抽象工厂模式
