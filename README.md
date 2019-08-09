@@ -66,6 +66,7 @@
 
 ### JS 系列
 
+* [JS 基础之变量、解构、函数](https://github.com/sisterAn/blog/issues/48)
 * [JS 基础之原型与原型链](https://github.com/sisterAn/blog/issues/5)
 * [JS 基础之继承](https://github.com/sisterAn/blog/issues/41)
 * [JS 基础之 instanceof](https://github.com/sisterAn/blog/issues/6)
