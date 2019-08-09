@@ -1,8 +1,10 @@
-#### createRef
+### 一、createRef
 
-##### createRef 用法
+**React v16.3**新增的API，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。
 
-**React v16.3**新增的API，在项目开发中，如果我们可以使用 声明式 或 提升 state 所在的组件层级（状态提升） 的方法来更新组件，最好不要使用 refs。
+React 的**核心思想**是每次对于界面 state 的改动，都会重新渲染整个Virtual DOM，然后新老的两个 Virtual DOM 树进行 diff（**协调算法**），对比出变化的地方，然后通过 renderer 渲染到实际的UI界面，
+
+在项目开发中，如果我们可以使用 声明式 或 提升 state 所在的组件层级（状态提升） 的方法来更新组件，最好不要使用 refs。
 
 Refs 有 三种实现：
 
@@ -15,11 +17,11 @@ Refs 有 三种实现：
     }
     componentDidMount() {
       // 通过 this.refs 调用
-      this.refs.stringRef.focus(); // 直接使用原生 API 使 text 输入框获得焦点
+      this.refs.textRef.focus(); // 直接使用原生 API 使 text 输入框获得焦点
     }
     render() {
       // 把 <input> ref 关联到构造器里创建的 `textRef` 上
-      return <input ref='stringRef' />
+      return <input ref='textRef' />
     }
   }
   ```
@@ -73,7 +75,59 @@ Refs 有 三种实现：
 - 推荐使用 **回调形式的 refs**， `stringRef` 将会废弃，`React.createRef()` API 是 React v16.3 引入的更新。
 - 避免使用 refs 来做任何可以通过 **声明式** 实现来完成的事情
 
-##### createRef 源码解析
+### 二、createRef 与 Hook useRef
+
+#### useRef
+
+`useRef` 返回一个可变的 ref 对象，其 `.current` 属性被初始化为传入的值。返回的 ref 对象在组件的整个生命周期内保持不变。
+
+```js
+function Hello() {
+  const textRef = useRef(null)
+  const onButtonClick = () => {
+    // 注意：通过 "current" 取得 DOM 节点
+    textRef.current.focus();
+  };
+  return (
+    <>
+      <input ref={textRef} type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+    </>
+  )
+}
+```
+
+
+
+####区别
+
+`useRef()` 比 `ref` 属性更有用。`useRef()` Hook 不仅可以用于 DOM refs。「ref」 对象是一个 `current` 属性可变且可以容纳任意值的通用容器，类似于一个 class 的实例属性。
+
+```js
+function Timer() {
+  const intervalRef = useRef();
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      // ...
+    });
+    intervalRef.current = id;
+    return () => {
+      clearInterval(intervalRef.current);
+    };
+  });
+
+  // ...
+}
+```
+
+
+
+这是因为它创建的是一个普通 Javascript 对象。而 `useRef()` 和自建一个 `{current: ...}`对象的唯一区别是，`useRef` 会在每次渲染时返回同一个 ref 对象。
+
+请记住，当 ref 对象内容发生变化时，`useRef` 并*不会*通知你。变更 `.current` 属性不会引发组件重新渲染。如果想要在 React 绑定或解绑 DOM 节点的 ref 时运行某些代码，则需要使用[回调 ref](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node) 来实现。
+
+### 三、createRef 源码解析
 
 ```react
 // ReactCreateRef.js 文件
