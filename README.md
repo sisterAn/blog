@@ -52,9 +52,6 @@
 * React 源码漂流（二五）之 Profiler
 * React 源码漂流（二六）之 StrictMode
 * React 源码漂流（二七）之 Suspense
-* React 源码漂流（二八）之 isValidElement
-* React 源码漂流（二九）之 version
-* React 源码漂流（三零）之 unstable_ConcurrentMode
 
 
 ### 小程序
