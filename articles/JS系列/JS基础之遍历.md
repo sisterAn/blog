@@ -8,3 +8,4 @@
 - reduce
 - reduceRight
 - foreach
+
