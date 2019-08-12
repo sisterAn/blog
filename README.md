@@ -25,6 +25,7 @@
 * [深入解读 React v16.9（上）](https://github.com/sisterAn/blog/issues/49)
 * 深入解读 React v16.9（中）
 * 深入解读 React v16.9（下）
+* [[译]React v16.9 新特性](https://github.com/sisterAn/blog/issues/50)
 * [React 源码漂流（一）之 起航](https://github.com/sisterAn/blog/issues/35)
 * [React 源码漂流（二）之 Component](https://github.com/sisterAn/blog/issues/38)
 * [React 源码漂流（三）之 PureComponent](https://github.com/sisterAn/blog/issues/42)
