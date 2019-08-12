@@ -61,7 +61,7 @@ ReactDOM.render(
 
 浏览器不识别 JSX。我们在浏览器中运行 JSX，会报错：
 
-![JSX](/Users/lilunahaijiao/Desktop/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-08-03%20%E4%B8%8A%E5%8D%8811.51.02.png)
+![JSX](https://user-images.githubusercontent.com/19721451/62879392-991e0380-bd5d-11e9-94a8-b9ecab779928.png)
 
 所以，在项目中运用 JSX，我们需要使用像 Babel 或 TypeScript 这样的转换器。例如，当 我们使用 create-react-app 创建项目时，就会在内部使用 Babel 来转换项目中的 JSX。
 
