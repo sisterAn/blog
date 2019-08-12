@@ -22,9 +22,9 @@
 * [深入 setState 机制](https://github.com/sisterAn/blog/issues/26)
 * [React Refs and the DOM 揭秘](https://github.com/sisterAn/blog/issues/2)
 * [Create React App 的 Webpack 4 配置高级进阶](https://github.com/sisterAn/blog/issues/3)
-* [深入解读 React v16.8（上）](https://github.com/sisterAn/blog/issues/49)
-* 深入解读 React v16.8（中）
-* 深入解读 React v16.8（下）
+* [深入解读 React v16.9（上）](https://github.com/sisterAn/blog/issues/49)
+* 深入解读 React v16.9（中）
+* 深入解读 React v16.9（下）
 * [React 源码漂流（一）之 起航](https://github.com/sisterAn/blog/issues/35)
 * [React 源码漂流（二）之 Component](https://github.com/sisterAn/blog/issues/38)
 * [React 源码漂流（三）之 PureComponent](https://github.com/sisterAn/blog/issues/42)
