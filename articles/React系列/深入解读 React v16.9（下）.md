@@ -1,10 +1,10 @@
 ### 十、Hooks
 
-React组件中的一个钩子是对特殊函数的调用。所有钩子函数都以“use”一词开头。其中一些可用于为函数组件提供有状态元素（如`useState`），其他可用于管理副作用（如`useEffect`）或缓存/ memoize函数和对象（如`useCallback`）。钩子非常强大，天空是你可以用它们做的事情的极限。
+Hook 是一个特殊的函数，它可以让你“钩入” React 的特性。所有 Hooks 都以 use 一词开头。`useState` 是允许你在 React 函数组件中添加 state 的 Hook，一些可用于管理副作用（如useEffect），一些可用于缓存 memoize 函数和对象（如useCallback、 useMemo）。钩子非常强大，天空是你可以用它们做的事情的极限。
 
-**React钩子函数只能用于函数组件。你不能在类组件中使用它们。**
+**React hook 函数只能用于函数组件。你不能在类组件中使用它们。**
 
-要查看基本`useState`钩子的示例，让我们使`Button`上面的组件响应click事件。让我们保持在“count”变量中点击它的次数，并将该变量的值显示为它呈现的按钮的标签。
+下面看一个 `useState` 示例，创建  `Button` 并响应 `click` 事件，并在 `count` 中保存点击它的次数。
 
 ```js
 const Button = () => {
@@ -18,13 +18,33 @@ const Button = () => {
 ReactDOM.render(<Button />, mountNode);
 ```
 
-这个`count`变量将是我们需要引入示例的state元素。这是UI将依赖的一段数据（因为我们正在显示它），它是一个状态元素，因为它会随着时间的推移而改变。
-
-每次在代码中定义变量时，你都将引入一个状态，每次更改该变量的值时，你都会改变该状态。记在脑子里。
-
-在我们改变国家的价值之前`count`，我们需要了解事件。
+我们声明了一个叫 `count` 的 state 变量。React 会在重复渲染时记住它当前的值，并且提供最新的值给我们的函数。我们可以通过调用 `setCount` 来更新当前的 `count`。
 
 #### 1. 响应用户事件
+
+我们给 `button` 组件增加一个`onClick` 事件：
+
+```js
+const Button = () => {
+  let count = 0;
+
+  return (
+    <button onClick={() => console.log('Button clicked')}>
+      {count}
+    </button>
+  );
+};
+
+ReactDOM.render(<Button />, mountNode);
+```
+
+与 HTML DOM 版本的 `onClick` 不同的是，React 版本的 `onClick` 使用的是一个函数引用，使用 `{}` 引入。
+
+```js
+function func() {}
+
+<button onClick={func} />
+```
 
 
 
