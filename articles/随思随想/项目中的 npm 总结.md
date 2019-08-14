@@ -1,4 +1,4 @@
-#### 1. package.json 解读
+### 一. package.json 解读
 
 ```js
 {
@@ -54,20 +54,20 @@
 
 关于更多规范，请看官方[npm-package.json](https://docs.npmjs.com/files/package.json.html)
 
-#### 2. 版本号规范
+### 二. 版本号规范
 
 > - **指定版本**：比如`1.2.2`，遵循“大版本.次要版本.小版本”的格式规定，安装时只安装指定版本。
 > - **波浪号（tilde）+指定版本**：比如`~1.2.2`，表示安装1.2.x的最新版本（不低于1.2.2），但是不安装1.3.x，也就是说安装时不改变大版本号和次要版本号。
 > - **插入号（caret）+指定版本**：比如ˆ1.2.2，表示安装1.x.x的最新版本（不低于1.2.2），但是不安装2.x.x，也就是说安装时不改变大版本号。**需要注意的是，如果大版本号为0，则插入号的行为与波浪号相同，这是因为此时处于开发阶段，即使是次要版本号变动，也可能带来程序的不兼容。**
 > - **latest**：安装最新版本。
 
-#### 3. npm install 与 **npm update**
+### 三. npm install 与 **npm update**
 
 - 如果本地 `node_modules` 已安装，再次执行 `install` 不会更新包版本, 执行 `update` 才会更新; 而如果本地 `node_modules` 为空时，执行 `install/update` 都会直接安装更新包;
 - `npm update` 总是会把包更新到符合 `package.json` 中指定的 semver(语义化版本) 的**最新**版本号——本例中符合 `^1.8.0` 的最新版本为 `1.15.0`
 - 一旦给定 `package.json`, 无论后面执行 `npm install` 还是 `update`, `package.json` 中的 webpack 版本一直顽固地保持 一开始的 `^1.8.0` 岿然不动
 
-#### 4. npm i 与 **npm install**
+### 四. npm i 与 **npm install**
 
 实际使用的区别点主要如下： 
 
@@ -76,7 +76,7 @@
 - 部分 npm 包在当前 node 版本下无法使用，必须使用建议版本 
 - 安装报错时 install 肯定会出现 `npm-debug.log`  文件，`npm i`不一定
 
-#### 5. npm devDependencies 与 dependencies
+### 五. npm devDependencies 与 dependencies
 
 `--save-dev`
 
@@ -94,25 +94,45 @@
 
 比如我们写一个项目要依赖于jQuery，没有这个包的依赖运行就会报错，这时候就把这个依赖写入dependencies
 
-#### 6. 全局安装与本地安装
+### 六. 全局安装与本地安装
 
 通过 `-g` 来安装的包，将包安装成全局可用的可执行命令。
 
-- 全局安装， 将包安装成全局可用的可执行命令
+#### 1. 全局安装， 将包安装成全局可用的可执行命令
+
+```js
+// 全局安装 babel-cli
+babel app.js
+```
+#### 2. 本地安装
+
+```Js
+// 本地安装 babel-cli
+node_modules/.bin/babel app.js
+```
+#### 3. 修改全局安装默认路径
+
+- 设置自定义的全局安装路径
 
   ```js
-  // 全局安装 babel-cli
-  babel app.js
+  npm config set prefix "/usr/local/npm" // 自定义的全局安装路径
+  npm config set cache "/usr/local/npm" // 自定义的全局安装路径
   ```
 
-- 本地安装
+- 设置环境变量
 
-  ```Js
-  // 本地安装 babel-cli
-  node_modules/.bin/babel app.js
+  ```js
+  PATH="/usr/local/npm/bin" // 将 /usr/local/npm/bin 追加到 PATH 变量中
+  NODE_PATH="/usr/local/npm/lib/node_modules" // 指定 NODE_PATH 变量
   ```
 
-#### 7. npm 包命令
+  操作系统中都会有一个`PATH`环境变量，想必大家都知道，当系统调用一个命令的时候，就会在PATH变量中注册的路径中寻找，如果注册的路径中有就调用，否则就提示命令没找到。
+
+  而 `NODE_PATH` 就是`NODE`中用来 **寻找模块所提供的路径注册环境变量** 。我们可以使用上面的方法指定`NODE_PATH` 环境变量。
+
+  使用 `npm config list` 查看配置
+
+### 七. npm 包命令
 
 ```js
 npm list -g --depth 0 // 查看全局安装过的包 -g:全局的安装包 list：已安装的node包 –depth 0：深度0
@@ -160,7 +180,7 @@ package.json 中 scripts 常用命令：
 "build:favicon": "node scripts/favicon.js",
 ```
 
-#### 8. 简写形式
+### 八. 简写形式
 
 ```js
 npm start   // 是 npm run start 的简写
@@ -168,7 +188,7 @@ npm stop    // 是 npm run stop 的简写
 npm test    // 是 npm run test 的简写
 npm restart // 是 npm run stop && npm run restart && npm run start 的简写
 ```
-#### 9. process
+### 九. process
 
 我们可以通过环境变量`process.env`对象，拿到 npm 所有的配置变量。其中 npm 脚本可以通过`npm_config_`前缀，拿到 npm 的配置变量。通过`npm_package_`前缀，拿到`package.json`里面的字段。
 
@@ -193,7 +213,7 @@ path.resolve(process.execPath, "..", "..", "lib", "node_modules")
 // 例如：/usr/local/lib/node_modules
 ```
 
-#### 10. npm 发布包
+### 一零. npm 发布包
 
 - **创建一个空文件**：
 
