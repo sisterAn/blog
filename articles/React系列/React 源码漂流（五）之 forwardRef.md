@@ -1,4 +1,4 @@
-### 一、forwardRef 用法
+### 一、forwardRef 
 
 在 `React.createRef` 中已经介绍过，有三种方式可以使用 React 元素的 ref
 
@@ -33,7 +33,7 @@ class TestComponent extends React.Component {
 
 - **函数组件 和 class 组件均不接收 `ref` 参数** ，即 props 中不存在 `ref`，**ref 必须独立 props** 出来，否则会被 React 特殊处理掉。
 
-- **通常在 高阶组件 中使用 `React.forwardRef`**
+- **通常在 高阶组件（HOC） 中使用 `React.forwardRef`**
 
   ```js
   function enhance(WrappedComponent) {
@@ -79,7 +79,9 @@ class TestComponent extends React.Component {
   />;
   ```
 
-### 二、forwardRef 与 useImperativeHandle
+
+
+### 二、forwardRef 与 Hook useImperativeHandle
 
 `useImperativeHandle` 可以让你在使用 `ref` 时自定义暴露给父组件的实例值。在大多数情况下，应当避免使用 ref 这样的命令式代码。`useImperativeHandle` 应当与 `forwardRef`一起使用：
 
@@ -97,6 +99,8 @@ FancyInput = forwardRef(FancyInput);
 ```
 
 在本例中，渲染 `<FancyInput ref={fancyInputRef} />` 的父组件可以调用 `fancyInputRef.current.focus()`。
+
+
 
 ### 三、源码解读
 
