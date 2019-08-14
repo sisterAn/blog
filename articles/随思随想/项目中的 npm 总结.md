@@ -121,9 +121,13 @@ node_modules/.bin/babel app.js
 
 - 设置环境变量
 
+  切到  ~/.bash_profile 文件中配置路径：
+
   ```js
-  PATH="/usr/local/npm/bin" // 将 /usr/local/npm/bin 追加到 PATH 变量中
-  NODE_PATH="/usr/local/npm/lib/node_modules" // 指定 NODE_PATH 变量
+  GNPM_PATH=/usr/local/npm
+  export GNPM_PATH
+  export PATH=$PATH:$GNPM_PATH/bin  // 将 /usr/local/npm/bin 追加到 PATH 变量中
+  export NODE_PATH=$PATH:$GNPM_PATH/lib/node_modules // 指定 NODE_PATH 变量
   ```
 
   操作系统中都会有一个`PATH`环境变量，想必大家都知道，当系统调用一个命令的时候，就会在PATH变量中注册的路径中寻找，如果注册的路径中有就调用，否则就提示命令没找到。
