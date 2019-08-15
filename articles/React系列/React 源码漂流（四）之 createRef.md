@@ -1,12 +1,56 @@
+### 引言
+
+本篇从 React Refs 的使用场景、使用方式、注意事项，到 `createRef` 与 Hook `useRef` 的对比使用，最后以 React `createRef` 源码结束，剖析整个 React Refs，关于 `React.forwardRef` 会在下一篇文章深入探讨。
+
 ### 一、Refs
 
-**React v16.3 ** 新增的API，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。
-
-React 的**核心思想**是每次对于界面 state 的改动，都会重新渲染整个Virtual DOM，然后新老的两个 Virtual DOM 树进行 diff（**协调算法**），对比出变化的地方，然后通过 renderer 渲染到实际的UI界面，
+React 的**核心思想**是每次对于界面 state 的改动，都会重新渲染整个Virtual DOM，然后新老的两个 Virtual DOM 树进行 diff（**协调算法**），对比出变化的地方，然后通过 render 渲染到实际的UI界面，
 
 使用 Refs 为我们提供了一种绕过状态更新和重新渲染时访问元素的方法；这在某些用例中很有用，但不应该作为 `props` 和 `state` 的替代方法。
 
 在项目开发中，如果我们可以使用 声明式 或 提升 state 所在的组件层级（状态提升） 的方法来更新组件，最好不要使用 refs。
+
+
+
+#### 使用场景
+
+- **管理焦点（如文本选择）或处理表单数据：** Refs 将管理文本框当前焦点选中，或文本框其它属性。
+
+  在大多数情况下，我们推荐使用受控组件来处理表单数据。在一个受控组件中，表单数据是由 React 组件来管理的，每个状态更新都编写数据处理函数。另一种替代方案是使用非受控组件，这时表单数据将交由 DOM 节点来处理。要编写一个非受控组件，就需要使用 Refs 来从 DOM 节点中获取表单数据。
+
+  ```js
+  class NameForm extends React.Component {
+    constructor(props) {
+      super(props);
+      this.input = React.createRef();
+    }
+  
+    handleSubmit = (e) => {
+      console.log('A name was submitted: ' + this.input.current.value);
+      e.preventDefault();
+    }
+  
+    render() {
+      return (
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Name:
+            <input type="text" ref={this.input} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+      );
+    }
+  }
+  ```
+
+  因为非受控组件将真实数据储存在 DOM 节点中，所以再使用非受控组件时，有时候反而更容易同时集成 React 和非 React 代码。如果你不介意代码美观性，并且希望快速编写代码，使用非受控组件往往可以减少你的代码量。否则，你应该使用受控组件。
+
+- **媒体播放：**基于 React 的音乐或视频播放器可以利用 Refs 来管理其当前状态（播放/暂停），或管理播放进度等。这些更新不需要进行状态管理。
+
+- **触发强制动画：**如果要在元素上触发过强制动画时，可以使用 Refs 来执行此操作。
+
+- **集成第三方 DOM 库**
 
 
 
@@ -16,22 +60,26 @@ Refs 有 三种实现：
 
 ##### 1、方法一：通过 createRef 实现
 
+`createRef` 是 **React v16.3 ** 新增的API，允许我们访问 DOM 节点或在 render 方法中创建的 React 元素。
+
 Refs 是使用 `React.createRef()` 创建的，并通过 `ref` 属性附加到 React 元素。
 
 Refs 通常在 React 组件的构造函数中定义，或者作为函数组件顶层的变量定义，然后附加到 `render()` 函数中的元素。
 
-```react
+```js
 export default class Hello extends React.Component {
   constructor(props) {
     super(props);
-    this.textRef = React.createRef(); // 创建 ref 存储 textRef DOM 元素
+    // 创建 ref 存储 textRef DOM 元素
+    this.textRef = React.createRef(); 
   }
   componentDidMount() {
     // 注意：通过 "current" 取得 DOM 节点
-    this.textRef.current.focus(); // 直接使用原生 API 使 text 输入框获得焦点
+    // 直接使用原生 API 使 text 输入框获得焦点
+    this.textRef.current.focus(); 
   }
   render() {
-    // 把 <input> ref 关联到构造器里创建的 `textRef` 上
+    // 把 <input> ref 关联到构造器里创建的 textRef 上
     return <input ref={this.textRef} />
   }
 }	
@@ -43,11 +91,11 @@ export default class Hello extends React.Component {
 
 ```js
 componentDidMount = () => {
-   // myRef only has a current property
+   // myRef 仅仅有一个 current 属性
    console.log(this.textRef);
-   // myRef.current is what we are interested in
+   // myRef.current
    console.log(this.textRef.current);
-   // focus our input automatically when component mounts
+   // component 渲染完成后，使 text 输入框获得焦点
    this.textRef.current.focus();
 }
 ```
@@ -60,7 +108,7 @@ componentDidMount = () => {
 
 不同于传递 `createRef()` 创建的 `ref` 属性，你会传递一个函数。这个函数中接受 React 组件实例或 HTML DOM 元素作为参数，以使它们能在其他地方被存储和访问。
 
-```react
+```js
 import React from 'react';
 export default class Hello extends React.Component {
   constructor(props) {
@@ -69,10 +117,11 @@ export default class Hello extends React.Component {
   }
   componentDidMount() {
     // 注意：这里没有使用 "current" 
-    this.textRef.focus(); // 直接使用原生 API 使 text 输入框获得焦点
+    // 直接使用原生 API 使 text 输入框获得焦点
+    this.textRef.focus(); 
   }
   render() {
-    // 把 <input> ref 关联到构造器里创建的 `textRef` 上
+    // 把 <input> ref 关联到构造器里创建的 textRef 上
     return <input ref={node => this.textRef = node} />
   }
 }												
@@ -93,22 +142,17 @@ export default class Hello extends React.Component {
   }
   componentDidMount() {
     // 通过 this.refs 调用
-    this.refs.textRef.focus(); // 直接使用原生 API 使 text 输入框获得焦点
+    // 直接使用原生 API 使 text 输入框获得焦点
+    this.refs.textRef.focus(); 
   }
   render() {
-    // 把 <input> ref 关联到构造器里创建的 `textRef` 上
+    // 把 <input> ref 关联到构造器里创建的 textRef 上
     return <input ref='textRef' />
   }
 }
 ```
 
 尽管字符串 stringRef 使用更方便，但是它有[一些缺点](https://github.com/facebook/react/issues/1373)，因此严格模式使用 stringRef 会报警告。官方推荐采用回调 Refs。
-
-#### 使用场景
-
-- **管理焦点（如文本选择）或处理表单数据：** Refs 将管理 `input` 当前焦点选中，或 `input` 其它属性。
-- **媒体播放：**基于 React 的音乐或视频播放器可以利用 Refs 来管理其当前状态（播放/暂停），或管理播放进度等。这些更新不需要进行状态管理。
-- **触发强制动画：**如果要在元素上触发过强制动画时，可以使用 Refs 来执行此操作。
 
 
 
@@ -122,7 +166,7 @@ export default class Hello extends React.Component {
 
 
 
-### 三、createRef 与 Hook useRef
+### 二、createRef 与 Hook useRef
 
 #### useRef
 
@@ -148,7 +192,7 @@ function Hello() {
 
 ####区别
 
-`useRef()` 比 `ref` 属性更有用。`useRef()` Hook 不仅可以用于 DOM refs。「ref」 对象是一个 `current` 属性可变且可以容纳任意值的通用容器，类似于一个 class 的实例属性。
+`useRef()` 比 `ref` 属性更有用。`useRef()` Hook 不仅可以用于 DOM refs， `useRef()` 创建的  `ref` 对象是一个 `current` 属性可变且可以容纳任意值的通用容器，类似于一个 class 的实例属性。
 
 ```js
 function Timer() {
@@ -168,17 +212,15 @@ function Timer() {
 }
 ```
 
-
-
 这是因为它创建的是一个普通 Javascript 对象。而 `useRef()` 和自建一个 `{current: ...}`对象的唯一区别是，`useRef` 会在每次渲染时返回同一个 ref 对象。
 
-请记住，当 ref 对象内容发生变化时，`useRef` 并*不会*通知你。变更 `.current` 属性不会引发组件重新渲染。如果想要在 React 绑定或解绑 DOM 节点的 ref 时运行某些代码，则需要使用[回调 ref](https://zh-hans.reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node) 来实现。
+请记住，当 ref 对象内容发生变化时，`useRef` 并*不会*通知你。变更 `.current` 属性不会引发组件重新渲染。如果想要在 React 绑定或解绑 DOM 节点的 ref 时运行某些代码，则需要使用回调 ref 来实现。
 
 
 
-### 四、createRef 源码解析
+### 三、createRef 源码解析
 
-```react
+```js
 // ReactCreateRef.js 文件
 import type {RefObject} from 'shared/ReactTypes';
 
@@ -188,7 +230,8 @@ export function createRef(): RefObject {
     current: null,
   };
   if (__DEV__) {
-    Object.seal(refObject); // 封闭对象，阻止添加新属性并将所有现有属性标记为不可配置。当前属性的值只要可写就可以改变。
+    // 封闭对象，阻止添加新属性并将所有现有属性标记为不可配置。当前属性的值只要可写就可以改变。
+    Object.seal(refObject); 
   }
   return refObject;
 }
@@ -202,4 +245,4 @@ export type RefObject = {|
 |};
 ```
 
-这里只是简单的 createRef API 介绍，具体如何使用，后期将详细介绍。
+这就是的 createRef 源码，实现很简单，但具体的它如何使用，如何挂载，将在后面的 React 渲染中介绍，敬请期待。
