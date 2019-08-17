@@ -1,10 +1,10 @@
 ### 十、Hooks
 
-Hook 是一个特殊的函数，它可以让你“钩入” React 的特性。所有 Hooks 都以 use 一词开头。`useState` 是允许你在 React 函数组件中添加 state 的 Hook，一些可用于管理副作用（如useEffect），一些可用于缓存 memoize 函数和对象（如useCallback、 useMemo）。钩子非常强大，天空是你可以用它们做的事情的极限。
+Hook 是一个特殊的函数，它可以让你“钩入” React 的特性。所有 Hooks 都以 use 一词开头。一些用于为函数组件增加状态（如 `useState` ），一些可用于管理副作用（如useEffect），一些可用于缓存 memoize 函数和对象（如useCallback、 useMemo）。
 
 **React hook 函数只能用于函数组件。你不能在类组件中使用它们。**
 
-下面看一个 `useState` 示例，创建  `Button` 并响应 `click` 事件，并在 `count` 中保存点击它的次数。
+下面是一个基本示例：
 
 ```js
 const Button = () => {
@@ -18,11 +18,11 @@ const Button = () => {
 ReactDOM.render(<Button />, mountNode);
 ```
 
-我们声明了一个叫 `count` 的 state 变量。React 会在重复渲染时记住它当前的值，并且提供最新的值给我们的函数。我们可以通过调用 `setCount` 来更新当前的 `count`。
+
 
 #### 1. 响应用户事件
 
-我们给 `button` 组件增加一个`onClick` 事件：
+我们给 `button` 组件增加一个 `onClick` 事件：
 
 ```js
 const Button = () => {
@@ -38,19 +38,9 @@ const Button = () => {
 ReactDOM.render(<Button />, mountNode);
 ```
 
-与 HTML DOM 版本的 `onClick` 不同的是，React 版本的 `onClick` 使用的是一个函数引用，使用 `{}` 引入。
+每次我们点击 `Button` 按钮时，`onClick` 都会调用内联箭头函数，向控制台输出 `Button clicked`。
 
-```js
-function func() {}
-
-<button onClick={func} />
-```
-
-注意我们如何将`func`引用（name）作为`onClick`处理程序传递。我们没有`func`在那里调用。`func`单击按钮时将调用React 。
-
-对于上面组件中的`onClick`事件`Button`，我们“内联”了一个函数定义，该函数定义在被调用时将向控制台输出消息。每次我们点击按钮时，`onClick`都会调用处理程序（内联箭头函数），我们会看到该消息。
-
-> 请注意事件名称是如何使用驼峰式的。所有与DOM相关的属性（由React处理）都需要是驼峰式的（如果不是这样的话，React会显示错误）。React还支持使用自定义HTML属性，并且必须采用全小写格式。
+> 请注意：所有与 DOM 相关的属性（由React处理）都需要是驼峰式的（如果不是这样的话，React会显示错误）。React 还支持使用自定义 HTML 属性，并且必须采用全小写格式。
 >
 > React中的一些DOM属性与它们在常规DOM API中的属性略有不同。一个例子是`onChange`事件。在常规浏览器中，当您在表单字段（或选项卡外）中单击时，通常会触发它。在React中，`onChange`只要更改了表单字段的值（在每个添加/删除的字符上）就会触发。
 >
