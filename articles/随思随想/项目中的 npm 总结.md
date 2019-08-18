@@ -52,7 +52,7 @@
 
 `package.json` 在 node 和 npm 环节都要使用，node 在调用 `require` 的时候去查找模块，会按照一个次序去查找，`package.json` 会是查找中的一个环节。npm 用的就比较多，其中的 `dependencies` 字段就是本模块的依赖的模块清单。每次`npm update`的时候，npm会自动的把依赖到的模块也下载下来。当`npm install` 本模块的时候，会把这里提到的模块都一起下载下来。通过package.json,就可以管理好模块的依赖关系。
 
-关于更多规范，请看官方[npm-package.json](https://docs.npmjs.com/files/package.json.html)
+关于更多规范，请看官方 [npm-package.json](https://docs.npmjs.com/files/package.json.html)
 
 ### 二. 版本号规范
 
