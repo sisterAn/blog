@@ -1,4 +1,8 @@
- `let `在很多方面与 `var` 是相似的，但是 `let` 可以帮助大家避免在 JavaScript 里常见一些问题。 `const` 是对 `let` 的一个增强，它能阻止对一个变量再次赋值。
+### 引言
+
+`JS `系列暂定 27 篇，从基础，到原型，到异步，到设计模式，到架构模式等，此为第一篇：是对 var、let、const、解构、展开、函数 的总结。
+
+`let`在很多方面与 `var` 是相似的，但是 `let` 可以帮助大家避免在 JavaScript 里常见一些问题。`const` 是对 `let` 的一个增强，它能阻止对一个变量再次赋值。 
 
 
 
@@ -553,5 +557,7 @@ clone.m(); // error!
 
 
 
+### 参考：
 
-本文参考了 [TypeScript Variable Declarations](https://www.typescriptlang.org/docs/handbook/variable-declarations.html)
+
+ [TypeScript Variable Declarations](https://www.typescriptlang.org/docs/handbook/variable-declarations.html)
