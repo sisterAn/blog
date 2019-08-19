@@ -1,8 +1,8 @@
 ### 十、Hooks
 
-Hook 是一个特殊的函数，它可以让你“钩入” React 的特性。所有 Hooks 都以 use 一词开头。一些用于为函数组件增加状态（如 `useState` ），一些可用于管理副作用（如useEffect），一些可用于缓存 memoize 函数和对象（如useCallback、 useMemo）。
+Hook 是一个特殊的函数，它可以让你“钩入” React 的特性。所有 Hooks 都以 use 开头。其中一些可为函数组件增加状态（如 `useState` ），一些可用于管理副作用（如useEffect），一些可用于缓存 memoize 函数和对象（如useCallback、 useMemo）。
 
-**React hook 函数只能用于函数组件。你不能在类组件中使用它们。**
+**React hook 函数只能用于函数组件，不能在类组件中使用它们。**
 
 下面是一个基本示例：
 
@@ -44,13 +44,13 @@ ReactDOM.render(<Button />, mountNode);
 >
 > React 中的一些 DOM 属性与它们在原生 DOM API 中的属性略有不同。例如 `onChange` 事件。在原生浏览器中，当你在表单字段中单击时，通常会触发它。在 React 中，`onChange` 只要更改了表单字段的值就会触发。
 >
-> React 中的某些属性的命名与 HTML 等效的不同。例如 React 属性 `className` ，它相当于 `class` 在HTML中使用属性。有关 React 属性和 DOM 属性之间差异的完整列表，请参阅[jscomplete.com/react-attributes](https://jscomplete.com/react-attributes)。
+> React 中的某些属性的命名与 HTML 等效的不同。例如 React 属性 `className` ，它相当于 `class` 在 HTML中使用属性。有关 React 属性和 DOM 属性之间差异的完整列表，请参阅[jscomplete.com/react-attributes](https://jscomplete.com/react-attributes)。
 
 
 
 #### 阅读和更新状态
 
-跟踪状态更新并触发虚拟树协调算法更新到真实 DOM 上，React 需要了解组件中使用的任何状态元素发生的任何更改。为了更有效的执行此操作，React 需要为组件中引入的每个状态元素使用特殊的 `getter` 和 `setter` 。这就是 `useState` 发挥作用的地方。它定义了一个状态元素，并为它提供了一个 `getter` 和 `setter` ！
+跟踪状态更新并触发虚拟树协调算法更新到真实 DOM 上，React 需要了解组件中使用的所有元素发生的任何更改。为了更有效的执行此操作，React 需要为组件中引入的每个状态元素使用特殊的 `getter` 和 `setter` 。这就是 `useState` 发挥作用的地方。它定义了一个状态元素，并为它提供了一个 `getter` 和 `setter` ！
 
 **`useState` 是允许你在 React 函数组件中添加 state 的 Hook。**
 
@@ -60,7 +60,7 @@ ReactDOM.render(<Button />, mountNode);
 const [count, setCount] = React.useState(0);
 ```
 
- `React.useState()` 函数返回一个包含 2 个元素的数组。我们使用数组解构来命名，第一项是 `useState` 返回的第一个值 `count`（getter），第二项是返回的第二个值	`setCount` 函数（setter）。等价于下面的代码：
+ `React.useState()` 函数返回一个包含 2 个元素的数组。我们使用数组解构来命名，第一项是 `useState` 返回的第一个值 `count`（getter），第二项是返回的第二个值 `setCount` 函数（setter）。等价于下面的代码：
 
 ```js
 var countStateVariable = useState(0); // 返回一个有两个元素的数组
@@ -70,9 +70,9 @@ var setCount = countStateVariable[1]; // 数组里的第二个值
 
 第一项为定义的 state 变量名称，示例中叫 `count`， 但是我们可以叫他任何名字，比如 `hello`。这是一种在函数调用时保存变量的方式 —— `useState` 是一种新方法，它与 class 里面的 `this.state` 提供的功能完全相同。一般来说，在函数退出后变量就就会”消失”，而 state 中的变量会被 React 保留。
 
-第二个项 "function" 将在调用时更改 `state` 元素的值（如果需要，它将触发DOM处理）。每次 `setCount` 调用该函数时，React 都将重新渲染 `Button` 组件，该组件将刷新组件中定义的所有变量（包括 `count` 值）。我们传递给 `setCount` 的参数将成为新的值 `count` 。
+第二项 "function" 将在调用时更改 `state` 元素的值（如果需要，它将触发DOM处理）。每次 `setCount` 调用该函数时，React 都将重新渲染 `Button` 组件，该组件将刷新组件中定义的所有变量（包括 `count` 值）。我们传递给 `setCount` 的参数将成为新的值 `count` 。
 
- `React.useState()` 方法里面唯一的参数就是初始 state。不同于 class 的是，它可以是字符串，数字，数组等，而不一定是对象。在示例中，在示例中，我们传了 `0` 作为变量的初始 `state` 。（如果我们想要在 state 中存储两个不同的变量，只需调用 `useState()` 两次即可。）
+`React.useState()` 方法里面唯一的参数就是初始 state。不同于 class 的是，它可以是字符串，数字，数组等，而不一定是对象。在示例中，我们传了 `0` 作为变量的初始 `state` 。（如果我们想要在 state 中存储两个不同的变量，只需调用 `useState()` 两次即可。）
 
 ```js
 const Button = () => {
@@ -88,7 +88,7 @@ const Button = () => {
 ReactDOM.render(<Button />, mountNode);
 ```
 
-请注意我们不对 UI 本身进行任何操作，我们只是实现了一个 `action`来改变 JavaScript 对象（在内存中）！React 负责将我们的声明性描述转换为浏览器中的实际UI。
+请注意我们不对 UI 本身进行任何操作，我们只是实现了一个 `action` 来改变 JavaScript 对象（在内存中）！React 负责将我们的声明性描述转换为浏览器中的实际UI。
 
 > 除了使用别名 `React.useState` ，还可以直接导入 `useState` 使用：
 >
@@ -242,8 +242,6 @@ ReactDOM.render(<CountManager />, mountNode);
 
 通过 `props` 将 `count` 值传递给 `Display` 组件时，注意我使用了不同的名称（`content`）。这很正常。你不必使用完全相同的名称。事实上，在某些情况下，引入新的通用名称对于子组件更好，因为它使状态可重用更高。
 
-父组件也可以将行为传递给他们的孩子。
-
 由于 `count` state元素现在位于 `CountManager` 组件中，因此我们需要在 `CountManager` 中处理更新它。我们来命名更新函数为 `incrementCounter` 。该函数的逻辑实际上与我们之前在组件中的 `handleClick` 函数中使用的逻辑相同。新 `incrementCounter` 函数将更新 `CountManager` 组件 `count` 状态：
 
 ```js
@@ -393,7 +391,7 @@ return (
 
 #### 自定义行为
 
-在 `CountManager` 组件中需要做的另一件事是 `incrementCounter` 功能。它不像 `count + 1` 这样的硬编码操作。但与我们为 `Button` 组件所做的类似，为了使函数通用，我们让它接收一个参数并使用该参数的值。例如： 
+在 `CountManager` 组件中需要做的另一件事是 `incrementCounter` 功能。为了使函数通用，我们让它接收一个参数并使用该参数的值。例如： 
 
 ```js
 incrementCounter = (incrementValue) => {
@@ -508,7 +506,7 @@ ReactDOM.render(<CharacterCounter />, mountNode);
 
 我们需要混淆这些问题的原因是 React 不知道输入的是什么。这是一个 DOM 更新，而不是 React 更新。
 
-我们可以通过覆盖其值 `textarea` 并通过 React 将其由状态更新变成 React 更新。在 `onChange` 处理程序中，我们只设置在组件状态上键入的值，而不是对字符进行计数。然后，关于如何处理该值的问题是 React UI 需要解决的问题。以下是使用此策略的解决方案的一个版本：
+我们可以通过覆盖其值 `textarea` 并通过 React 将其由状态更新变成 React 更新。在 `onChange` 处理程序中，我们只设置在组件状态上键入的值，而不是对字符进行计数。以下是使用此策略的解决方案的一个版本：
 
 ```js
 const CharacterCounter = () => {
@@ -538,7 +536,7 @@ ReactDOM.render(<CharacterCounter />, mountNode);
 
 ### 十四、管理副作用
 
-首次在浏览器中渲染 React 组件称为“安装”，将其从浏览器中删除称为“卸载”。
+首次在浏览器中渲染 React 组件称为 “安装” ，将其从浏览器中删除称为“卸载”。
 
 安装，更新和卸载组件可能需要具有“副作用”。例如，React TODOs 应用程序可能需要在浏览器页面的标题中显示活动 TODO 项目的数量。直接使用 React API 是完成不了的。你需要使用 DOM API 。同样，在渲染输入表单时，你可能希望自动对焦文本框。这也必须使用 DOM API 完成。
 
