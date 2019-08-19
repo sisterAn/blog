@@ -384,8 +384,8 @@ return (
 
 到目前为止，请注意有关此代码的一些事项：
 
-- 我没有用与之相关的任何内容命名新属性 `count`。该 `Button` 组件无需了解其 `click` 事件的含义。它只需要在 `clickValue` 触发 `click` 事件时传递它。例如，命名这个新属性 `countValue` 不是最佳选择，因为现在，在 `Button` 组件中，我们读取代码以了解 `Button` 元素与计数相关。这使得 `Button` 组件不再可重用。例如，如果我想使用相同的 `Button` 组件将字母附加到字符串，则其代码会令人困惑。
-- 我使用大括号来传递新 `clickValue` 属性的值 `(clickValue={5})` 。我没有在那里使用字符串 `(clickValue="5")` 。由于我有一个数学运算来处理这些值（每次 `Button` 点击时），我需要这些值为数字。如果我将它们作为字符串传递，我将不得不在执行添加操作时进行一些字符串到数字的转换。
+- 我没有用与之相关的任何内容命名新属性 `count`。该 `Button` 组件无需了解其 `click` 事件的含义。它只需要触发 `click` 事件时传递它。
+- 我使用大括号来传递新 `clickValue` 属性的值 `(clickValue={5})` 。我没有在那里使用字符串 `(clickValue="5")` 。这是因为这里这里操作的是数字运算（每次 `Button` 点击时），我需要这些值为数字。如果我将它们作为字符串传递，我将不得不在执行添加操作时将它转化为数字。
 
 > 将数字作为字符串传递是React中的常见错误。有关更多与React相关的常见错误，请参阅[此文章](https://jscomplete.com/learn/react-beyond-basics/react-cfp)。
 
@@ -393,7 +393,7 @@ return (
 
 #### 自定义行为
 
-我们需要在`CountManager`组件中制作通用的另一件事是`incrementCounter`动作功能。它不能`count + 1`像现在这样进行硬编码操作。与我们为`Button`组件所做的类似，为了使函数通用，我们使它接收一个参数并使用该参数的值。例如： 
+在 `CountManager` 组件中需要做的另一件事是 `incrementCounter` 功能。它不像 `count + 1` 这样的硬编码操作。但与我们为 `Button` 组件所做的类似，为了使函数通用，我们让它接收一个参数并使用该参数的值。例如： 
 
 ```js
 incrementCounter = (incrementValue) => {
@@ -401,7 +401,7 @@ incrementCounter = (incrementValue) => {
 };
 ```
 
-现在我们需要做的就是让`Button`组件使用`clickValue`prop作为其标签，并使其作为参数调用其`onClick`动作`clickValue`。
+现在我们需要做的就是让 `Button` 组件使用 `clickValue` `prop` 作为其标签，并使其作为参数调用其 `onClick` 事件 `clickValue` 。
 
 ```js
 const Button = ({ clickValue, clickAction }) => {
@@ -413,7 +413,7 @@ const Button = ({ clickValue, clickAction }) => {
 };
 ```
 
-注意我是如何使用内联箭头函数包装onClick prop以使其绑定到Button的`clickValue`。这个新箭头函数的JavaScript闭包将负责这一点。
+使用内联箭头函数包装 onClick prop 以使其绑定到 Button 的 `clickValue`。
 
 现在，三个按钮应以三个不同的点击值递增：
 
@@ -453,9 +453,9 @@ ReactDOM.render(<CountManager />, mountNode);
 
 ### 十三、接受用户的输入
 
-想象一下，我们需要计算文本区域中用户类型的字符，就像Twitter的推文形式一样。对于每个字符的用户类型，我们需要使用新的字符数更新UI。
+想象一下，我们需要计算文本区域中用户类型的字符，就像 Twitter 的推文形式一样。对于每个字符的用户类型，我们需要使用新的字符数更新 UI 。
 
-这是一个显示`textarea`输入元素的组件，其中包含字符数的占位符div：
+这是一个显示 `textarea` 输入元素的组件，其中包含字符数的占位符 div ：
 
 ```js
 const CharacterCounter = () => {
@@ -470,15 +470,16 @@ const CharacterCounter = () => {
 ReactDOM.render(<CharacterCounter />, mountNode);
 ```
 
-要在用户输入时更新计数`textarea`，我们需要自定义用户键入时触发的事件。React中的此事件实现为`onChange`。我们还需要使用state元素来计算字符数，并在`onChange`事件中触发其updater函数。
+要在用户输入时更新计数 `textarea` ，我们需要自定义用户键入时触发的事件。React 为此事件提供了 `onChange` 方法。我们还需要使用 state 元素来计算字符数，并在 `onChange` 事件中触发其 updater 函数。
 
-在`onChange`我们需要提出的新事件处理程序中，我们需要访问在`textarea`元素中键入的文本。我们需要以某种方式阅读它，因为默认情况下React不知道它。当用户键入时，呈现的UI通过浏览器自己的状态管理进行更改。我们没有指示React根据`textarea`元素的值更改UI 。
+在 `onChange` 我们需要提出的新事件处理程序中，我们需要访问在 `textarea` 元素中键入的文本。
 
-我们可以使用两种主要方法来读取值。首先，我们可以直接使用DOM API本身来阅读它。我们需要使用DOM选择API“选择”元素，一旦我们这样做，我们就可以使用`element.value`调用来读取它的值。要选择元素，我们只需给它一个ID并使用`document.getElementById`DOM API来选择它。
+有两种主要方法来读取值。
 
-因为React渲染`textarea`元素，我们实际上可以通过React本身进行元素选择。React有一个特殊的“ref”属性，我们可以将其分配给每个DOM元素，然后使用它来访问它。
+-  DOM API 方式：使用 `document.getElementById` DOM API 来获取该元素，然后使用 `element.value` 调用来读取它的值
+- React API 方式：因为 React 渲染 `textarea` 元素，我们可以通过 React ref 来获取 React 元素，然后访问值
 
-我们也可以`onChange`直接通过事件的目标对象访问元素。每个事件都暴露其目标，并且在目标上的`onChange`事件`textarea`是`textarea`元素。
+我们也可以 `onChange` 直接通过事件的目标对象访问元素。每个事件都暴露其目标，并且在目标上的 `onChange` 事件 `textarea` 是 `textarea` 元素。
 
 这意味着我们需要做的就是：
 
@@ -487,6 +488,7 @@ const CharacterCounter = () => {
   const [count, setCount] = useState(0);
   
   const handleChange = (event) => {
+    // 获取目标元素
     const element = event.target;
     setCount(element.value.length);
   };
@@ -502,11 +504,11 @@ const CharacterCounter = () => {
 ReactDOM.render(<CharacterCounter />, mountNode);
 ```
 
-这是最简单的解决方案，它实际上工作正常。这个解决方案的不理想之处在于我们正在混淆问题。该`handleChange`事件具有调用`setCount`函数和计算文本长度的副作用。这实际上不是事件处理程序的关注点。
+这是最简单的解决方案，这个解决方案的不理想之处在于我们正在混淆问题。该 `handleChange` 事件具有调用 `setCount` 函数和计算文本长度的副作用。
 
-我们需要混淆这些问题的原因是React不知道输入的是什么。这是一个DOM更改，而不是React更改。
+我们需要混淆这些问题的原因是 React 不知道输入的是什么。这是一个 DOM 更新，而不是 React 更新。
 
-我们可以通过覆盖其值`textarea`并通过React将其更新为状态更改来使其成为React更改。在`onChange`处理程序中，我们只是设置在组件状态上键入的值，而不是对字符进行计数。然后，关于如何处理该值的问题成为React UI渲染逻辑的一部分。以下是使用此策略的解决方案的一个版本：
+我们可以通过覆盖其值 `textarea` 并通过 React 将其由状态更新变成 React 更新。在 `onChange` 处理程序中，我们只设置在组件状态上键入的值，而不是对字符进行计数。然后，关于如何处理该值的问题是 React UI 需要解决的问题。以下是使用此策略的解决方案的一个版本：
 
 ```js
 const CharacterCounter = () => {
@@ -528,21 +530,21 @@ const CharacterCounter = () => {
 ReactDOM.render(<CharacterCounter />, mountNode);
 ```
 
-虽然这是一个更多的代码，但它有明确的关注点分离。React现在知道输入元素状态。它控制它。此模式称为React中的受控组件模式。
+虽然这里代码量更多，但它有明确的关注点分离。React 现在知道并控制输入元素状态。此模式称为 React 中的受控组件模式。
 
-此版本也更容易扩展。如果我们要计算用户输入的单词数量，这将成为另一个UI计算值。无需在州上添加任何其他内容。
+此版本也更容易扩展。如果我们要计算用户输入的单词数量，这将成为另一个 UI 计算值。
 
 
 
 ### 十四、管理副作用
 
-首次在浏览器中渲染React组件称为“安装”，将其从浏览器中删除称为“卸载”。
+首次在浏览器中渲染 React 组件称为“安装”，将其从浏览器中删除称为“卸载”。
 
-安装，更新和卸载组件可能需要具有“副作用”。例如，React TODOs应用程序可能需要在浏览器页面的标题中显示活动TODO项目的数量。这不是您可以直接使用React API执行的操作。您需要使用DOM API。同样，在渲染输入表单时，您可能希望自动对焦文本框。这也必须使用DOM API完成。
+安装，更新和卸载组件可能需要具有“副作用”。例如，React TODOs 应用程序可能需要在浏览器页面的标题中显示活动 TODO 项目的数量。直接使用 React API 是完成不了的。你需要使用 DOM API 。同样，在渲染输入表单时，你可能希望自动对焦文本框。这也必须使用 DOM API 完成。
 
-副作用通常需要在React的渲染任务之前或之后发生。这就是为什么React在类组件中提供“生命周期方法”以允许您在render方法之前或之后执行自定义操作的原因。您可以在组件首次安装在`componentDidMount`类方法中后执行操作，您可以在组件在`componentDidUpdate`类方法中获取更新后执行操作，并且可以在组件从`componentWillUnmount`类方法中的浏览器中删除之前执行操作。
+副作用通常需要在 React 的渲染任务之前或之后发生。这就是为什么 React 在类组件中提供“生命周期方法”以允许你在 render 方法之前或之后执行自定义操作的原因。你可以在组件首次安装在 `componentDidMount` 方法中后执行操作，你也可以在组件 `componentDidUpdate` 方法中获取更新后执行操作，或者可以在 `componentWillUnmount` 方法中删除之前执行操作。
 
-对于函数组件，使用`React.useEffect`hook函数管理副作用，该函数有2个参数：回调函数和依赖项数组。
+对于函数组件，使用 `React.useEffect` hook 函数管理副作用，该函数有2个参数：回调函数和依赖项数组。
 
 ```js
 useEffect(() => {
@@ -551,18 +553,10 @@ useEffect(() => {
 }, [dep1, dep2]);
 ```
 
-第一次React呈现一个有`useEffect`调用的组件时，它将调用它的回调函数。在每个新组件呈现之后，如果依赖项的值与之前渲染中的值不同，则React将再次调用回调函数。
+第一次 React 呈现一个有 `useEffect` 调用的组件时，它将调用它的回调函数。在每个新组件呈现之后，如果依赖项的值与之前渲染中的值不同，则 React 将再次调用回调函数。
 
-> 更新或卸载函数组件时，React可以调用副作用“清理”功能。可以从`useEffect`回调函数返回该清理函数。
+> 更新或卸载函数组件时，React 可以调用副作用“cleanup”功能。可以从 `useEffect` 回调函数返回该清理函数。
 
-副作用方法对于分析应用程序中正在发生的事情以及进一步优化React更新的性能也非常方便。
+副作用方法对于分析应用程序中正在发生的事情以及进一步优化 React 的性能也非常方便。
 
 
-
-### 十五、下一步
-
-您准备使用React构建简单但非常棒的应用程序。通过此[交互式实验室](https://jscomplete.com/learn/lab-data-with-react)，您可以轻松使用和管理React应用程序中的数据。然后，建立更大的东西。实用的东西。有趣的事。如果您正在迎接挑战，那就建立一个[简单的记忆游戏](https://jscomplete.com/learn/react-beyond-basics/memory-challenge)吧！
-
-在使用React构建内容时，请在[此列表中](https://jscomplete.com/learn/react-beyond-basics/react-cfp)打开浏览器窗口，其中包含初学者在使用React时常遇到的常见问题。当您遇到问题时，请确保它不是其中之一。
-
-如果你有信心采取深入了解的反应更发达的地区，我有一个[Pluralsight当然](https://jscomplete.com/c/reactjs-advanced)，一个[在线研讨会](https://jscomplete.com/learn/1806-react-workshop)，一[本书](https://jscomplete.com/learn/react-beyond-basics)，而在其他一些书面材料[jsComplete库](https://jscomplete.com/learn)。
