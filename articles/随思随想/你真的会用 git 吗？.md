@@ -1,9 +1,9 @@
 ### 一、必备知识点
 
 
-![git2](https://user-images.githubusercontent.com/19721451/56352098-1d71d700-6201-11e9-9c1b-2d1242749a49.jpeg)
+![git2](/Users/lilunahaijiao/Study/56352098-1d71d700-6201-11e9-9c1b-2d1242749a49.png)
 
-![git1](https://user-images.githubusercontent.com/19721451/56352112-2498e500-6201-11e9-84f9-cae3f7f27632.png)
+![git1](/Users/lilunahaijiao/Study/56352112-2498e500-6201-11e9-84f9-cae3f7f27632.png)
 
 #### 1. 仓库
 
@@ -116,7 +116,7 @@ git revert commit
 
 ### 三、常用命令
 
-### 1. 初始开发 git 操作流程
+#### 1. 初始开发 git 操作流程
 
 - 克隆最新主分支项目代码 `git clone 地址` 
 - 创建本地分支 `git branch 分支名` 
@@ -149,10 +149,10 @@ git revert commit
 8. **分支合并**：`git merge master`:(将master分支合并到当前分支)
 9. 本地分支重命名： `git branch -m oldName newName`
 10. 远程分支重命名:
-   1. 重命名远程分支对应的本地分支：`git branch -m oldName newName`;
-   2. 删除远程分支：`git push --delete origin oldName`;
-   3. 上传新命名的本地分支：`git push origin newName`;
-   4. 把修改后的本地分支与远程分支关联：`git branch --set-upstream-to origin/newName`
+   - 重命名远程分支对应的本地分支：`git branch -m oldName newName`;
+   - 删除远程分支：`git push --delete origin oldName`;
+   - 上传新命名的本地分支：`git push origin newName`;
+   - 把修改后的本地分支与远程分支关联：`git branch --set-upstream-to origin/newName`
 
 
 
