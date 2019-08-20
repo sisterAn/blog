@@ -24,7 +24,7 @@
 * [Create React App 的 Webpack 4 配置高级进阶](https://github.com/sisterAn/blog/issues/3)
 * [深入解读 React v16.9（上）](https://github.com/sisterAn/blog/issues/49)
 * [深入解读 React v16.9（中）](https://github.com/sisterAn/blog/issues/51)
-* 深入解读 React v16.9（下）
+* [深入解读 React v16.9（下）](https://github.com/sisterAn/blog/issues/52)
 * [[译]React v16.9 新特性](https://github.com/sisterAn/blog/issues/50)
 * [React 源码漂流（一）之 起航](https://github.com/sisterAn/blog/issues/35)
 * [React 源码漂流（二）之 Component](https://github.com/sisterAn/blog/issues/38)
