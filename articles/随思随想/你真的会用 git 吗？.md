@@ -29,11 +29,46 @@
 
 
 
-### 二、回退到上一个commit版本
+### 二、commit 提交出错怎么办？
 
-#### 1. git reset
+#### 1.  提交信息出错
 
-删除指定的commit
+更改 commit 信息
+
+```js
+git commit --amend -m“新提交消息”
+```
+
+
+
+#### 2. 漏提交
+
+commit 时，遗漏提交部分更新，有两种解决方案：
+
+- 方案一：再次 commit
+
+  ```js
+  git commit -m“提交消息”
+  ```
+
+  此时，git 上会出现两次 commit
+
+- 方案二：遗漏文件提交到之前 commit 上
+
+  ```js
+  git add missed-file // missed-file 为遗漏提交文件
+  git commit --amend --no-edit
+  ```
+
+  `--no-edit` 表示提交消息不会更改，在 git 上仅为一次提交
+
+
+
+#### 3. 提交错误文件，回退到上一个 commit 版本，再 commit
+
+##### git reset
+
+删除指定的 commit
 
 ```js
 // 修改版本库，修改暂存区，修改工作区
@@ -49,7 +84,9 @@ git reset --hard HEAD~1
 git reset --soft HEAD~1
 ```
 
-#### 2. git revert
+
+
+##### git revert
 
 撤销 某次操作，此次操作之前和之后的commit和history都会保留，并且把这次撤销
 
@@ -67,7 +104,9 @@ git revert commit
 `git revert`是提交一个新的版本，将需要`revert`的版本的内容再反向修改回去，
 版本会递增，不影响之前提交的内容
 
-### 3. `git revert` 和 `git reset` 的区别
+
+
+#####  `git revert` 和 `git reset` 的区别
 
 - `git revert`是用一次新的commit来回滚之前的commit，`git reset`是直接删除指定的commit。 
 - 在回滚这一操作上看，效果差不多。但是在日后继续merge以前的老版本时有区别。因为`git revert`是用一次逆向的commit“中和”之前的提交，因此日后合并老的branch时，导致这部分改变不会再次出现，但是`git reset`是之间把某些commit在某个branch上删除，因而和老的branch再次merge时，这些被回滚的commit应该还会被引入。 
