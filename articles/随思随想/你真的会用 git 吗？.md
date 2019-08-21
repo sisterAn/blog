@@ -5,31 +5,37 @@
 
 ![git1](/Users/lilunahaijiao/Study/56352112-2498e500-6201-11e9-84f9-cae3f7f27632.png)
 
-#### 1. 仓库
+#### 仓库
 
 1.  **Remote:** 远程主仓库；
 2.  **Repository/History：** 本地仓库；
 3.  **Stage/Index：** Git追踪树,暂存区；
 4.  **workspace：** 本地工作区（即你编辑器的代码）
 
-#### 2. 注意：
-
-- **git checkout**
-
-  ```js
-  // 丢弃工作区的修改，就是让这个文件回到最近一次git commit或git add时的状态。
-  git checkout -- <文件名>
-  ```
-
-- 一般操作流程：**工作区** -> `git status`查看状态 -> `git add .`将所有修改加入**暂存区**-> `git commit -m "提交描述"`将代码提交到 **本地仓库** ->`git push`将本地仓库代码更新到 **远程仓库**
-
-- 场景1：当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令`git checkout -- file`。
-
-  场景2：当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，第一步用命令`git reset HEAD file`，就回到了场景1，第二步按场景1操作。
 
 
+### 二、git add 提交到暂存区，出错怎么办
 
-### 二、commit 提交出错怎么办？
+一般代码提交流程为：**工作区** -> `git status` 查看状态 -> `git add .` 将所有修改加入**暂存区**-> `git commit -m "提交描述"` 将代码提交到 **本地仓库** -> `git push` 将本地仓库代码更新到 **远程仓库**
+
+#### 场景1：
+
+当你改乱了暂存区某个文件的内容，想直接丢弃暂存区的修改时，用命令` git checkout -- file`。
+
+**git checkout**
+
+```js
+// 丢弃暂存区的修改
+git checkout -- <文件名>
+```
+
+#### 场景2：
+
+当你不但改乱了暂存区某个文件的内容，还添加到了本地仓库时，想丢弃修改，分两步，第一步用命令 `git reset HEAD file`，就回到了场景1，第二步按场景1操作。
+
+
+
+### 三、git commit 提交到本地仓库，出错怎么办？
 
 #### 1.  提交信息出错
 
@@ -114,7 +120,7 @@ git revert commit
 
 
 
-### 三、常用命令
+### 四、常用命令
 
 #### 1. 初始开发 git 操作流程
 
@@ -139,24 +145,128 @@ git revert commit
 
 #### 5. 分支操作
 
-1. 使用 Git 下载指定分支命令为：`git clone -b 分支名仓库地址`
-2. 创建本地分支：`git branch test`:(创建名为test的本地分支)
-3. **切换分支**：`git checkout test`:(切换到test分支)
-4. 创建并切换分支：`git checkout -b test`:(相当于以上两条命令的合并)
-5. 查看本地分支：`git branch`
-6. 查看远程仓库所有分支：`git branch -a`
-7. 删除本地分支：`git branch -d test`:(删除本地test分支)
-8. **分支合并**：`git merge master`:(将master分支合并到当前分支)
-9. 本地分支重命名： `git branch -m oldName newName`
-10. 远程分支重命名:
-   - 重命名远程分支对应的本地分支：`git branch -m oldName newName`;
-   - 删除远程分支：`git push --delete origin oldName`;
-   - 上传新命名的本地分支：`git push origin newName`;
-   - 把修改后的本地分支与远程分支关联：`git branch --set-upstream-to origin/newName`
+- 使用 Git 下载指定分支命令为：`git clone -b 分支名仓库地址`
+- 拉取远程新分支 `git checkout -b serverfix origin/serverfix`
+- 合并本地分支 `git merge hotfix`：(将 hotfix 分支合并到当前分支)
+- 合并远程分支 `git merge origin/serverfix`
+- 删除本地分支 `git branch -d hotfix`：(删除本地 hotfix 分支)
+- 删除远程分支 `git push origin --delete serverfix`
+- 上传新命名的本地分支：`git push origin newName`;
+- 创建新分支：`git branch branchName`：(创建名为 branchName 的本地分支)
+- 切换到新分支：`git checkout branchName`：(切换到 branchName 分支)
+- 创建并切换分支：`git checkout -b branchName`：(相当于以上两条命令的合并)
+- 查看本地分支：`git branch`
+- 查看远程仓库所有分支：`git branch -a`
+- 本地分支重命名： `git branch -m oldName newName`
+- 重命名远程分支对应的本地分支：`git branch -m oldName newName`
+- 把修改后的本地分支与远程分支关联：`git branch --set-upstream-to origin/newName`
 
 
 
-### 四、SSH
+### 五、优化操作
+
+#### 1. 拉取代码 pull --rebase
+
+在团队协作过程中，假设你和你的同伴在本地中分别有各自的新提交，而你的同伴先于你 `push` 了代码到远程分支上，所以你必须先执行 `git pull` 来获取同伴的提交，然后才能` push` 自己的提交到远程分支。
+
+而按照 Git 的默认策略，如果远程分支和本地分支之间的提交线图有分叉的话（即不是 fast-forwarded），Git 会执行一次 `merge` 操作，因此产生一次没意义的提交记录，从而造成了像上图那样的混乱。
+
+其实在 pull 操作的时候，，使用 `git pull --rebase `选项即可很好地解决上述问题。 加上 `--rebase` 参数的作用是，提交线图有分叉的话，Git 会 rebase 策略来代替默认的 merge 策略。 
+
+假设提交线图在执行 pull 前是这样的：
+
+```
+                 A---B---C  remotes/origin/master
+                /
+           D---E---F---G  master
+```
+
+如果是执行 `git pull` 后，提交线图会变成这样：
+
+```
+                 A---B---C remotes/origin/master
+                /         \
+           D---E---F---G---H master
+```
+
+结果多出了 `H` 这个没必要的提交记录。如果是执行 `git pull --rebase` 的话，提交线图就会变成这样：
+
+```
+                       remotes/origin/master
+                           |
+           D---E---A---B---C---F'---G'  master
+```
+
+`F` `G` 两个提交通过 `rebase` 方式重新拼接在 `C` 之后，多余的分叉去掉了，目的达到。
+
+
+
+##### 小结
+
+大多数时候，使用 `git pull --rebase `是为了使提交线图更好看，从而方便 code review。
+
+不过，如果你对使用 git 还不是十分熟练的话，我的建议是 `git pull --rebase `多练习几次之后再使用，因为 **rebase 在 git 中，算得上是『危险行为』**。
+
+另外，还需注意的是，使用 `git pull --rebase `比直接 pull 容易导致冲突的产生，如果预期冲突比较多的话，建议还是直接 pull。
+
+> 注意：
+>
+> git pull = git fetch + git merge
+>
+>  git pull --rebase = git fetch + git rebase
+
+
+
+#### 2. 合代码 merge --no-ff
+
+上述的 `git pull --rebase` 策略目的是修整提交线图，使其形成一条直线，而即将要用到的 `git merge --no-ff <branch-name>` 策略偏偏是反行其道，刻意地弄出提交线图分叉出来。
+
+假设你在本地准备合并两个分支，而刚好这两个分支是 fast-forwarded 的，那么直接合并后你得到一个直线的提交线图，当然这样没什么坏处，但如果你想更清晰地告诉你同伴：**这一系列的提交都是为了实现同一个目的**，那么你可以刻意地将这次提交内容弄成一次提交线图分叉。
+
+执行 `git merge --no-ff <branch-name>` 的结果大概会是这样的：
+
+![git merge --no-ff](http://ww1.sinaimg.cn/large/a74eed94jw1dvnhyrq8rhj.jpg)
+
+中间的分叉线路图很清晰的显示这些提交都是为了实现 **complete adjusting user domains and tags**
+
+
+
+##### 更进一步
+
+往往我的习惯是，在合并分支之前（假设要在本地将 feature 分支合并到 dev 分支），会先检查 feature 分支是否『部分落后』于**远程 dev 分支**：
+
+```
+git checkout dev
+git pull # 更新 dev 分支
+git log feature..dev
+```
+
+如果没有输出任何提交信息的话，即表示 feature 对于 dev 分支是 up-to-date 的。如果有输出的话而马上执行了 `git merge --no-ff` 的话，提交线图会变成这样：
+
+![git-merge](http://ww2.sinaimg.cn/large/a74e55b4jw1dvnijr276hj.jpg)
+
+所以这时在合并前，通常我会先执行：
+
+```
+git checkout feature
+git rebase dev
+```
+
+这样就可以将 feature 重新拼接到更新了的 dev 之后，然后就可以合并了，最终得到一个干净舒服的提交线图。
+
+**再次提醒：像之前提到的，rebase 是『危险行为』，建议你足够熟悉 git 时才这么做，否则的话是得不偿失啊。**
+
+
+
+##### 总结
+
+使用 `git pull --rebase` 和 `git merge --no-ff` 其实和直接使用 `git pull` `git merge` 得到的代码应该是一样。
+
+使用 `git pull --rebase` 主要是为是将提交约线图平坦化，而 `git merge --no-ff` 则是刻意制造分叉。
+
+
+
+### 六、SSH
 
 #### 1. 查看是否生成了 SSH 公钥
 
@@ -208,7 +318,7 @@ NrRFi9wrf+M7Q== schacon@agadorlaptop.local
 
 
 
-### 五、暂存 
+### 七、暂存
 
 `git stash` 可用来暂存当前正在进行的工作，比如想 pull 最新代码又不想 commit ， 或者另为了修改一个紧急的 bug ，先 stash，使返回到自己上一个 commit,，改完 bug 之后再 stash pop , 继续原来的工作；
 
@@ -216,3 +326,97 @@ NrRFi9wrf+M7Q== schacon@agadorlaptop.local
 - 查看缓存栈： `git stash list` ;
 - 推出缓存栈： `git stash pop` ;
 - 取出特定缓存内容： `git stash apply stash@{1}` ;
+
+
+
+### 八、文件名过长错误
+
+Filename too long warning: Clone succeeded, but checkout failed.
+
+```
+git config --system core.longpaths true
+```
+
+
+
+### 九、邮箱和用户名
+
+#### 查看
+
+```
+git config user.name
+
+git config user.email
+```
+
+#### 修改
+
+```
+git config --global user.name "username"
+
+git config --global user.email "email"
+```
+
+ 
+
+### 十、.gitignore 更新后生效：
+
+```
+git rm -r --cached .
+git add .
+git commit -m ".gitignore is now working”
+```
+
+ 
+
+### 十一、同步Github fork 出来的分支
+
+1、配置remote，指向原始仓库
+
+```
+git remote add upstream https://github.com/InterviewMap/InterviewMap.git
+```
+
+2、上游仓库获取到分支，及相关的提交信息，它们将被保存在本地的 upstream/master 分支
+
+```
+git fetch upstream
+# remote: Counting objects: 75, done.
+# remote: Compressing objects: 100% (53/53), done.
+# remote: Total 62 (delta 27), reused 44 (delta 9)
+# Unpacking objects: 100% (62/62), done.
+# From https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY
+# * [new branch] master -> upstream/master
+```
+
+3、切换到本地的 master 分支
+
+```
+git checkout master
+# Switched to branch 'master'
+```
+
+4、把 upstream/master 分支合并到本地的 master 分支，本地的 master 分支便跟上游仓库保持同步了，并且没有丢失本地的修改。
+
+```
+git merge upstream/master
+# Updating a422352..5fdff0f
+# Fast-forward
+# README | 9 -------
+# README.md | 7 ++++++
+# 2 files changed, 7 insertions(+), 9 deletions(-)
+# delete mode 100644 README
+# create mode 100644 README.md
+```
+
+5、上传到自己的远程仓库中
+
+```
+git push 
+```
+
+
+
+### 参考
+
+本文参考了 [洁癖者用 Git：pull --rebase 和 merge --no-ff](http://hungyuhei.github.io/2012/08/07/better-git-commit-graph-using-pull---rebase-and-merge---no-ff.html)
