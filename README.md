@@ -8,7 +8,7 @@
 * [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/sisterAn/blog/issues/19)
 * [深度优先遍历与广度优先遍历](https://github.com/sisterAn/blog/issues/25)
 * [CommonJS 规范总结与扩展](https://github.com/sisterAn/blog/issues/4)
-* [你真的会用 git 吗？](https://github.com/sisterAn/blog/issues/39)
+* [珍藏多年的 Git 问题和操作清单 ](https://github.com/sisterAn/blog/issues/39)
 * [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
 * [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 * [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
