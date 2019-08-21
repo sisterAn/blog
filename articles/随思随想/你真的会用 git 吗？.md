@@ -1,9 +1,7 @@
 ### 一、必备知识点
 
-
-![git2](/Users/lilunahaijiao/Study/56352098-1d71d700-6201-11e9-9c1b-2d1242749a49.png)
-
-![git1](/Users/lilunahaijiao/Study/56352112-2498e500-6201-11e9-84f9-cae3f7f27632.png)
+![56352098-1d71d700-6201-11e9-9c1b-2d1242749a49](https://user-images.githubusercontent.com/19721451/63442522-d96c3880-c465-11e9-935f-7b3fab3fda8c.png)
+![56352112-2498e500-6201-11e9-84f9-cae3f7f27632](https://user-images.githubusercontent.com/19721451/63442555-e721be00-c465-11e9-91b6-3eec238fe015.png)
 
 #### 仓库
 
