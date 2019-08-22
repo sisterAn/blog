@@ -1,5 +1,3 @@
-## JS原型与原型链
-
 ### 一、基础入门
 #### 1. 对象
 
@@ -54,125 +52,131 @@ f.constructor === Foo // true
 
 JS本身不提供一个`class`实现。（在 ES2015/ES6 中引入了`class`关键字，但只是语法糖，JavaScript 仍然是基于原型的）。
 
-1. **构造函数扩展**
+
+
+#### 3. 构造函数扩展
 
 - `var a = {}` 其实是 `var a = new Object()` 的语法糖
 - `var a = [] `其实是 `var a = new Array()` 的语法糖
 - `function Foo(){ ... }` 其实是 `var Foo = new Function(...)`
 - **可以使用 `instanceof` 判断一个函数是否为一个变量的构造函数**
 
-2. **Symbol 是构造函数吗？**
 
-   Symbol 是基本数据类型，它并不是构造函数，因为它不支持 `new Symbol()` 语法。我们直接使用`Symbol()` 即可。
 
-   ```js
-   var an = Symbol("An");
-   var an1 = new Symbol("An"); // TypeError
-   ```
+#### 4. Symbol 是构造函数吗？
 
-   但是，`Symbol()` 可以获取到它的 constructor 属性
+Symbol 是基本数据类型，它并不是构造函数，因为它不支持 `new Symbol()` 语法。我们直接使用`Symbol()` 即可。
 
-   ```js
-   Symbol("An").constructor; // ƒ Symbol() { [native code] }
-   ```
+```js
+var an = Symbol("An");
+var an1 = new Symbol("An"); // TypeError
+```
 
-   这个 `constructor` 实际上是 Symbol 原型上的，即
+但是，`Symbol()` 可以获取到它的 constructor 属性
 
-   ```js
-   Symbol.prototype.constructor; // ƒ Symbol() { [native code] }
-   ```
+```js
+Symbol("An").constructor; // ƒ Symbol() { [native code] }
+```
 
-   对于 Symbol，你还需要了解以下知识点：
+这个 `constructor` 实际上是 Symbol 原型上的，即
 
-   - `Symbol()` 返回的 symbol **值是唯一**的
+```js
+Symbol.prototype.constructor; // ƒ Symbol() { [native code] }
+```
 
-     ```js
-     Symbol("An") === Symbol("An"); // false
-     ```
+对于 Symbol，你还需要了解以下知识点：
 
-   - 可以通过 **`Symbol.for(key)` 获取全局唯一的 symbol**
+- `Symbol()` 返回的 symbol **值是唯一**的
 
-     ```js
-     Symbol.for('An') === Symbol.for("An"); // true
-     ```
+  ```js
+  Symbol("An") === Symbol("An"); // false
+  ```
 
-     它从运行时的 symbol 注册表中找到对应的 symbol，如果找到了，则返回它，否则，新建一个与该键关联的 symbol，并放入全局 symbol 注册表中。
+- 可以通过 **`Symbol.for(key)` 获取全局唯一的 symbol**
 
-   - **Symbol.iterator** ：返回一个对象的迭代器
+  ```js
+  Symbol.for('An') === Symbol.for("An"); // true
+  ```
 
-     ```js
-     // 实现可迭代协议，使迭代器可迭代：Symbol.iterator
-     function createIterator(items) {
-         var i = 0
-         return {
-             next: function () {
-                 var done = (i >= items.length)
-                 var value = !done ? items[i++] : undefined
-                 return {
-                     done: done,
-                     value: value
-                 }
-             }
-             [Symbol.iterator]: function () {
-             	return this
-         	}
-         }
-     }
-     var iterator = createIterator([1, 2, 3])
-     ...iterator		// 1, 2, 3
-     ```
+  它从运行时的 symbol 注册表中找到对应的 symbol，如果找到了，则返回它，否则，新建一个与该键关联的 symbol，并放入全局 symbol 注册表中。
 
-   - **Symbol.toPrimitive**：将对象转换成基本数据类型
+- **Symbol.iterator** ：返回一个对象的迭代器
 
-     ```js
-     // Symbol.toPrimitive 来实现拆箱操作（ES6 之后）
-     var obj = {
-         valueOf: () => {console.log("valueOf"); return {}},
-         toString: () => {console.log("toString"); return {}}
-     }
-     obj[Symbol.toPrimitive] = () => {console.log("toPrimitive"); return "hello"}
-     console.log(obj) // toPrimitive  hello
-     ```
+  ```js
+  // 实现可迭代协议，使迭代器可迭代：Symbol.iterator
+  function createIterator(items) {
+      var i = 0
+      return {
+          next: function () {
+              var done = (i >= items.length)
+              var value = !done ? items[i++] : undefined
+              return {
+                  done: done,
+                  value: value
+              }
+          }
+          [Symbol.iterator]: function () {
+          	return this
+      	}
+      }
+  }
+  var iterator = createIterator([1, 2, 3])
+  ...iterator		// 1, 2, 3
+  ```
 
-   - **Symbol.toStringTag**：用于设置对象的默认描述字符串值
+- **Symbol.toPrimitive**：将对象转换成基本数据类型
 
-     ```js
-     // Symbol.toStringTag 代替 [[class]] 属性（ES5开始）
-     var o = { [Symbol.toStringTag]: "MyObject" }
-     console.log(o + ""); // [object MyObject]
-     ```
+  ```js
+  // Symbol.toPrimitive 来实现拆箱操作（ES6 之后）
+  var obj = {
+      valueOf: () => {console.log("valueOf"); return {}},
+      toString: () => {console.log("toString"); return {}}
+  }
+  obj[Symbol.toPrimitive] = () => {console.log("toPrimitive"); return "hello"}
+  console.log(obj) // toPrimitive  hello
+  ```
 
-3. **constructor 的值是只读的吗？**
+- **Symbol.toStringTag**：用于设置对象的默认描述字符串值
 
-   **对于引用类型来说 `constructor` 属性值是可以修改的，但是对于基本类型来说是只读的。**
+  ```js
+  // Symbol.toStringTag 代替 [[class]] 属性（ES5开始）
+  var o = { [Symbol.toStringTag]: "MyObject" }
+  console.log(o + ""); // [object MyObject]
+  ```
 
-   - **引用类型**
 
-     ```js
-     function An() {
-         this.value = "An";
-     };
-     function Anran() {};
-     Anran.prototype.constructor = An; // 原型链继承中，对 constructor 重新赋值
-     var anran = new Anran(); // 创建 Anran 的一个新实例
-     console.log(anran);
-     ```
-     <img width="502" alt="constructor" src="https://user-images.githubusercontent.com/19721451/56793881-93002780-683f-11e9-8bd8-0a6e166e5813.png">
 
-     这说明，依赖一个 引用对象的 constructor 属性，并不是安全的。
+#### 5. constructor 的值是只读的吗？
 
-   - **基本类型**
+**对于引用类型来说 `constructor` 属性值是可以修改的，但是对于基本类型来说是只读的。**
 
-     ```js
-     function An() {};
-     var an = 1;
-     an.constructor = An;
-     console.log(an.constructor); // ƒ Number() { [native code] }
-     ```
+- **引用类型**
 
-     这是因为：**原生构造函数（`native constructors`）是只读的**。
+  ```js
+  function An() {
+      this.value = "An";
+  };
+  function Anran() {};
+  Anran.prototype.constructor = An; // 原型链继承中，对 constructor 重新赋值
+  var anran = new Anran(); // 创建 Anran 的一个新实例
+  console.log(anran);
+  ```
+  <img width="502" alt="constructor" src="https://user-images.githubusercontent.com/19721451/56793881-93002780-683f-11e9-8bd8-0a6e166e5813.png">
 
-     注意：**`null` 和 `undefined` 是没有 `constructor` 属性的**。
+  这说明，依赖一个 引用对象的 constructor 属性，并不是安全的。
+
+- **基本类型**
+
+  ```js
+  function An() {};
+  var an = 1;
+  an.constructor = An;
+  console.log(an.constructor); // ƒ Number() { [native code] }
+  ```
+
+  这是因为：**原生构造函数（`native constructors`）是只读的**。
+
+  注意：**`null` 和 `undefined` 是没有 `constructor` 属性的**。
 
 ### 二、原型
 
@@ -202,6 +206,8 @@ f.printName()// 对象的方法
 f.alertName()// 原型的方法
 ```
 
+
+
 #### 1. prototype
 
 所有函数都有一个 `prototype` （显式原型）属性，属性值也是一个普通的对象。对象以其原型为模板，从原型继承方法和属性，这些属性和方法定义在对象的构造器函数的 `prototype` 属性上，而非对象实例本身。
@@ -229,6 +235,8 @@ function Foo () {}
 ```js
 Foo.prototype.constructor === Foo; // true
 ```
+
+
 
 #### 2. `__proto__`
 
@@ -274,6 +282,8 @@ var anran = Object.create(an);
 
 这里 `anran` 是一个新的空对象，有一个指向对象 `an` 的指针 `__proto__`。
 
+
+
 #### 3. new的实现过程
 
 - 新生成了一个对象
@@ -315,6 +325,8 @@ function create() {
 };
 ```
 
+
+
 #### 4. 总结
 
 - 所有的引用类型（数组、对象、函数）都有对象特性，即可自由扩展属性（null除外）。
@@ -347,6 +359,8 @@ for (item in f) {
     }
 }
 ```
+
+
 
 ### 三、原型链
 

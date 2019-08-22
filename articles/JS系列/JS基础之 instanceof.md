@@ -1,4 +1,3 @@
-## instanceof
 在JS中，判断一个变量的类型，常常会用到`typeof`运算符，但当用来判断引用类型变量时，无论是什么类型的变量，它都会返回`Object`。为此，引入了`instanceof`。
 
 `instanceof`相比与`typeof`来说，`instanceof`方法要求开发者明确的确认对象为某特定类型。即`instanceof`用于判断引用类型属于哪个构造函数的方法。
@@ -47,7 +46,7 @@ console.log(Foo instanceof Foo) //false
 
 在这组数据中，Object、Function instanceof 自己为true， 其他的instanceof自己都为false，这就要从instanceof的内部实现机制以及JS原型继承机制讲起。
 
-### 1. instanceof的内部实现机制
+### 一、instanceof 的内部实现机制
 
    instanceof的内部实现机制是通过判断对象的原型链上是否能找到对象的 `prototype`
 
@@ -69,7 +68,9 @@ console.log(Foo instanceof Foo) //false
    }
    ```
 
-### 2. JS原型链继承关系
+
+
+### 二、 JS原型链继承关系
 
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181212154458880.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
 
@@ -129,7 +130,9 @@ console.log(Foo instanceof Foo) //false
      // 返回 false
      ```
 
-### 3. instanceof 与 isPrototypeOf
+
+
+### 三、 instanceof 与 isPrototypeOf
 
 `isPrototypeOf` 也是用来判断一个对象是否存在与另一个对象的原型链上。
 
@@ -150,7 +153,7 @@ console.log(Aoo.prototype.isPrototypeOf(foo)) //true
 - `isPrototypeOf`：`foo` 的原型链是针对 `Foo` 本身
 
      
-### 4. instanceof和多全局对象(多个frame或多个window之间的交互)
+### 四、 instanceof和多全局对象(多个frame或多个window之间的交互)
 instanceof在多个全局作用域下，判断会有问题，例如：
 ```js
 //  parent.html
