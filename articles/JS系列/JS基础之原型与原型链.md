@@ -1,10 +1,19 @@
+### 引言
+
+`JS `系列暂定 27 篇，从基础，到原型，到异步，到设计模式，到架构模式等，
+
+本篇是  `JS `系列中最重要的一章，花费 3 分钟即可理解，如果你已了解，快速浏览即可。
+
+本篇从对象、构造函数开始，讲到原型与原型链，从基础开始，加实例进一步说明，帮助理解原型与原型链，并深入探讨了 Symbol 、new 。
+
 ### 一、基础入门
+
 #### 1. 对象
 
-在JS中，万物皆对象，对象又分为普通对象和函数对象，其中Object、Function为JS自带的函数对象。
+在JS中，万物皆对象，对象又分为普通对象和函数对象，其中 Object、Function 为 JS 自带的函数对象。
 
- ```js
- var obj1 = {}; 
+```js
+var obj1 = {}; 
 var obj2 = new Object();
 var obj3 = new fun1()
 
@@ -25,9 +34,11 @@ console.log(typeof obj3); //object
 console.log(typeof f1); //function 
 console.log(typeof f2); //function 
 console.log(typeof f3); //function   
- ```
+```
 
 **凡是通过 `new Function()` 创建的对象都是函数对象，其他的都是普通对象**。`fun1`、`fun2`归根结底都是通过 `new Function()`的方式进行创建的。Function Object 也都是通过 `New Function()` 创建的。
+
+
 
 #### 2. 构造函数
 
@@ -75,114 +86,133 @@ var an1 = new Symbol("An"); // TypeError
 但是，`Symbol()` 可以获取到它的 constructor 属性
 
 ```js
-Symbol("An").constructor; // ƒ Symbol() { [native code] }
+Symbol("An").constructor; 
+// ƒ Symbol() { [native code] }
 ```
 
 这个 `constructor` 实际上是 Symbol 原型上的，即
 
 ```js
-Symbol.prototype.constructor; // ƒ Symbol() { [native code] }
+Symbol.prototype.constructor; 
+// ƒ Symbol() { [native code] }
 ```
 
 对于 Symbol，你还需要了解以下知识点：
 
-- `Symbol()` 返回的 symbol **值是唯一**的
 
-  ```js
-  Symbol("An") === Symbol("An"); // false
-  ```
 
-- 可以通过 **`Symbol.for(key)` 获取全局唯一的 symbol**
+##### `Symbol()` 返回的 symbol **值是唯一**的
 
-  ```js
-  Symbol.for('An') === Symbol.for("An"); // true
-  ```
+```js
+Symbol("An") === Symbol("An"); 
+// false
+```
 
-  它从运行时的 symbol 注册表中找到对应的 symbol，如果找到了，则返回它，否则，新建一个与该键关联的 symbol，并放入全局 symbol 注册表中。
 
-- **Symbol.iterator** ：返回一个对象的迭代器
+##### 可以通过 `Symbol.for(key)` 获取全局唯一的 symbol
 
-  ```js
-  // 实现可迭代协议，使迭代器可迭代：Symbol.iterator
-  function createIterator(items) {
-      var i = 0
-      return {
-          next: function () {
-              var done = (i >= items.length)
-              var value = !done ? items[i++] : undefined
-              return {
-                  done: done,
-                  value: value
-              }
-          }
-          [Symbol.iterator]: function () {
-          	return this
-      	}
-      }
-  }
-  var iterator = createIterator([1, 2, 3])
-  ...iterator		// 1, 2, 3
-  ```
+```js
+Symbol.for('An') === Symbol.for("An"); // true
+```
 
-- **Symbol.toPrimitive**：将对象转换成基本数据类型
+它从运行时的 symbol 注册表中找到对应的 symbol，如果找到了，则返回它，否则，新建一个与该键关联的 symbol，并放入全局 symbol 注册表中。
 
-  ```js
-  // Symbol.toPrimitive 来实现拆箱操作（ES6 之后）
-  var obj = {
-      valueOf: () => {console.log("valueOf"); return {}},
-      toString: () => {console.log("toString"); return {}}
-  }
-  obj[Symbol.toPrimitive] = () => {console.log("toPrimitive"); return "hello"}
-  console.log(obj) // toPrimitive  hello
-  ```
 
-- **Symbol.toStringTag**：用于设置对象的默认描述字符串值
 
-  ```js
-  // Symbol.toStringTag 代替 [[class]] 属性（ES5开始）
-  var o = { [Symbol.toStringTag]: "MyObject" }
-  console.log(o + ""); // [object MyObject]
-  ```
+##### Symbol.iterator ：返回一个对象的迭代器
 
+```js
+// 实现可迭代协议，使迭代器可迭代：Symbol.iterator
+function createIterator(items) {
+    var i = 0
+    return {
+        next: function () {
+            var done = (i >= items.length)
+            var value = !done ? items[i++] : undefined
+            return {
+                done: done,
+                value: value
+            }
+        }
+        [Symbol.iterator]: function () {
+        	return this
+    	}
+    }
+}
+var iterator = createIterator([1, 2, 3])
+...iterator		// 1, 2, 3
+```
+
+
+##### Symbol.toPrimitive：将对象转换成基本数据类型
+
+```js
+// Symbol.toPrimitive 来实现拆箱操作（ES6 之后）
+var obj = {
+    valueOf: () => {console.log("valueOf"); return {}},
+    toString: () => {console.log("toString"); return {}}
+}
+obj[Symbol.toPrimitive] = () => {console.log("toPrimitive"); return "hello"}
+console.log(obj) // toPrimitive  hello
+```
+
+
+##### Symbol.toStringTag：用于设置对象的默认描述字符串值
+
+```js
+// Symbol.toStringTag 代替 [[class]] 属性（ES5开始）
+var o = { [Symbol.toStringTag]: "MyObject" }
+
+console.log(o + ""); 
+// [object MyObject]
+```
 
 
 #### 5. constructor 的值是只读的吗？
 
 **对于引用类型来说 `constructor` 属性值是可以修改的，但是对于基本类型来说是只读的。**
 
-- **引用类型**
+##### 引用类型
 
-  ```js
-  function An() {
-      this.value = "An";
-  };
-  function Anran() {};
-  Anran.prototype.constructor = An; // 原型链继承中，对 constructor 重新赋值
-  var anran = new Anran(); // 创建 Anran 的一个新实例
-  console.log(anran);
-  ```
-  <img width="502" alt="constructor" src="https://user-images.githubusercontent.com/19721451/56793881-93002780-683f-11e9-8bd8-0a6e166e5813.png">
+```js
+function An() {
+    this.value = "An";
+};
+function Anran() {};
 
-  这说明，依赖一个 引用对象的 constructor 属性，并不是安全的。
+Anran.prototype.constructor = An; 
+// 原型链继承中，对 constructor 重新赋值
 
-- **基本类型**
+var anran = new Anran(); 
+// 创建 Anran 的一个新实例
 
-  ```js
-  function An() {};
-  var an = 1;
-  an.constructor = An;
-  console.log(an.constructor); // ƒ Number() { [native code] }
-  ```
+console.log(anran);
+```
+<img width="502" alt="constructor" src="https://user-images.githubusercontent.com/19721451/56793881-93002780-683f-11e9-8bd8-0a6e166e5813.png">
 
-  这是因为：**原生构造函数（`native constructors`）是只读的**。
+这说明，依赖一个 引用对象的 constructor 属性，并不是安全的。
 
-  注意：**`null` 和 `undefined` 是没有 `constructor` 属性的**。
+##### 基本类型
+
+```js
+function An() {};
+var an = 1;
+an.constructor = An;
+console.log(an.constructor); 
+// ƒ Number() { [native code] }
+```
+
+这是因为：**原生构造函数（`native constructors`）是只读的**。
+
+注意：**`null` 和 `undefined` 是没有 `constructor` 属性的**。
+
+
 
 ### 二、原型
 
 首先，贴上
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181212155756420.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
+![原型](https://img-blog.csdnimg.cn/20181212155756420.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
 
 图片来自于http://www.mollypages.org/tutorials/js.mp，请根据下文仔细理解这张图
 
@@ -284,7 +314,7 @@ var anran = Object.create(an);
 
 
 
-#### 3. new的实现过程
+#### 3. new 的实现过程
 
 - 新生成了一个对象
 
@@ -294,34 +324,34 @@ var anran = Object.create(an);
 
 - 返回新对象
 
-  ```js
-  function new_object() {
-      // 创建一个空的对象
-      let obj = new Object()
-      // 获得构造函数
-      let Con = [].shift.call(arguments)
-      // 链接到原型 （不推荐使用）
-      obj.__proto__ = Con.prototype
-      // 绑定 this，执行构造函数
-      let result = Con.apply(obj, arguments)
-      // 确保 new 出来的是个对象
-      return typeof result === 'object' ? result : obj
-  }
-  ```
+```js
+function new_object() {
+  // 创建一个空的对象
+  let obj = new Object()
+  // 获得构造函数
+  let Con = [].shift.call(arguments)
+  // 链接到原型 （不推荐使用）
+  obj.__proto__ = Con.prototype
+  // 绑定 this，执行构造函数
+  let result = Con.apply(obj, arguments)
+  // 确保 new 出来的是个对象
+  return typeof result === 'object' ? result : obj
+}
+```
 
-**优化 new 实现**
+##### 优化 new 实现
 
 ```js
 // 优化后 new 实现
 function create() {
-	// 1、获得构造函数，同时删除 arguments 中第一个参数
-    Con = [].shift.call(arguments);
-	// 2、创建一个空的对象并链接到原型，obj 可以访问构造函数原型中的属性
-    var obj = Object.create(Con.prototype);
-	// 3、绑定 this 实现继承，obj 可以访问到构造函数中的属性
-    var ret = Con.apply(obj, arguments);
-	// 4、优先返回构造函数返回的对象
-	return ret instanceof Object ? ret : obj;
+  // 1、获得构造函数，同时删除 arguments 中第一个参数
+  Con = [].shift.call(arguments);
+  // 2、创建一个空的对象并链接到原型，obj 可以访问构造函数原型中的属性
+  var obj = Object.create(Con.prototype);
+  // 3、绑定 this 实现继承，obj 可以访问到构造函数中的属性
+  var ret = Con.apply(obj, arguments);
+  // 4、优先返回构造函数返回的对象
+  return ret instanceof Object ? ret : obj;
 };
 ```
 
@@ -387,7 +417,7 @@ f.toString() // f.__proto__.__proto__中寻找
 Function.__proto__.__proto__ === Object.prototype
 ```
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181212155939943.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
+![原型链](https://img-blog.csdnimg.cn/20181212155939943.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
 
 下面是原型链继承的例子
 
@@ -418,3 +448,4 @@ div1.html('<p>hello</p>').on('click', function() {
 })// 链式操作
 ```
 暂时就这些，后续我将持续更新
+
