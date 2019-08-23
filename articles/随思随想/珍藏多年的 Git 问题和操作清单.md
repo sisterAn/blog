@@ -6,14 +6,13 @@
 
 ### 一、必备知识点
 
-![56352098-1d71d700-6201-11e9-9c1b-2d1242749a49](https://user-images.githubusercontent.com/19721451/63442522-d96c3880-c465-11e9-935f-7b3fab3fda8c.png)
-![56352112-2498e500-6201-11e9-84f9-cae3f7f27632](https://user-images.githubusercontent.com/19721451/63442555-e721be00-c465-11e9-91b6-3eec238fe015.png)
+![56352098-1d71d700-6201-11e9-9c1b-2d1242749a49](https://user-gold-cdn.xitu.io/2019/8/21/16cb4c6ab0579cab?w=800&h=227&f=jpeg&s=26592)
 
 #### 仓库
 
 1.  **Remote:** 远程主仓库；
-2.  **Repository/History：** 本地仓库；
-3.  **Stage/Index：** Git追踪树,暂存区；
+2.  **Repository：** 本地仓库；
+3.  **Index：** Git追踪树,暂存区；
 4.  **workspace：** 本地工作区（即你编辑器的代码）
 
 
@@ -21,22 +20,23 @@
 
 一般代码提交流程为：**工作区** -> `git status` 查看状态 -> `git add .` 将所有修改加入**暂存区**-> `git commit -m "提交描述"` 将代码提交到 **本地仓库** -> `git push` 将本地仓库代码更新到 **远程仓库**
 
-#### 场景1：
+#### 场景1：工作区
 
-当你改乱了暂存区某个文件的内容，想直接丢弃暂存区的修改时，用命令` git checkout -- file`。
-
-**git checkout**
+当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令` git checkout -- file`。
 
 ```js
-// 丢弃暂存区的修改
+// 丢弃工作区的修改
 git checkout -- <文件名>
 ```
 
-#### 场景2：
+#### 场景2：暂存区
 
-当你不但改乱了暂存区某个文件的内容，还添加到了本地仓库时，想丢弃修改，分两步，第一步用命令 `git reset HEAD file`，就回到了场景1，第二步按场景1操作。
+当你不但改乱了工作区某个文件的内容，还 `git add` 添加到了暂存区时，想丢弃修改，分两步，第一步用命令 `git reset HEAD <file>`，就回到了场景1，第二步按场景1操作。
 
-
+```js
+// 把暂存区的修改撤销掉（unstage），重新放回工作区。
+git reset HEAD <文件名> 
+​````
 
 ### 三、git commit 提交到本地仓库，出错怎么办？
 
@@ -44,7 +44,7 @@ git checkout -- <文件名>
 
 更改 commit 信息
 
-```js
+​```js
 git commit --amend -m“新提交消息”
 ```
 
@@ -80,17 +80,16 @@ commit 时，遗漏提交部分更新，有两种解决方案：
 删除指定的 commit
 
 ```js
-// 修改版本库，修改暂存区，修改工作区
-
-git reset HEAD <文件名> // 把暂存区的修改撤销掉（unstage），重新放回工作区。
-// git版本回退，回退到特定的commit_id版本，可以通过git log查看提交历史，以便确定要回退到哪个版本(commit 之后的即为ID);
-git reset --hard commit_id 
-//将版本库回退1个版本，不仅仅是将本地版本库的头指针全部重置到指定版本，也会重置暂存区，并且会将工作区代码也回退到这个版本
-git reset --hard HEAD~1
-
 // 修改版本库，保留暂存区，保留工作区
 // 将版本库软回退1个版本，软回退表示将本地版本库的头指针全部重置到指定版本，且将这次提交之后的所有变更都移动到暂存区。
 git reset --soft HEAD~1
+
+// 修改版本库，修改暂存区，修改工作区
+//将版本库回退1个版本，不仅仅是将本地版本库的头指针全部重置到指定版本，也会重置暂存区，并且会将工作区代码也回退到这个版本
+git reset --hard HEAD~1
+// git版本回退，回退到特定的commit_id版本，可以通过git log查看提交历史，以便确定要回退到哪个版本(commit 之后的即为ID);
+git reset --hard commit_id 
+
 ```
 
 
@@ -228,7 +227,7 @@ git revert commit
 
 执行 `git merge --no-ff <branch-name>` 的结果大概会是这样的：
 
-![git merge --no-ff](http://ww1.sinaimg.cn/large/a74eed94jw1dvnhyrq8rhj.jpg)
+![git merge --no-ff](https://user-gold-cdn.xitu.io/2019/8/21/16cb4c6ab5037d79?w=512&h=291&f=jpeg&s=83171)
 
 中间的分叉线路图很清晰的显示这些提交都是为了实现 **complete adjusting user domains and tags**
 
@@ -246,7 +245,7 @@ git log feature..dev
 
 如果没有输出任何提交信息的话，即表示 feature 对于 dev 分支是 up-to-date 的。如果有输出的话而马上执行了 `git merge --no-ff` 的话，提交线图会变成这样：
 
-![git-merge](http://ww2.sinaimg.cn/large/a74e55b4jw1dvnijr276hj.jpg)
+![git-merge](https://user-gold-cdn.xitu.io/2019/8/21/16cb4c6ab4ab8d60?w=61&h=190&f=jpeg&s=9592)
 
 所以这时在合并前，通常我会先执行：
 
@@ -423,3 +422,4 @@ git push
 ### 参考
 
 本文参考了 [洁癖者用 Git：pull --rebase 和 merge --no-ff](http://hungyuhei.github.io/2012/08/07/better-git-commit-graph-using-pull---rebase-and-merge---no-ff.html)
+

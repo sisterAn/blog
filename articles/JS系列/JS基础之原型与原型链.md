@@ -6,6 +6,8 @@
 
 本篇从对象、构造函数开始，讲到原型与原型链，从基础开始，加实例进一步说明，帮助理解原型与原型链，并深入探讨了 Symbol 、new 。
 
+
+
 ### 一、基础入门
 
 #### 1. 对象
@@ -36,7 +38,7 @@ console.log(typeof f2); //function
 console.log(typeof f3); //function   
 ```
 
-**凡是通过 `new Function()` 创建的对象都是函数对象，其他的都是普通对象**。`fun1`、`fun2`归根结底都是通过 `new Function()`的方式进行创建的。Function Object 也都是通过 `New Function()` 创建的。
+**凡是通过 `new Function()` 创建的对象都是函数对象，其他的都是普通对象**。`fun1`、`fun2` 归根结底都是通过 `new Function()`的方式进行创建的。Function Object 也都是通过 `New Function()` 创建的。
 
 
 
@@ -338,6 +340,8 @@ function new_object() {
   return typeof result === 'object' ? result : obj
 }
 ```
+
+
 
 ##### 优化 new 实现
 
