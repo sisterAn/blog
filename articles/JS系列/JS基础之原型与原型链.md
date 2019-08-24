@@ -15,13 +15,13 @@
 在JS中，万物皆对象，对象又分为普通对象和函数对象，其中 Object、Function 为 JS 自带的函数对象。
 
 ```js
-var obj1 = {}; 
-var obj2 = new Object();
-var obj3 = new fun1()
+let obj1 = {}; 
+let obj2 = new Object();
+let obj3 = new fun1()
 
 function fun1(){}; 
-var fun2 = function(){};
-var fun3 = new Function('some','console.log(some)');
+let fun2 = function(){};
+let fun3 = new Function('some','console.log(some)');
 
 // JS自带的函数对象
 console.log(typeof Object); //function 
@@ -38,7 +38,7 @@ console.log(typeof f2); //function
 console.log(typeof f3); //function   
 ```
 
-**凡是通过 `new Function()` 创建的对象都是函数对象，其他的都是普通对象**。`fun1`、`fun2` 归根结底都是通过 `new Function()`的方式进行创建的。Function Object 也都是通过 `New Function()` 创建的。
+**凡是通过 `new Function()` 创建的对象都是函数对象，其他的都是普通对象**，Function Object 是通过 `New Function()` 创建的。
 
 
 
@@ -46,7 +46,7 @@ console.log(typeof f3); //function
 
 ```js
 function Foo(name, age) {
-    // this 默认为空
+    // this 指向 Foo
     this.name = name
     this.age = age
     this.class = 'class'
@@ -54,7 +54,7 @@ function Foo(name, age) {
 }
 
 // Foo 的实例
-var f = new Foo('aa', 20)
+let f = new Foo('aa', 20)
 ```
 
 每个实例都有一个`constructor`（构造函数）属性，该属性指向对象本身。
@@ -69,8 +69,8 @@ JS本身不提供一个`class`实现。（在 ES2015/ES6 中引入了`class`关�
 
 #### 3. 构造函数扩展
 
-- `var a = {}` 其实是 `var a = new Object()` 的语法糖
-- `var a = [] `其实是 `var a = new Array()` 的语法糖
+- `let a = {}` 其实是 `let a = new Object()` 的语法糖
+- `let a = [] `其实是 `let a = new Array()` 的语法糖
 - `function Foo(){ ... }` 其实是 `var Foo = new Function(...)`
 - **可以使用 `instanceof` 判断一个函数是否为一个变量的构造函数**
 
@@ -81,8 +81,10 @@ JS本身不提供一个`class`实现。（在 ES2015/ES6 中引入了`class`关�
 Symbol 是基本数据类型，它并不是构造函数，因为它不支持 `new Symbol()` 语法。我们直接使用`Symbol()` 即可。
 
 ```js
-var an = Symbol("An");
-var an1 = new Symbol("An"); // TypeError
+let an = Symbol("An");
+
+let an1 = new Symbol("An"); 
+// Uncaught TypeError: Symbol is not a constructor
 ```
 
 但是，`Symbol()` 可以获取到它的 constructor 属性
@@ -126,36 +128,39 @@ Symbol.for('An') === Symbol.for("An"); // true
 ```js
 // 实现可迭代协议，使迭代器可迭代：Symbol.iterator
 function createIterator(items) {
-    var i = 0
+    let i = 0
     return {
         next: function () {
-            var done = (i >= items.length)
-            var value = !done ? items[i++] : undefined
+            let done = (i >= items.length)
+            let value = !done ? items[i++] : undefined
             return {
                 done: done,
                 value: value
             }
-        }
+        },
         [Symbol.iterator]: function () {
         	return this
     	}
     }
 }
-var iterator = createIterator([1, 2, 3])
-...iterator		// 1, 2, 3
+const iterator = createIterator([1, 2, 3]);
+[...iterator];		// [1, 2, 3]
 ```
+
 
 
 ##### Symbol.toPrimitive：将对象转换成基本数据类型
 
 ```js
 // Symbol.toPrimitive 来实现拆箱操作（ES6 之后）
-var obj = {
+let obj = {
     valueOf: () => {console.log("valueOf"); return {}},
     toString: () => {console.log("toString"); return {}}
 }
 obj[Symbol.toPrimitive] = () => {console.log("toPrimitive"); return "hello"}
-console.log(obj) // toPrimitive  hello
+console.log(obj + "") 
+// toPrimitive
+// hello
 ```
 
 
@@ -163,7 +168,7 @@ console.log(obj) // toPrimitive  hello
 
 ```js
 // Symbol.toStringTag 代替 [[class]] 属性（ES5开始）
-var o = { [Symbol.toStringTag]: "MyObject" }
+let o = { [Symbol.toStringTag]: "MyObject" }
 
 console.log(o + ""); 
 // [object MyObject]
@@ -185,7 +190,7 @@ function Anran() {};
 Anran.prototype.constructor = An; 
 // 原型链继承中，对 constructor 重新赋值
 
-var anran = new Anran(); 
+let anran = new Anran(); 
 // 创建 Anran 的一个新实例
 
 console.log(anran);
@@ -198,7 +203,7 @@ console.log(anran);
 
 ```js
 function An() {};
-var an = 1;
+let an = 1;
 an.constructor = An;
 console.log(an.constructor); 
 // ƒ Number() { [native code] }
@@ -229,7 +234,7 @@ Foo.prototype.alertName = function() {
     alert(this.name)
 }
 // 创建实例
-var f = new Foo('some')
+let f = new Foo('some')
 f.printName = function () {
     console.log(this.name)
 }
@@ -351,9 +356,9 @@ function create() {
   // 1、获得构造函数，同时删除 arguments 中第一个参数
   Con = [].shift.call(arguments);
   // 2、创建一个空的对象并链接到原型，obj 可以访问构造函数原型中的属性
-  var obj = Object.create(Con.prototype);
+  let obj = Object.create(Con.prototype);
   // 3、绑定 this 实现继承，obj 可以访问到构造函数中的属性
-  var ret = Con.apply(obj, arguments);
+  let ret = Con.apply(obj, arguments);
   // 4、优先返回构造函数返回的对象
   return ret instanceof Object ? ret : obj;
 };
@@ -376,7 +381,7 @@ Foo.prototype.alertName = function() {
     alert(this.name)
 }
 // 创建实例
-var f = new Foo('some')
+let f = new Foo('some')
 f.printName = function () {
     console.log(this.name)
 }
@@ -384,7 +389,7 @@ f.printName = function () {
 f.printName()
 f.alertName()
 // 循环对象自身的属性
-var item
+let item
 for (item in f) {
     // 高级浏览器已经在 for in 中屏蔽了来自原型的属性
     // 但是这里还是建议大家还是加上这个判断，保证程序的健壮性
@@ -408,9 +413,10 @@ function Foo(name) {
     this.name = name
 }
 // 创建实例
-var f = new Foo('some')
+let f = new Foo('some')
 // 测试
-f.toString() // f.__proto__.__proto__中寻找
+f.toString() 
+// f.__proto__.__proto__中寻找
 ```
 
 `f.__proto__=== Foo.prototype`，`Foo.prototype` 也是一个对象，也有自己的`__proto__` 指向 `Object.prototype`， 找到`toString()`方法。
@@ -431,7 +437,7 @@ function Elem(id) {
 }
 
 Elem.prototype.html = function(val) {
-    var elem = this.elem
+    let elem = this.elem
     if (val) {
         elem.innerHtml = val
         return this // 链式操作
@@ -441,11 +447,11 @@ Elem.prototype.html = function(val) {
 }
 
 Elem.prototype.on = function( type, fn) {
-    var elem = this.elem
+    let elem = this.elem
     elem.addEventListener(type, fn)
 }
 
-var div1 = new Elem('div1')
+let div1 = new Elem('div1')
 // console.log(div1.html())
 div1.html('<p>hello</p>').on('click', function() {
     alert('clicked')
