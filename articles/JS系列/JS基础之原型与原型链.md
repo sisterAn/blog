@@ -4,7 +4,7 @@
 
 本篇是  `JS `系列中最重要的一章，花费 3 分钟即可理解，如果你已了解，快速浏览即可。
 
-本篇从对象、构造函数开始，讲到原型与原型链，从基础开始，加实例进一步说明，帮助理解原型与原型链，并深入探讨了 Symbol 、new 。
+本篇文章主讲构造函数、原型以及原型链，包括 `Symbol` 是不是构造函数、`constructor` 属性是否只读、`prototype` 、`__proto__` 、`[[Prototype]]`  、原型链。
 
 
 
@@ -33,9 +33,9 @@ console.log(typeof obj2); //object
 console.log(typeof obj3); //object
 
 // 函数对象
-console.log(typeof f1); //function 
-console.log(typeof f2); //function 
-console.log(typeof f3); //function   
+console.log(typeof fun1); //function 
+console.log(typeof fun2); //function 
+console.log(typeof fun3); //function   
 ```
 
 **凡是通过 `new Function()` 创建的对象都是函数对象，其他的都是普通对象**，Function Object 是通过 `New Function()` 创建的。
@@ -57,20 +57,22 @@ function Foo(name, age) {
 let f = new Foo('aa', 20)
 ```
 
-每个实例都有一个`constructor`（构造函数）属性，该属性指向对象本身。
+每个实例都有一个 `constructor`（构造函数）属性，该属性指向对象本身。
 
 ```js
 f.constructor === Foo // true
 ```
 
-JS本身不提供一个`class`实现。（在 ES2015/ES6 中引入了`class`关键字，但只是语法糖，JavaScript 仍然是基于原型的）。
+构造函数本身就是一个函数，与普通函数没有任何区别，不过为了规范一般将其首字母大写。构造函数和普通函数的区别在于，使用 `new` 生成实例的函数就是构造函数，直接调用的就是普通函数。
+
+JS 本身不提供一个 `class` 实现。（在 ES2015/ES6 中引入了 `class` 关键字，但只是语法糖，JavaScript 仍然是基于原型的）。
 
 
 
 #### 3. 构造函数扩展
 
 - `let a = {}` 其实是 `let a = new Object()` 的语法糖
-- `let a = [] `其实是 `let a = new Array()` 的语法糖
+- `let a = [] ` 其实是 `let a = new Array()` 的语法糖
 - `function Foo(){ ... }` 其实是 `var Foo = new Function(...)`
 - **可以使用 `instanceof` 判断一个函数是否为一个变量的构造函数**
 
@@ -111,6 +113,7 @@ Symbol.prototype.constructor;
 Symbol("An") === Symbol("An"); 
 // false
 ```
+
 
 
 ##### 可以通过 `Symbol.for(key)` 获取全局唯一的 symbol
@@ -164,6 +167,7 @@ console.log(obj + "")
 ```
 
 
+
 ##### Symbol.toStringTag：用于设置对象的默认描述字符串值
 
 ```js
@@ -198,7 +202,7 @@ console.log(anran);
 ```
 <img width="502" alt="constructor" src="https://user-images.githubusercontent.com/19721451/56793881-93002780-683f-11e9-8bd8-0a6e166e5813.png">
 
-这说明，依赖一个 引用对象的 constructor 属性，并不是安全的。
+这说明，依赖一个引用对象的 constructor 属性，并不是安全的。
 
 ##### 基本类型
 
@@ -212,7 +216,20 @@ console.log(an.constructor);
 
 这是因为：**原生构造函数（`native constructors`）是只读的**。
 
-注意：**`null` 和 `undefined` 是没有 `constructor` 属性的**。
+ JS 对于不可写的属性值的修改静默失败（silently failed），但只会在严格模式下才会提示错误。
+
+```js
+'use strict';
+function An() {};
+let an = 1;
+an.constructor = An;
+console.log(an.constructor); 
+```
+
+<img width="536" alt="use strict" src="https://user-images.githubusercontent.com/19721451/63651111-2745b100-c784-11e9-806a-e5f2168a2513.png">
+
+
+**注意：`null` 和 `undefined` 是没有 `constructor` 属性的。**
 
 
 
@@ -220,11 +237,11 @@ console.log(an.constructor);
 
 首先，贴上
 
-![原型](https://img-blog.csdnimg.cn/20181212155756420.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
+![原型](http://www.mollypages.org/tutorials/jsobj_full.jpg)
 
 图片来自于http://www.mollypages.org/tutorials/js.mp，请根据下文仔细理解这张图
 
-在JS中，每个对象都有自己的原型。当我们访问对象的属性和方法时，JS会先访问对象本身的方法和属性。如果对象本身不包含这些属性和方法，则访问对象对应的原型。
+在JS中，每个对象都有自己的原型。当我们访问对象的属性和方法时，JS 会先访问对象本身的方法和属性。如果对象本身不包含这些属性和方法，则访问对象对应的原型。
 
 ```js
 // 构造函数
@@ -264,7 +281,7 @@ function Foo () {}
 ```
 <img width="436" alt="FOO" src="https://user-images.githubusercontent.com/19721451/56793854-7fed5780-683f-11e9-88d8-c1af1414d57a.png">
 
-`prototype`属性就被自动创建了
+`prototype` 属性就被自动创建了
 
 从上面这张图可以发现，`Foo` 对象有一个原型对象 `Foo.prototype`，其上有两个属性，分别是 `constructor` 和 `__proto__`，其中 `__proto__` 已被弃用。
 
@@ -274,11 +291,12 @@ function Foo () {}
 Foo.prototype.constructor === Foo; // true
 ```
 
+<img width="662" alt="constructor与prototype" src="https://user-images.githubusercontent.com/19721451/63651130-52300500-c784-11e9-810e-7d5fe82880bd.png">
 
 
 #### 2. `__proto__`
 
-每个实例对象（object ）都有一个隐式原型属性（称之为`__proto__`）指向了创建该对象的构造函数的原型。也就时指向了函数的 `prototype`属性。
+每个实例对象（object ）都有一个隐式原型属性（称之为 `__proto__` ）指向了创建该对象的构造函数的原型。也就时指向了函数的 `prototype` 属性。
 
 ```js
 function Foo () {}
@@ -286,13 +304,30 @@ let foo = new Foo()
 ```
 <img width="393" alt="Foo1" src="https://user-images.githubusercontent.com/19721451/56793821-6c41f100-683f-11e9-941a-2734defd42f9.png">
 
-当`new Foo()`时，`__proto__`自动创建了。并且
+当 `new Foo()` 时，`__proto__` 被自动创建。并且
 
 ```js
 foo.__proto__ === Foo.prototype; // true
 ```
 
-#### 注意
+即：
+
+<img width="856" alt="屏幕快照 2019-08-25 下午9 38 36" src="https://user-images.githubusercontent.com/19721451/63651220-0893ea00-c785-11e9-80c7-1bb16494349a.png">
+
+
+`__proto__` 发音 dunder proto，最先被 Firefox使用，后来在 ES6 被列为 Javascript 的标准内建属性。
+
+
+
+#### 3. [[Prototype]] 
+
+`[[Prototype]]` 是对象的一个内部属性，外部代码无法直接访问。
+
+> 遵循 ECMAScript 标准，someObject.[[Prototype]] 符号用于指向 someObject 的原型
+
+
+
+#### 4. 注意
 
 `__proto__` 属性在 `ES6` 时才被标准化，以确保 Web 浏览器的兼容性，但是不推荐使用，除了标准化的原因之外还有性能问题。为了更好的支持，推荐使用 `Object.getPrototypeOf()`。
 
@@ -322,7 +357,7 @@ var anran = Object.create(an);
 
 
 
-#### 3. new 的实现过程
+#### 5. new 的实现过程
 
 - 新生成了一个对象
 
@@ -367,44 +402,17 @@ function create() {
 
 
 
-#### 4. 总结
+#### 6. 总结
 
 - 所有的引用类型（数组、对象、函数）都有对象特性，即可自由扩展属性（null除外）。
-- 所有的引用类型，都有一个 `__proto__` （隐式原型）属性，属性值是一个普通的对象，该原型对象也有一个自己的原型对象(`__proto__`) ，层层向上直到一个对象的原型对象为 `null`。根据定义，`null` 没有原型，并作为这个**原型链**中的最后一个环节。
-- 当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的`__proto__`(即它的构造函数`prototype`)中寻找。
-
-```js
-// 构造函数
-function Foo(name) {
-    this.name = name
-}
-Foo.prototype.alertName = function() {
-    alert(this.name)
-}
-// 创建实例
-let f = new Foo('some')
-f.printName = function () {
-    console.log(this.name)
-}
-// 测试
-f.printName()
-f.alertName()
-// 循环对象自身的属性
-let item
-for (item in f) {
-    // 高级浏览器已经在 for in 中屏蔽了来自原型的属性
-    // 但是这里还是建议大家还是加上这个判断，保证程序的健壮性
-    if (f.hasOwnPrototype(item)) {
-        console.log(item)
-    }
-}
-```
+- 所有的引用类型，都有一个 `__proto__` 属性，属性值是一个普通的对象，该原型对象也有一个自己的原型对象(`__proto__`) ，层层向上直到一个对象的原型对象为 `null`。根据定义，`null` 没有原型，并作为这个**原型链** 中的最后一个环节。
+- 当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的 `__proto__` （即它的构造函数的 `prototype` ）中寻找。
 
 
 
 ### 三、原型链
 
-每个实例对象（ object ）都有一个私有属性（称之为 __proto__ ）指向它的原型对象（ **prototype** ）。该原型对象也有一个自己的原型对象( __proto__ ) ，层层向上直到一个对象的原型对象为 `null`，这就是**原形链**。根据定义，`null` 没有原型，并作为这个**原型链**中的最后一个环节。
+每个对象拥有一个原型对象，通过 `__proto__` 指针指向上一个原型 ，并从中**继承方法和属性**，同时原型对象也可能拥有原型，这样一层一层，最终指向 `null`，这种关系被称为**原型链**(prototype chain)。根据定义，`null` 没有原型，并作为这个原型链中的最后一个环节。
 
 原型链的基本思想是利用原型，让一个引用类型继承另一个引用类型的属性及方法。
 
@@ -428,7 +436,8 @@ f.toString()
 Function.__proto__.__proto__ === Object.prototype
 ```
 
-![原型链](https://img-blog.csdnimg.cn/20181212155939943.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
+![原型链](https://user-images.githubusercontent.com/19721451/63651229-206b6e00-c785-11e9-91e3-d6f5ddf8eafb.png)
+
 
 下面是原型链继承的例子
 
@@ -458,5 +467,27 @@ div1.html('<p>hello</p>').on('click', function() {
     alert('clicked')
 })// 链式操作
 ```
-暂时就这些，后续我将持续更新
 
+
+
+### 四、总结
+
+- `Symbol` 是基本数据类型，并不是构造函数，因为它不支持语法 `new Symbol()`，但其原型上拥有 `constructor` 属性，即 `Symbol.prototype.constructor`。
+- 引用类型 `constructor` 是可以修改的，但对于基本类型来说它是只读的， `null` 和 `undefined` 没有 `constructor`  属性。
+- `__proto__` 是每个实例对象都有的属性，`prototype` 是其构造函数的属性，在实例上并不存在，所以这两个并不一样，但  `foo.__proto__` 和 `Foo.prototype` 指向同一个对象。
+- `__proto__` 属性在 `ES6` 时被标准化，但因为性能问题并不推荐使用，推荐使用 `Object.getPrototypeOf()`。
+- 每个对象拥有一个原型对象，通过 `__proto__` 指针指向上一个原型 ，并从中继承方法和属性，同时原型对象也可能拥有原型，这样一层一层向上，最终指向 `null`，这就是原型链。
+- 当试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么会去它的原型中寻找，以及该对象的原型的原型，一层一层向上查找，直到找到一个名字匹配的属性 / 方法或到达原型链的末尾（`null`）
+
+
+
+### 五、参考
+
+- [Object.prototype.constructor](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
+
+- [Object.prototype.__proto__](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/proto)
+- [重新认识构造函数、原型及原型链](https://www.muyiy.cn/blog/5/5.1.html)
+
+
+
+暂时就这些，后续我将持续更新
