@@ -1,42 +1,43 @@
 ![React.js](https://miro.medium.com/max/2456/1*1Z177dpTeAp7uEFc5Zx2xg.png)
 
-ReactJs 应用程序中的动画是一个热门话题，有很多方法可以创建不同类型的动画。很多开发人员喜欢使用 css 创建动画并向 HTML 标签添加类。这是一个很好的实现方式。但如果你想创建更复杂的动画，你可以关注GreenSock 。GreenSock 是最强大的动画平台。还有很多用于在 React 中创建动画的库，组件。
-我们来谈谈他们😎。
+动画是 ReactJs 应用程序中一个热门话题，我们有很多方法可以创建不同类型的动画。例如，很多开发人员喜欢使用 css 动画。但如果你想创建更复杂的动画，你可以关注 GreenSock 。GreenSock 是最具影响力的动画平台，同时，它给 React 提供了很多用于创建动画的库或组件。
 
-1. **CSS方法**
+接下来，进入主题 😎。
+
+1. **CSS 动画**
 2. **React-transition-group -**它是一个附加组件，用于实现基本的 CSS 动画和过渡动画。
 3. **react-animations -** React-animations 实现 animate.css 的所有动画。简单易用！
 4. **React Reveal -**这是 React 的动画框架。
-5. **TweenOne -** ant.design 用于动画的库
+5. **TweenOne -** ant.design 里用于动画的库
 
 > ........................ ...👇 
 > 要查看回购，请单击[此处](https://github.com/NozhenkoD/react-animation-2019)。👈 
 > ...........................👆
 
-当然，还有很多开源的动画库和组件。但是这篇文章不会包含这些库。
+当然，还有很多开源的动画库和组件，但是这篇文章不会涉及这些库。
 
 👨💻让我们开始吧。
 
 
 
-### 一、CSS方法
+### 一、CSS 方法
 
-这种方法是简单动画的最佳方法之一。当你使用它而不是导入 JavaScript 库时，您的包仍然很小。浏览器花费的资源更少。这两点也极大地影响了应用程序的生产力 如果您有一个简单的动画并担心捆绑的大小，请注意此方法。
+这种方法是实现动画的最简单、最基础的方式。使用它不需要倒入  JavaScript 库，并且浏览器花费的资源也更少。如果你有一个简单的动画并担心应用程序的大小，可以使用此方法。
 
-我想告诉你如何使用css做动画。
+那么，如何使用css做动画喃？
 我们来看看汉堡菜单示例：👇
 
 ![img](https://miro.medium.com/freeze/max/52/1*cosKxTRdOfM3YrNc_2Ah3g.gif?q=20)
 
-此菜单易于使用，具有css属性和`className="is-nav-open"`html标记的触发器。有很多方法可以实现这个例子。其中之一是在导航上方创建一个包装器并触发保证金的更改。导航具有恒定的宽度相等`250px`。包装带有`margin-left`或`translateX`具有相同宽度的属性。当我们需要显示导航时，我们必须`className="is-nav-open"`为包装器添加导航并移动包装器`margin-left/translateX: 0;`
+此菜单易于使用，具有 css 属性和 `className="is-nav-open"` html 标记的触发器。有很多方法可以实现这个例子。其中之一是在导航上方创建一个包装器并触发保证金的更改。导航具有恒定的宽度相等 `250px` 。包装带有 `margin-left` 或 `translateX` 具有相同宽度的属性。当我们需要显示导航时，我们必须 `className="is-nav-open"` 为包装器添加导航并移动包装器 `margin-left/translateX: 0;` 
 
 ![img](https://miro.medium.com/max/60/1*cfVr3j7sa2sgpaM9R60Fqg.png?q=20)
 
-和CSS风格：
+和 CSS 风格：
 
 ![img](https://miro.medium.com/max/32/1*nZ6Mq1wmqu8JSF-DfebeVw.png?q=20)
 
-相信我，在大多数情况下都需要使用这种方法。我们生活得更好写作几个css行并触发className，而不是导入大型库并在项目中实现它。用户将非常感谢您的浏览器快速复制应用程序。
+相信我，在大多数情况下都需要使用这种方法。我们生活得更好写作几个 css 行并触发 className ，而不是导入大型库并在项目中实现它。用户将非常感谢您的浏览器快速复制应用程序。
 
 但有时候，你必须使用其他方法。还有其他什么方法？让我们来看看下一个方法。
 
