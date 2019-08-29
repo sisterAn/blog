@@ -408,9 +408,11 @@ class Man extends People {
 
 ### 一、class
 
-> **class 声明**创建一个基于原型继承的、具有给定名称的新类。
+> **class 声明**创建一个基于原型继承的、具有给定名称的新类，其中构造函数（ `constructor` ）是可选的。
 
-### 1. class 声明
+
+
+#### 1. class 声明
 
 使用 ES6 class 定义一个计数器：
 
@@ -438,22 +440,22 @@ window.customElements.define('num-counter', Counter);
 
 
 
-#### 2. 字段声明
+#### 2. class 字段声明
 
-
+使用 ESnext 字段声明建议，上述示例可以写成：
 
 ```js
 class Counter extends HTMLElement {
   x = 0;
 
-  clicked() {
-    this.x++;
-    window.requestAnimationFrame(this.render.bind(this));
-  }
-
   constructor() {
     super();
     this.onclick = this.clicked.bind(this);
+  }
+
+  clicked() {
+    this.x++;
+    window.requestAnimationFrame(this.render.bind(this));
   }
 
   connectedCallback() { this.render(); }
@@ -465,9 +467,11 @@ class Counter extends HTMLElement {
 window.customElements.define('num-counter', Counter);
 ```
 
-在上例中，我们使用了 `constructor` 你已可以使用  [class fields proposal](https://github.com/tc39/proposal-class-fields) 来省略这个声明
+在上面的示例中，你可以看到使用语法 x = 0 声明的字段。还可以将没有初始化程序的字段声明为 x。通过预先声明字段，类定义变得更加自我记录;实例经历较少的状态转换，因为声明的字段始终存在。
 
-### 3. 核心代码
+### 3. super(props)
+
+### 4. 核心代码
 
 `extends` 继承的核心代码如下，其实现和上述的寄生组合式继承方式一样
 
