@@ -471,6 +471,56 @@ window.customElements.define('num-counter', Counter);
 
 ### 3. super(props)
 
+在 JavaScript 中，`super` 指的是父类（即超类）的构造函数。
+
+值得注意的是，在调用父类的构造函数之前，你是不能在 constructor 中使用 `this` 关键字的。JavaScript 不允许这个行为。
+
+```js
+class Checkbox extends React.Component {
+  constructor(props) {
+    // 🔴  还不能使用 `this`
+    super(props);
+    // ✅  现在可以了
+    this.state = { isOn: true };
+  }
+  // ...
+}
+```
+
+JavaScript 有足够合理的动机来强制你在接触 `this` 之前执行父类构造函数。考虑考虑一些类层次结构的东西：
+
+```js
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class PolitePerson extends Person {
+  constructor(name) {
+    this.greetColleagues(); // 🔴  这是禁止的，往后见原因
+    super(name);
+  }
+  greetColleagues() {
+    alert('Good morning folks!');
+  }
+}
+```
+
+ `this.greetColleagues` 在 `super()` 给 `this.name` 赋值前就已经执行。`this.name` 此时甚至尚未定义。可以看到，这样的代码难以往下推敲。
+
+为了避免落入这个陷阱，**JavaScript 强制你在使用 this 之前先行调用 super。**让父类来完成这件事情！：
+
+```js
+constructor(props) {
+    super(props);
+    // ✅ 能使用 `this` 了
+    this.state = { isOn: true };
+  }
+```
+
+
+
 ### 4. 核心代码
 
 `extends` 继承的核心代码如下，其实现和上述的寄生组合式继承方式一样
