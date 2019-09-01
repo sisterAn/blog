@@ -1,10 +1,12 @@
-相对于ES5继承，ES6继承就简单的多，关于继承机制的设计思想，请参见 [Javascript继承机制的设计思想](http://www.ruanyifeng.com/blog/2011/06/designing_ideas_of_inheritance_mechanism_in_javascript.html) 。
+### 引言
 
+`JS`系列暂定 27 篇，从基础，到原型，到异步，到设计模式，到架构模式等，
 
+本篇是  `JS`系列中第 3 篇，文章主讲 JS 继承，包括原型链继承、构造函数继承、组合继承、寄生组合继承、原型式继承以及 ES6 继承 。
 
 ## ES5 继承
 
-定义一个父类
+先定义一个父类
 
 ```js
 function SuperType () {
@@ -139,43 +141,6 @@ let instance = new SubType(); // 运行子类构造函数，并在子类构造�
   - 实例并不是父类的实例，只是子类的实例
   - **只能**继承父类的实例属性和方法，**不能**继承原型属性/方法
   - **无法实现函数复用**，每个子类都有父类实例函数的副本，影响性能
-
-
-
-#### 扩展一：new
-
-**new 关键字**创建的对象**实际上是对新对象 this 的不断赋值，并将 prototype 指向类的 prototype 所指向的对象**。
-
-```js
-var SuperType = function (name) {
-    var nose = 'nose' // 私有属性
-    function say () {} // 私有方法
-    
-    // 特权方法
-    this.getName = function () {} 
-    this.setName = function () {}
-    
-    this.mouse = 'mouse' // 对象公有属性
-    this.listen = function () {} // 对象公有方法
-    
-    // 构造器
-    this.setName(name)
-}
-
-SuperType.age = 10 // 类静态公有属性（对象不能访问）
-SuperType.read = function () {} // 类静态公有方法（对象无法访问）
-
-SuperType.prototype = { // 对象赋值（也可以一一赋值）
-    isMan: 'true', // 公有属性
-    write: function () {} // 公有方法
-}
-
-var instance = new SuperType()
-```
-
-![new](https://user-images.githubusercontent.com/19721451/58102668-3f051a80-7c14-11e9-8314-e3e8fd0ac280.png)
-
-所以类的构造函数内定义的 **私有变量或方法** ，以及类定义的 **静态公有属性及方法** ，在 **new** 的实例对象中都将 **无法访问** 。
 
 
 
@@ -405,123 +370,7 @@ class Man extends People {
 }
 ```
 
-
-### 一、class
-
-> **class 声明**创建一个基于原型继承的、具有给定名称的新类，其中构造函数（ `constructor` ）是可选的。
-
-
-
-#### 1. class 声明
-
-使用 ES6 class 定义一个计数器：
-
-```js
-class Counter extends HTMLElement {
-  constructor() {
-    super();
-    this.onclick = this.clicked.bind(this);
-    this.x = 0;
-  }
-  
-  clicked() {
-    this.x++;
-    window.requestAnimationFrame(this.render.bind(this));
-  }
-  
-  connectedCallback() { this.render(); }
-
-  render() {
-    this.textContent = this.x.toString();
-  }
-}
-window.customElements.define('num-counter', Counter);
-```
-
-
-
-#### 2. class 字段声明
-
-使用 ESnext 字段声明建议，上述示例可以写成：
-
-```js
-class Counter extends HTMLElement {
-  x = 0;
-
-  constructor() {
-    super();
-    this.onclick = this.clicked.bind(this);
-  }
-
-  clicked() {
-    this.x++;
-    window.requestAnimationFrame(this.render.bind(this));
-  }
-
-  connectedCallback() { this.render(); }
-
-  render() {
-    this.textContent = this.x.toString();
-  }
-}
-window.customElements.define('num-counter', Counter);
-```
-
-在上面的示例中，你可以看到使用语法 x = 0 声明的字段。还可以将没有初始化程序的字段声明为 x。通过预先声明字段，类定义变得更加自我记录;实例经历较少的状态转换，因为声明的字段始终存在。
-
-### 3. super(props)
-
-在 JavaScript 中，`super` 指的是父类（即超类）的构造函数。
-
-值得注意的是，在调用父类的构造函数之前，你是不能在 constructor 中使用 `this` 关键字的。JavaScript 不允许这个行为。
-
-```js
-class Checkbox extends React.Component {
-  constructor(props) {
-    // 🔴  还不能使用 `this`
-    super(props);
-    // ✅  现在可以了
-    this.state = { isOn: true };
-  }
-  // ...
-}
-```
-
-JavaScript 有足够合理的动机来强制你在接触 `this` 之前执行父类构造函数。考虑考虑一些类层次结构的东西：
-
-```js
-class Person {
-  constructor(name) {
-    this.name = name;
-  }
-}
-
-class PolitePerson extends Person {
-  constructor(name) {
-    this.greetColleagues(); // 🔴  这是禁止的，往后见原因
-    super(name);
-  }
-  greetColleagues() {
-    alert('Good morning folks!');
-  }
-}
-```
-
- `this.greetColleagues` 在 `super()` 给 `this.name` 赋值前就已经执行。`this.name` 此时甚至尚未定义。可以看到，这样的代码难以往下推敲。
-
-为了避免落入这个陷阱，**JavaScript 强制你在使用 this 之前先行调用 super。**让父类来完成这件事情！：
-
-```js
-constructor(props) {
-    super(props);
-    // ✅ 能使用 `this` 了
-    this.state = { isOn: true };
-  }
-```
-
-
-
-### 4. 核心代码
+### 核心代码
 
 `extends` 继承的核心代码如下，其实现和上述的寄生组合式继承方式一样
 
@@ -558,31 +407,37 @@ function _inherits(subType, superType) {
 
 
 
-#### 扩展二：IIFE：避免污染全局命名空间
+### 扩展：new
+
+**new 关键字**创建的对象**实际上是对新对象 this 的不断赋值，并将 prototype 指向类的 prototype 所指向的对象**。
 
 ```js
-function foo() {...}     // 这是定义，Declaration；定义只是让解释器知道其存在，但是不会运行。
+var SuperType = function (name) {
+    var nose = 'nose' // 私有属性
+    function say () {} // 私有方法
+    
+    // 特权方法
+    this.getName = function () {} 
+    this.setName = function () {}
+    
+    this.mouse = 'mouse' // 对象公有属性
+    this.listen = function () {} // 对象公有方法
+    
+    // 构造器
+    this.setName(name)
+}
 
-foo();                   // 这是语句，Statement；解释器遇到语句是会运行它的
+SuperType.age = 10 // 类静态公有属性（对象不能访问）
+SuperType.read = function () {} // 类静态公有方法（对象无法访问）
 
-// 错误写法
-function foo(...){}();   // 因为 function foo(...){} 这个部分只是一个声明，对于解释器来说，就好像你写了一个字符串 "function foo(...){}"，它需要使用解析函数，比如 eval() 来执行它才可以。所以把 () 直接放在声明后面是不会执行，这是错误的语法。我们需要把 声明 变成 表达式（Expression）
+SuperType.prototype = { // 对象赋值（也可以一一赋值）
+    isMan: 'true', // 公有属性
+    write: function () {} // 公有方法
+}
 
-// 正确写法
-// 写法 1
-var foo = function () {...};    // 这就不是定义，而是表达式了。
-foo();
-// 写法 2
-(function foo() {...})    // 这里是故意换行，以便于理解，和 写法 3 是一致的
-();
-// 写法 3
-(function foo(){...}());
-// 写法 4
-!function foo() {...}();
-// 写法 5
-+function foo() {...}();
-// 写法 6
-void function () {
-    // 这里是真正需要的代码
-}();                 
+var instance = new SuperType()
 ```
+
+![new](https://user-images.githubusercontent.com/19721451/58102668-3f051a80-7c14-11e9-8314-e3e8fd0ac280.png)
+
+所以类的构造函数内定义的 **私有变量或方法** ，以及类定义的 **静态公有属性及方法** ，在 **new** 的实例对象中都将 **无法访问** 。

@@ -1,6 +1,6 @@
-在JS中，判断一个变量的类型，常常会用到`typeof`运算符，但当用来判断引用类型变量时，无论是什么类型的变量，它都会返回`Object`。为此，引入了`instanceof`。
+在 JS 中，判断一个变量的类型，常常会用到 `typeof` 运算符，但当用来判断引用类型变量时，无论是什么类型的变量，它都会返回 `Object` 。为此，引入了`instanceof`。
 
-`instanceof`相比与`typeof`来说，`instanceof`方法要求开发者明确的确认对象为某特定类型。即`instanceof`用于判断引用类型属于哪个构造函数的方法。
+`instanceof` 相比与 `typeof` 来说，`instanceof ` 方法要求开发者明确的确认对象为某特定类型。即 `instanceof` 用于判断引用类型属于哪个构造函数的方法。
 
 ```js
 var arr = []
@@ -8,7 +8,7 @@ arr instanceof Array // true
 typeof arr // object, typeof 是无法判断是否为数组的
 ```
 
-另外，更重的一点是 instanceof 可以在继承关系中用来判断一个实例是否属于它的父类型。
+另外，更重的一点是 `instanceof` 可以在继承关系中用来判断一个实例是否属于它的父类型。
 
 ```js
 // 判断 f 是否是 Foo 类的实例 , 并且是否是其父类型的实例
@@ -27,7 +27,7 @@ console.log(foo instanceof Aoo)//true
 - 再往上，看是否对应着`Aoo.prototype`
 - 再试着判断 `f instanceof Object`
 
-即`instanceof`可以用于判断多层继承关系。
+即 `instanceof` 可以用于判断多层继承关系。
 
 下面看一组复杂例子
 
@@ -44,11 +44,11 @@ console.log(Foo instanceof Function) //true
 console.log(Foo instanceof Foo) //false
 ```
 
-在这组数据中，Object、Function instanceof 自己为true， 其他的instanceof自己都为false，这就要从instanceof的内部实现机制以及JS原型继承机制讲起。
+在这组数据中，Object、Function instanceof 自己均为 true， 其他的 instanceof 自己都为 false，这就要从instanceof 的内部实现机制以及 JS 原型继承机制讲起。
 
 ### 一、instanceof 的内部实现机制
 
-   instanceof的内部实现机制是通过判断对象的原型链上是否能找到对象的 `prototype`
+   instanceof 的内部实现机制是通过判断对象的原型链上是否能找到对象的 `prototype`
 
    ```js
    // instanceof 的内部实现 
@@ -75,7 +75,7 @@ console.log(Foo instanceof Foo) //false
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181212154458880.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
 
    图片来自于[JS原型链](http://www.mollypages.org/tutorials/js.mp)
-   由其本文涉及显示原型和隐式原型，所以下面对这两个概念作一下简单说明。在 JavaScript 原型继承结构里面，规范中用 [[Prototype]] 表示对象隐式的原型，在 JavaScript 中用 `__proto__` 表示，并且在 Firefox 和 Chrome 浏览器中是可以访问得到这个属性的，但是 IE 下不行。所有 JavaScript 对象都有 __proto__ 属性，但只有 `Object.prototype.__proto__` 为 null，前提是没有在 Firefox 或者 Chrome 下修改过这个属性。这个属性指向它的原型对象。 至于显示的原型，在 JavaScript 里用 prototype 属性表示，这个是 JavaScript 原型继承的基础知识，如果想进一步了解，请参考[JS基础之原型与原型链](https://blog.csdn.net/lunahaijiao/article/details/84974465)
+   由其本文涉及显示原型和隐式原型，所以下面对这两个概念作一下简单说明。在 JavaScript 原型继承结构里面，规范中用 [[Prototype]] 表示对象隐式的原型，在 JavaScript 中用 `__proto__` 表示，并且在 Firefox 和 Chrome 浏览器中是可以访问得到这个属性的，但是 IE 下不行。所有 JavaScript 对象都有` __proto__` 属性，但只有 `Object.prototype.__proto__` 为 null，前提是没有在 Firefox 或者 Chrome 下修改过这个属性。这个属性指向它的原型对象。 至于显示的原型，在 JavaScript 里用 prototype 属性表示，这个是 JavaScript 原型继承的基础知识，如果想进一步了解，请参考[JS基础之原型与原型链](https://blog.csdn.net/lunahaijiao/article/details/84974465)
 
    下面介绍几个例子，加深你的理解：
 
@@ -153,7 +153,7 @@ console.log(Aoo.prototype.isPrototypeOf(foo)) //true
 - `isPrototypeOf`：`foo` 的原型链是针对 `Foo` 本身
 
      
-### 四、 instanceof和多全局对象(多个frame或多个window之间的交互)
+### 四、 instanceof 和多全局对象(多个 frame 或多个 window 之间的交互)
 instanceof在多个全局作用域下，判断会有问题，例如：
 ```js
 //  parent.html
@@ -173,8 +173,8 @@ instanceof在多个全局作用域下，判断会有问题，例如：
         var v = [];
     </script>
 ```
-严格上来说value 就是数组，但parent页面中打印输出： false ；这是因为 Array.prototype !== window.frames[0].Array.prototype，并且数组从前者继承。
-出现问题主要是在浏览器中，当我们的脚本开始开始处理多个frame或windows 或在多个窗口之间进行交互。多个窗口意味着多个全局环境，不同的全局环境拥有不同的全局对象，从而拥有不同的内置类型构造函数。
+严格上来说 value 就是数组，但 parent 页面中打印输出： false ；这是因为 Array.prototype !== window.frames[0].Array.prototype ，并且数组从前者继承。
+出现问题主要是在浏览器中，当我们的脚本开始开始处理多个 frame 或 windows 或在多个窗口之间进行交互。多个窗口意味着多个全局环境，不同的全局环境拥有不同的全局对象，从而拥有不同的内置类型构造函数。
 **解决方法：可以通过使用 Array.isArray(myObj) 或者Object.prototype.toString.call(myObj) === "[object Array]"来安全的检测传过来的对象是否是一个数组**
 
 #### 扩展：Object.prototype.toString 方法
