@@ -441,3 +441,7 @@ var instance = new SuperType()
 ![new](https://user-images.githubusercontent.com/19721451/58102668-3f051a80-7c14-11e9-8314-e3e8fd0ac280.png)
 
 所以类的构造函数内定义的 **私有变量或方法** ，以及类定义的 **静态公有属性及方法** ，在 **new** 的实例对象中都将 **无法访问** 。
+
+#### 扩展：继承机制的设计思想
+
+关于继承机制的设计思想，请参见 [Javascript继承机制的设计思想](http://www.ruanyifeng.com/blog/2011/06/designing_ideas_of_inheritance_mechanism_in_javascript.html) 。
