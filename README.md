@@ -54,9 +54,9 @@
 
 ### JS 系列
 
-- [JS 基础之变量、解构、函数](https://github.com/sisterAn/blog/issues/48)
-- [JS 基础之原型与原型链](https://github.com/sisterAn/blog/issues/5)
-- [JS 基础之继承](https://github.com/sisterAn/blog/issues/41)
+- [JS 基础之 var、let、const、解构、展开、函数](https://github.com/sisterAn/blog/issues/48)
+- [JS 基础之深入 constructor、prototype、`__proto__`、[[Prototype]] 及 原型链](https://github.com/sisterAn/blog/issues/5)
+- [JS 基础之继承的 六 种实现方式](https://github.com/sisterAn/blog/issues/41)
 - [JS 基础之 instanceof](https://github.com/sisterAn/blog/issues/6)
 - [JS 基础之call、apply、bind](https://github.com/sisterAn/blog/issues/8)
 - [JS 基础之异步（一）](https://github.com/sisterAn/blog/issues/11)
