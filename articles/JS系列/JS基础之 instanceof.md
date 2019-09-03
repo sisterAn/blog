@@ -1,3 +1,8 @@
+### 引言
+`JS`系列暂定 27 篇，从基础，到原型，到异步，到设计模式，到架构模式等，
+
+本篇是`JS`系列中第 4 篇，文章主讲 JS `instanceof` ，包括 `instanceof` 作用、内部实现机制，以及 `instanceof`  与 `typeof`、`Symbol.hasInstance`、`isPrototype`、`Object.prototype.toString`、`[[Class]]` 等的对比使用 ，深入了解 JS `instanceof`。
+
 ### 一、instanceof
 
 #### 1. 引入 instanceof 
@@ -308,9 +313,25 @@ console.log(obj.toString()); // "[object Object]"
 
 
 
-#### 1. 使用 `toString()` 检测对象类型
+#### 1.  [[Class]]
 
-可以通过 `toString()` 来获取每个对象的类型。这是因为  `toString` 方法可以从对象中提取出来，以其他值作为上下文（context）对象进行调用，调用结果取决于传入的上下文对象。
+每个实例都有一个 `[[Class]]` 属性，这个属性中就指定了上述字符串中的 `type` (构造函数名)。 `[[Class]]` 不能直接地被访问，但通常可以间接地通过在这个值上借用默认的 `Object.prototype.toString.call(..)` 方法调用来展示。 
+
+```js
+Object.prototype.toString.call("abc"); // "[object String]"
+Object.prototype.toString.call(100); // "[object Number]"
+Object.prototype.toString.call(true); // "[object Boolean]"
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call([1,2,3]); // "[object Array]"
+Object.prototype.toString.call(/\w/); // "[object RegExp]"
+```
+
+
+
+#### 2. 使用 `Object.prototype.toString.call(..)` 检测对象类型
+
+可以通过 `Object.prototype.toString.call(..)` 来获取每个对象的类型。
 
 ```js
 function isFunction(value) {
@@ -347,11 +368,9 @@ isRegExp(/\w/); // true
 isFunction(function(){}); //true
 ```
 
-每个类的内部都有一个 `[[Class]]` 属性，这个属性中就指定了上述字符串中的 `type` (构造函数名) ；
 
 
-
-#### 2. Symbol.toStringTag
+#### 3. Symbol.toStringTag
 
 `Object.prototype.toString` 方法可以使用 `Symbol.toStringTag` 这个特殊的对象属性进行自定义输出。
 
@@ -379,6 +398,8 @@ console.log(Object.prototype.toString.call(new XMLHttpRequest())); // [object XM
 输出结果和 `Symbol.toStringTag`（前提是这个属性存在）一样，只不过被包裹进了 `[object ...]` 里。
 
 所以，如果希望以字符串的形式获取内置对象类型信息，而不仅仅只是检测类型的话，可以用这个方法来替代 `instanceof`。
+
+
 
 ### 八、总结
 
