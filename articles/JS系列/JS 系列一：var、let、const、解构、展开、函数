@@ -545,15 +545,207 @@ clone.m(); // error!
 ```
 
 
+### 七、new、this、class、函数
 
-### 附加：
+#### this 与 new
 
-**箭头函数**
+**new 关键字**创建的对象**实际上是对新对象 this 的不断赋值，并将 `__proto__` 指向类的 prototype 所指向的对象**。
+
+```js
+var SuperType = function (name) {
+    var nose = 'nose' // 私有属性
+    function say () {} // 私有方法
+    
+    // 特权方法
+    this.getName = function () {} 
+    this.setName = function () {}
+    
+    this.mouse = 'mouse' // 对象公有属性
+    this.listen = function () {} // 对象公有方法
+    
+    // 构造器
+    this.setName(name)
+}
+
+SuperType.age = 10 // 类静态公有属性（对象不能访问）
+SuperType.read = function () {} // 类静态公有方法（对象无法访问）
+
+SuperType.prototype = { // 对象赋值（也可以一一赋值）
+    isMan: 'true', // 公有属性
+    write: function () {} // 公有方法
+}
+
+var instance = new SuperType()
+```
+
+![new](https://user-gold-cdn.xitu.io/2019/9/2/16ced998a7b06e7e?w=550&h=180&f=png&s=23875)
+
+在函数调用前增加 `new`，相当于把 `SuperType` 当成一个构造函数（虽然它仅仅只是个函数），然后创建一个 {} 对象并把 `SuperType` 中的 `this` 指向那个对象，以便可以通过类似 `this.mouse` 的形式去设置一些东西，然后把这个对象返回。
+
+**具体来讲，只要在函数调用前加上 `new` 操作符，你就可以把任何函数当做一个类的构造函数来用。**
+
+##### 加 new
+
+在上例中，我们可以看到：在构造函数内定义的 **私有变量或方法** ，以及类定义的 **静态公有属性及方法** ，在 **new** 的实例对象中都将 **无法访问** 。
+
+##### 不加 new
+
+如果你调用 `SuperType()` 时**没有**加 `new`，其中的 `this` 会指向某个全局且无用的东西（比如，`window` 或者 `undefined`），因此我们的代码会崩溃，或者做一些像设置 `window.mouse` 之类的傻事。
+
+```js
+let instance1 = SuperType(); 
+
+console.log(instance1.mouse); 
+// Uncaught TypeError: Cannot read property 'mouse' of undefined
+
+console.log(window.mouse); 
+// mouse
+```
+
+#### 函数、类
+
+##### 函数
+
+```js
+function Bottle(name) {
+  this.name = name;
+}
+
+// + new
+let bottle = new Bottle('bottle'); // ✅ 有效： Bottle {name: "bottle"}
+console.log(bottle.name) // bottle
+
+// 不加 new
+let bottle1 = Bottle('bottle');   // 🔴 这种调用方法让人很难理解
+console.log(bottle1.name); // Uncaught TypeError: Cannot read property 'name' of undefined
+console.log(window.name); // bottle
+```
+##### 类
+
+```js
+class Bottle {
+  constructor(name) {
+    this.name = name;
+  }
+  sayHello() {
+    console.log('Hello, ' + this.name);
+  }
+}
+
+// + new
+let bottle = new Bottle('bottle');
+bottle.sayHello(); // ✅ 依然有效，打印：Hello, bottle
+
+// 不加 new
+let bottle1 = Bottle('bottle'); // 🔴 立即失败
+// Uncaught TypeError: Class constructor Bottle cannot be invoked without 'new'
+```
+
+##### 对比使用
+
+```js
+let fun = new Fun();
+// ✅ 如果 Fun 是个函数：有效
+// ✅ 如果 Fun 是个类：依然有效
+
+let fun1 = Fun(); // 我们忘记使用 `new`
+// 😳 如果 Fun 是个长得像构造函数的方法：令人困惑的行为
+// 🔴 如果 Fun 是个类：立即失败
+```
+
+即
+
+|          | new Fun()                     | Fun                                 |
+| -------- | ----------------------------- | ----------------------------------- |
+| class    | ✅ `this` 是一个 `Person` 实例 | 🔴 `TypeError`                       |
+| function | ✅ `this` 是一个 `Person` 实例 | 😳 `this` 是 `window` 或 `undefined` |
+
+#### 使用 new 的怪异之处
+
+##### return 无效
+
+```js
+function Bottle() {
+  return 'Hello, AnGe';
+}
+
+Bottle(); // ✅ 'Hello, AnGe'
+new Bottle(); // 😳 Bottle {}
+```
+
+##### 箭头函数
+
+对于箭头函数，使用 `new` 会报错🔴
+
+```js
+const Bottle = () => {console.log('Hello, AnGe')};
+new Bottle(); // Uncaught TypeError: Bottle is not a constructor
+```
+
+这个行为是遵循箭头函数的设计而刻意为之的。箭头函数的一个附带作用是它*没有*自己的 `this` 值 —— `this` 解析自离得最近的常规函数：
+
+```js
+function AnGe() {
+    this.name = 'AnGe'
+    return () => {console.log('Hello, ' + this.name)};
+}
+let anGe = new AnGe();
+console.log(anGe()); // Hello, AnGe
+```
+
+所以**箭头函数没有自己的 this。**但这意味着它作为构造函数是完全无用的！
+
+**总结：箭头函数**
 
 - this 指向定义时的环境。
 - **不可 new 实例化**。
 - this 不可变。
 - **没有 arguments 对象**。
+
+##### 允许一个使用 `new` 调用的函数返回另一个对象以 **覆盖** `new` 的返回值
+
+先看一个例子：
+
+```js
+function Vector(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+var v1 = new Vector(0, 0);
+var v2 = new Vector(0, 0); 
+
+console.log(v1 === v2); // false
+v1.x = 1;
+console.log(v2); // Vector {x: 0, y: 0}
+```
+
+对于这个例子，一目了然，没什么可说的。
+
+那么再看下面一个例子，思考一下为什么 `b === c` 为 `true` 喃😲：
+
+```js
+let zeroVector = null;
+// 创建了一个懒变量 zeroVector = null;
+function Vector(x, y) {
+  if (zeroVector !== null) {
+    // 复用同一个实例
+    return zeroVector;
+  }
+  zeroVector = this;
+  this.x = x;
+  this.y = y;
+}
+
+var v1 = new Vector(0, 0);
+var v2 = new Vector(0, 0); 
+
+console.log(v1 === v2); // true
+v1.x = 1;
+console.log(v2); // Vector {x: 1, y: 0}
+```
+
+这是因为，JavaScript 允许一个使用 `new` 调用的函数返回另一个对象以 **覆盖** `new` 的返回值。这在我们利用诸如「对象池模式」来对组件进行复用时可能是有用的。
 
 
 
@@ -561,3 +753,4 @@ clone.m(); // error!
 
 
  [TypeScript Variable Declarations](https://www.typescriptlang.org/docs/handbook/variable-declarations.html)
+ 
