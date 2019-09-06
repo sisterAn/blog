@@ -1,6 +1,6 @@
 ### 一、Function.prototype.call()
 
-`call()` 方法调用一个函数, 其具有一个指定的`this`值和分别地提供的参数(**参数的列表**)。
+`call()` 方法调用一个函数, 其具有一个指定的 `this` 值和分别地提供的参数(**参数的列表**)。
 
 ```js
 fun.call(thisArg, arg1, arg2, ...)
@@ -9,12 +9,14 @@ fun.call(thisArg, arg1, arg2, ...)
 - thisArg：在fun函数运行时指定的`this`值*。*
 - arg1, arg2, …：指定的参数列表。
 
-需要注意的是，指定的`this`值并不一定是该函数执行时真正的`this`值，如果这个函数处于[非严格模式下](https://developer.mozilla.org/zh-CN/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode)，则指定为`null`和`undefined`的`this`值会自动指向全局对象(浏览器中就是window对象)，同时值为原始值(数字，字符串，布尔值)的`this`会指向该原始值的自动包装对象。
+需要注意的是，指定的 `this` 值并不一定是该函数执行时真正的 `this` 值，如果这个函数处于[非严格模式下](https://developer.mozilla.org/zh-CN/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode)，则指定为 `null` 和 `undefined` 的 `this` 值会自动指向全局对象(浏览器中就是 window 对象)，同时值为原始值(数字，字符串，布尔值)的 `this` 会指向该原始值的自动包装对象。
 
-#### 使用call调用父构造函数
+
+
+#### 使用 call 调用父构造函数
 
 ```JS
-function Person(name, time) {
+function Bottle(name, time) {
   this.name = name
   if (time < 6) {
     throw RangeError(
@@ -23,13 +25,17 @@ function Person(name, time) {
   }
 }
 
-function Man(name, time) {
-  Person.call(this, name, time);
-  this.category = 'man';
+function SubBottle(name, time) {
+  // 使用 call 调用父类的构造函数
+  Bottle.call(this, name, time);
+  // 定义子类属性
+  this.category = 'subBottle';
 }
 
 //等同于
-function Woman(name, time) {
+function LittleBottle(name, time) {
+  
+  // 这部分类是 Bottle.call(this, name, time); 的执行效果
   this.name = name;
   this.time = time;
   if (time < 6) {
@@ -37,85 +43,122 @@ function Woman(name, time) {
       this.name + ' is sleep'
     );
   }
-  this.category = 'woman';
+    
+  // 定义子类属性
+  this.category = 'littleBottle';
 }
 
-var yang = new Man('yang', 5);
-var an = new Woman('an', 8);
+// 实例对象
+var subBottle = new SubBottle('subBottle', 5);
+// Uncaught RangeError: subBottle is sleep
+
+var littleBottle = new LittleBottle('littleBottle', 5);
+// Uncaught RangeError: littleBottle is sleep
 ```
-#### 使用call调取匿名函数
+
+
+#### 使用 call 调取匿名函数
 
 ```js
-var person = [
-  {name: 'yang', age: '24'},
-  {name: 'an', age: '12'}
+var bottle = [
+  {name: 'an', age: '24'},
+  {name: 'anGe', age: '12'}
 ];
 
-for (var i = 0; i < person.length; i++) {
+for (var i = 0; i < bottle.length; i++) {
+  // 匿名函数
   (function (i) { 
-    this.print = function () { 
+    setTimeout(() => {
+      // this 指向了 bottle[i]
       console.log('#' + i  + ' ' + this.name + ': ' + this.age); 
-    } 
-    this.print();
-  }).call(person[i], i);
+    }, 1000)
+  }).call(bottle[i], i);
+  // 调用 call 方法，同时解决了 var 作用域问题
 }
 ```
 
-在上面例中的`for`循环体内，我们创建了一个匿名函数，然后通过调用该函数的`call`方法，将每个数组元素作为指定的`this`值执行了那个匿名函数。这个匿名函数的主要目的是给每个数组元素对象添加一个`print`方法，这个`print`方法可以打印出各元素在数组中的正确索引号。当然，这里不是必须得让数组元素作为`this`值传入那个匿名函数（普通参数就可以），目的是为了演示`call`的用法。
-
-#### 使用call方法调用函数并指定上下文中的this
+打印结果：
 
 ```js
-function Person() {
-  var hello = [this.name, ' say ', this.word].join(' ');
+#0 an: 24
+#1 anGe: 12
+```
+
+在上面例中的 `for` 循环体内，我们创建了一个匿名函数，然后通过调用该函数的 `call` 方法，将每个数组元素作为指定的 `this` 值立即执行了那个匿名函数。这个立即执行的匿名函数的作用是打印出 `bottle[i]` 对象在数组中的正确索引号。
+
+
+
+#### 使用 call 方法调用函数并指定上下文中的 this
+
+```js
+function Bottle() {
+  var hello = [this.name, 'say', this.word].join(' ');
   console.log(hello);
 }
 
-var man = {
-  name: 'yang', word: 'hello'
+var bottle = {
+  name: 'bottle', word: 'hello'
 };
 
-Person.call(man); // yang  say  hello
+Bottle.call(bottle); 
+// bottle say hello
 ```
-#### 使用call调用函数并且没有确定第一个参数
+
+
+#### 使用 call 调用函数并且没有确定第一个参数
+
+##### 非严格模式
 
 ```js
 // 非严格模式下
-var an = 'an'
+var bottle = 'bottle'
 function say(){
-   console.log('name is %s ',this.an)
+   // 注意：非严格模式下，this 为 Window
+   console.log('name is %s',this.bottle)
 }
-say.call()   //name is an
+
+say.call()
+// name is bottle
 ```
 
+##### 严格模式
+
 ```js
-// 严格模式下--注意：在严格模式下this的值将会是undefined. 
+// 严格模式下
 'use strict'
-var an = 'an'
+var bottle = 'bottle'
 function say(){
-   console.log('name is %s ',this.an)
+   // 注意：在严格模式下 this 为 undefined
+   console.log('name is %s',this.bottle)
 }
-say.call()  // Uncaught TypeError: Cannot read property 'an' of undefined
+
+say.call()
+// Uncaught TypeError: Cannot read property 'bottle' of undefined
 ```
 
 
 
 ### 二、Function.prototype.apply()
 
-`apply()` 方法调用一个具有给定`this`值的函数，以及作为一个数组（或[类似数组对象](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Indexed_collections#Working_with_array-like_objects)）提供的参数。
+`apply()` 方法调用一个具有给定 `this` 值的函数，以及作为一个数组（或[类似数组对象](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Indexed_collections#Working_with_array-like_objects)）提供的参数。
 
-`call()` 和 `apply()`的区别在于，`call()`方法接受的是**若干个参数的列表**，而`apply()`方法接受的是**一个包含多个参数的数组**
+`call()` 和 `apply()` 的区别在于：
+
+- `call()` 方法接受的是 **若干个参数的列表**
+- `apply()` 方法接受的是 **一个包含多个参数的数组**
 
 ```Js
 func.apply(thisArg, [argsArray])
 ```
 
-- thisArg：在fun函数运行时指定的`this`值*。*
+- thisArg：在 fun 函数运行时指定的 `this` 值*。*
 - arg1, arg2, …：可选的。一个数组或者类数组对象，其中的数组元素将作为单独的参数传给 `func` 函数。
 
 需要注意：Chrome 14 以及 Internet Explorer 9 仍然不接受类数组对象。如果传入类数组对象，它们会抛出异常。
 
-#### 用apply将数组添加到另一数组
+
+
+#### 用 apply 将数组添加到另一数组
 
 ```js
 var array = ['a', 'b']
@@ -123,29 +166,46 @@ var elements = [0, 1, 2]
 array.push.apply(array, elements)
 console.info(array) // ["a", "b", 0, 1, 2]
 ```
-#### 使用apply和内置函数
+
+
+#### 使用 apply 和内置函数
 
 ```js
 /* 找出数组中最大/小的数字 */
-var numbers = [5, 6, 2, 3, 7]
-
+let numbers = [5, 6, 2, 3, 7]
 /* 应用(apply) Math.min/Math.max 内置函数完成 */
-var max = Math.max.apply(null, numbers) /* 基本等同于 Math.max(numbers[0], ...) 或 Math.max(5, 6, ..) */
-var min = Math.min.apply(null, numbers)
-// max: 7
-// min: 2
 
+let max = Math.max.apply(null, numbers) 
+/* 基本等同于 Math.max(numbers[0], ...) 或 Math.max(5, 6, ..) */
+
+let min = Math.min.apply(null, numbers)
+
+console.log('max: ', max)
+// max: 7
+console.log('min: ', min)
+// min: 2
+```
+
+它相当于：
+
+```js
 /* 代码对比： 用简单循环完成 */
-max = -Infinity, min = +Infinity
+let numbers = [5, 6, 2, 3, 7]
+let max = -Infinity, min = +Infinity
 for (var i = 0; i < numbers.length; i++) {
   if (numbers[i] > max)
     max = numbers[i]
   if (numbers[i] < min) 
     min = numbers[i]
 }
+
+console.log('max: ', max)
+// max: 7
+console.log('min: ', min)
+// min: 2
 ```
 
-但是：如果用上面的方式调用`apply`，会有超出JavaScript引擎的参数长度限制的风险。更糟糕的是其他引擎会直接限制传入到方法的参数个数，导致参数丢失。
+但是：如果用上面的方式调用 `apply`，会有超出 JavaScript 引擎的参数长度限制的风险。更糟糕的是其他引擎会直接限制传入到方法的参数个数，导致参数丢失。
 
 所以，当数据量较大时
 
@@ -161,8 +221,11 @@ function minOfArray(arr) {
   return min
 }
 var min = minOfArray([5, 6, 2, 3, 7])
+// max 同样也是如此
 ```
-#### 使用apply来链接构造器
+
+
+#### 使用 apply 来链接构造器
 
 ```js
 Function.prototype.construct = function (aArgs) {
@@ -359,7 +422,7 @@ var an = new Person('An')
 an.hello() // 1s后output： Hello，
 ```
 
-这个时候输出的`this.name`是null，原因是`this`指向是在运行函数时确定的，而不是定义函数时候确定的，再因为setTimeout在全局环境下执行，所以`this`指向`setTimeout`的上下文：`window`。
+这个时候输出的 `this.name` 是 `null` ，原因是 `this` 指向是在运行函数时确定的，而不是定义函数时候确定的，再因为 `setTimeout` 在全局环境下执行，所以 `this` 指向 `setTimeout` 的上下文：`window`。
 
 ##### 解决方法一： 缓存this
 
@@ -397,9 +460,9 @@ an.hello()// 1s后output： Hello，An
 
 ### 四、call、apply、bind区别与实现
 
-call、apply都是为了解决 this 的指向。作用是相同的，只是传参的方式不同。
+`call` 、`apply` 都是为了解决 `this` 的指向。作用是相同的，只是传参的方式不同。
 
-除了第一个参数外，call 可以接收一个参数列表，apply 只能接收一个参数数组。
+除了第一个参数外，`call` 可以接收一个参数列表，`apply` 只能接收一个参数数组。
 
 ```js
 let a = {
@@ -414,81 +477,86 @@ getValue.call(a, 'yck', '24')
 getValue.apply(a, ['yck', '24'])
 ```
 
- 模拟实现call、apply
+模拟实现 `call` 、`apply`
 
 可以从一下几点考虑实现
 
-- 不传入第一个参数，那么默认为 window
+- 不传入第一个参数，那么默认为 `window`
+- 改变了 `this` 指向，让新的对象可以执行该函数，那么思路是否可以变成新的对象添加一个函数，然后再执行完成后删除
 
-- 改变了 this 指向，让新的对象可以执行该函数，那么思路是否可以变成新的对象添加一个函数，然后再执行完成后删除
+#### 模拟实现 call
 
-  ```js
-  Function.prototype.myCall = function(context) {
-      var context = context || windows
-      // 给 context 添加一个属性
-      // getValue.call(a, 'yck', '24') => a.fn = gatValue
-      context.fn = this
-      // 将 context 后面的参数取出来
-      var args = [...arguments].slice(1)
-      // getValue.call(a, 'yck', '24') => a.fn('yck', '24')
-      var result = context.fn(...args)
-      // 删除 fn
-      delete context.fn
-      return result
-  }
-  ```
+```js
+Function.prototype.myCall = function(context) {
+    var context = context || windows
+    // 给 context 添加一个属性
+    // getValue.call(a, 'yck', '24') => a.fn = gatValue
+    context.fn = this
+    // 将 context 后面的参数取出来
+    var args = [...arguments].slice(1)
+    // getValue.call(a, 'yck', '24') => a.fn('yck', '24')
+    var result = context.fn(...args)
+    // 删除 fn
+    delete context.fn
+    return result
+}
+```
 
-  以上就是 call 的思路， apply的实现也类似
+以上就是 `call` 的思路， `apply` 的实现也类似
 
-  ```js
-  Function.prototype.myApply = function(context) {
-      var context = context || window
-      context.fn = this
-      
-      var result
-      // 需要判断是否存储第二个参数
-      // 如果存在，就将第二个参数展开
-      if (arguments[1]) {
-          result = context.fn(...arguments[1])
-      } else {
-          result = context.fn()
-      }
-      
-      delete context.fn
-      return result
-  }
-  ```
+#### 模拟实现 apply
 
-  bind 和其他两个方法作用是一致的，只是该方法会返回一个函数，并且我们可以通过bind来实现柯里化。
+```js
+Function.prototype.myApply = function(context) {
+    var context = context || window
+    context.fn = this
+    
+    var result
+    // 需要判断是否存储第二个参数
+    // 如果存在，就将第二个参数展开
+    if (arguments[1]) {
+        result = context.fn(...arguments[1])
+    } else {
+        result = context.fn()
+    }
+    
+    delete context.fn
+    return result
+}
+```
 
-  调用绑定函数通常会导致执行包装函数，绑定函数有以下内部属性：
+#### 模拟实现 bind
 
-  - [[BoundTargetFunction]]：包装的函数（function）
-  - [[BoundThis]]：调用包装函数的this值
-  - [[BoundArguments]]：值列表，其元素用于对包装函数调用的第一个参数
-  - [[Call]]：执行与此对象关联的代码。通过函数调用表达式调用，内部方法的参数是this值和参数列表
+`bind` 和其他两个方法作用是一致的，只是该方法会返回一个函数，并且我们可以通过 `bind` 来实现柯里化。
 
-  当调用绑定函数时，它调用[[BoundTargetFunction]]上的内部方法[[Call]]，后跟参数**Call(boundThis, args)**。其中，boundThis是[[BoundThis]]，args是[[BoundArguments]]，后跟函数调用传递的参数。
+调用绑定函数通常会导致执行包装函数，绑定函数有以下内部属性：
 
-  ```js
-  Function.prototype.myBind = function(context) {
-      if (typeof this !== 'function') {
-          throw new TypeError('error')
-      }
-      var _this = this
-      var args = [...arguments].slice(1)
-      // 返回一个函数
-      return function Fun() {
-          // 因为返回一个函数， 我们可以 new Fun(), 所以需要判断
-          if (this instanceof Fun) {
-              return new _this(...args, ...arguments)
-          }
-          return _this.call(context, ...args, ...arguments)
-      }
-  }
-  ```
+- `[[BoundTargetFunction]]`：包装的函数（ `function` ）
+- `[[BoundThis]]`：调用包装函数的this值
+- `[[BoundArguments]]`：值列表，其元素用于对包装函数调用的第一个参数
+- `[[Call]]`：执行与此对象关联的代码。通过函数调用表达式调用，内部方法的参数是 `this` 值和参数列表
 
-  
+当调用绑定函数时，它调用 `[[BoundTargetFunction]]` 上的内部方法 `[[Call]]` ，后跟参数 **Call(boundThis, args)** 。其中，`boundThis` 是 `[[BoundThis]]` ，`args` 是 `[[BoundArguments]]`，后跟函数调用传递的参数。
+
+```js
+Function.prototype.myBind = function(context) {
+    if (typeof this !== 'function') {
+        throw new TypeError('error')
+    }
+    var _this = this
+    var args = [...arguments].slice(1)
+    // 返回一个函数
+    return function Fun() {
+        // 因为返回一个函数， 我们可以 new Fun(), 所以需要判断
+        if (this instanceof Fun) {
+            return new _this(...args, ...arguments)
+        }
+        return _this.call(context, ...args, ...arguments)
+    }
+}
+```
+
+
 
 ### 五、柯里化
 
