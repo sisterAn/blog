@@ -239,7 +239,7 @@ Function.prototype.construct = function (aArgs) {
 
 ### 三、Function.prototype.bind()
 
-bind() 方法会创建一个新绑定函数，当这个新绑定函数被调用时，this键值为其提供的值，其参数列表前几项值为创建时指定的参数序列，绑定函数与被调函数具有相同的函数题（ES5中）。
+`bind()` 方法会创建一个新绑定函数，当这个新绑定函数被调用时，`this` 键值为其提供的值，其参数列表前几项值为创建时指定的参数序列，绑定函数与被调函数具有相同的函数体（ES5中）。
 
 ```js
 var module = {
@@ -248,16 +248,19 @@ var module = {
         return this.x
     }
 }
-var unbindGetX = new module.getX
-console.log(unbindGetX())// 在这种情况下，“this” 指向全局作用域
+
+var unbindGetX = module.getX
+console.log(unbindGetX())
+// 在这种情况下，“this” 指向全局作用域
 // output: undefined
 
-var bindGetX = unbindGetX.bind(module)// 创建一个新函数，将“this”绑定到 module 对象
+var bindGetX = unbindGetX.bind(module)
+// 创建一个新函数，将 this 绑定到 module 对象
 console.log(bindGetX())
 // output: 42
 ```
 
-注意：绑定函数也可以使用new运算符构造：这样做就好像已经构造了目标函数一样。提供的**this**值将被忽略，而前置参数将提供给模拟函数。
+再看一个例子：
 
 ```js
 this.value = 11
@@ -269,24 +272,30 @@ function ubx() {
     console.log(this.value)
     console.log("-ubv")
 }
-var bindv = ubv.bind(module)
+
+var bindv = ubx.bind(module) // this 指向 module
 console.log(bindv()) 
 // ubv-
 // 42
 // -ubv
-console.log(new bindv()) 
+
+console.log(new bindv())  // this 指向 ubx {}
 // ubv-
 // undefined
 // -ubv
 ```
 
-上面例子中，运行结果`this.value` 输出为 `undefined`，这不是全局`value`， 也不是`ubx`对象中的`value`，这说明 `bind` 的 `this` 对象失效了，`new` 的实现中生成一个新的对象，这个时候的 `this`指向的是 `obj`。
+上面例子中，运行结果 `this.value` 输出为 `undefined` ，这不是全局 `value` ， 也不是 `ubx` 对象中的 `value` ，这说明 `bind` 的 `this` 对象失效了，`new` 的实现中生成一个新的对象，这个时候的 `this` 指向的是 `obj` 。
+
+注意：绑定函数也可以使用 new 运算符构造：这样做就好像已经构造了目标函数一样。提供的 **this** 值将被忽略，而前置参数将提供给模拟函数。
+
+
 
 #### 用法
 
 ##### 1. 创建绑定函数
 
-`bind()` 最简单的用法是创建一个函数，使这个函数不论怎么调用都有同样的 **this** 值。JavaScript新手经常犯的一个错误是将一个方法从对象中拿出来，然后再调用，希望方法中的 `this` 是原来的对象（比如在回调中传入这个方法）。如果不做特殊处理的话，一般会丢失原来的对象。从原来的函数和原来的对象创建一个绑定函数，则能很漂亮地解决这个问题
+`bind()` 最简单的用法是创建一个函数，使这个函数不论怎么调用都有同样的 **this** 值。JavaScript 新手经常犯的一个错误是将一个方法从对象中拿出来，然后再调用，希望方法中的 `this` 是原来的对象（比如在回调中传入这个方法）。如果不做特殊处理的话，一般会丢失原来的对象。从原来的函数和原来的对象创建一个绑定函数，则能很漂亮地解决这个问题：
 
 ```js
 this.x = 9; 
@@ -298,12 +307,15 @@ var module = {
 module.getX(); // 返回 81
 
 var retrieveX = module.getX;
-retrieveX(); // 返回 9, 在这种情况下，"this"指向全局作用域
+retrieveX(); 
+// 返回 9, 在这种情况下，this 指向全局作用域
 
-// 创建一个新函数，将"this"绑定到module对象
+// 创建一个新函数，将 this 绑定到 module 对象
 var boundGetX = retrieveX.bind(module);
 boundGetX(); // 返回 81
 ```
+
+
 ##### 2. 偏函数
 
 ```js
@@ -319,26 +331,27 @@ var leadingThirtysevenList = list.bind(undefined, 37);
 var list2 = leadingThirtysevenList(); // [37]
 var list3 = leadingThirtysevenList(1, 2, 3); // [37, 1, 2, 3]
 ```
-##### 3. 配合setTimeout
+
+
+##### 3. 配合 setTimeout
 
 ```js
-function LateBloomer() {
-  this.petalCount = Math.ceil(Math.random() * 12) + 1;
+function Bottle() {
+  this.name = 'bottle';
 }
-
-// Declare bloom after a delay of 1 second
-LateBloomer.prototype.bloom = function() {
-  window.setTimeout(this.declare.bind(this), 1000);
+Bottle.prototype.hello = function() {
+  console.log('hello ' + this.name);
+};
+Bottle.prototype.say = function() {
+  setTimeout(this.hello.bind(this), 1000);
 };
 
-LateBloomer.prototype.declare = function() {
-  console.log('I am a beautiful flower with ' +
-    this.petalCount + ' petals!');
-};
-
-var flower = new LateBloomer();
-flower.bloom();  // 一秒钟后, 调用'declare'方法
+var bottle = new Bottle();
+bottle.say();  
+// 一秒钟后, 调用 hello 方法，打印 hello bottle
 ```
+
+
 ##### 4. 作为构造函数使用的绑定函数
 
 ```js
@@ -356,9 +369,10 @@ p.toString(); // '1,2'
 
 var emptyObj = {};
 var YAxisPoint = Point.bind(emptyObj, 0/*x*/);
-// 以下这行代码在 polyfill 不支持,
-// 在原生的bind方法运行没问题:
-//(译注：polyfill的bind方法如果加上把bind的第一个参数，即新绑定的this执行Object()来包装为对象，Object(null)则是{}，那么也可以支持)
+// 以下这行代码在 polyfill 可能不支持,
+// 在原生的 bind 方法运行没问题:
+//(译注：polyfill 的 bind 方法如果加上把 bind 的第一个参数，
+// 即新绑定的 this 执行 Object() 来包装为对象，Object(null) 则是 {} ，那么也可以支持)
 var YAxisPoint = Point.bind(null, 0/*x*/);
 
 var axisPoint = new YAxisPoint(5);
@@ -368,48 +382,12 @@ axisPoint instanceof Point; // true
 axisPoint instanceof YAxisPoint; // true
 new Point(17, 42) instanceof YAxisPoint; // true
 ```
-#### Polyfill
 
-`bind()` 最简单的用法是创建一个函数，使这个函数不论怎么调用都有同样的 **this** 值。JavaScript新手经常犯的一个错误是将一个方法从对象中拿出来，然后再调用，希望方法中的 `this` 是原来的对象（比如在回调中传入这个方法）。如果不做特殊处理的话，一般会丢失原来的对象。从原来的函数和原来的对象创建一个绑定函数，则能很漂亮地解决这个问题
 
-```js
-if (!Function.prototype.bind) {
-  Function.prototype.bind = function(oThis) {
-    if (typeof this !== 'function') {
-      // closest thing possible to the ECMAScript 5
-      // internal IsCallable function
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-    }
-
-    var aArgs   = Array.prototype.slice.call(arguments, 1),
-        fToBind = this,
-        fNOP    = function() {},
-        fBound  = function() {
-          // this instanceof fNOP === true时,说明返回的fBound被当做new的构造函数调用
-          return fToBind.apply(this instanceof fNOP
-                 ? this
-                 : oThis,
-                 // 获取调用时(fBound)的传参.bind 返回的函数入参往往是这么传递的
-                 aArgs.concat(Array.prototype.slice.call(arguments)));
-        };
-
-    // 维护原型关系
-    if (this.prototype) {
-      // Function.prototype doesn't have a prototype property
-      fNOP.prototype = this.prototype; 
-    }
-    // 下行的代码使fBound.prototype是fNOP的实例,因此
-    // 返回的fBound若作为new的构造函数,new生成的新对象作为this传入fBound,新对象的__proto__就是fNOP的实例
-    fBound.prototype = new fNOP();
-
-    return fBound;
-  };
-}
-```
 #### 然而实际使用时会碰到这样的问题：
 
 ```js
-function Person(name) {
+function Bottle(name) {
     this.name = name
     this.hello = function(){
         setTimeout(function(){
@@ -418,32 +396,36 @@ function Person(name) {
     }
 }
 
-var an = new Person('An')
-an.hello() // 1s后output： Hello，
+var bottle = new Bottle('bottle')
+bottle.hello() // 1s 后打印： Hello，
 ```
 
 这个时候输出的 `this.name` 是 `null` ，原因是 `this` 指向是在运行函数时确定的，而不是定义函数时候确定的，再因为 `setTimeout` 在全局环境下执行，所以 `this` 指向 `setTimeout` 的上下文：`window`。
 
-##### 解决方法一： 缓存this
+
+
+##### 解决方法一： 缓存 this
 
 ```js
-function Person(name) {
+function Bottle(name) {
     this.name = name
     this.hello = function(){
-        var self = this // 缓存this
+        var _this = this // 缓存this
         setTimeout(function(){
-            console.log('Hello, ', self.name)
+            console.log('Hello, ', _this.name)
         }, 1000)
     }
 }
 
-var an = new Person('An')
-an.hello()// 1s后output： Hello，An
+var bottle = new Bottle('bottle')
+bottle.hello()// 1s 后打印：Hello,  bottle
 ```
+
+
 ##### 解决方法二： bind
 
 ```js
-function Person(name) {
+function Bottle(name) {
     this.name = name
     this.hello = function(){
         setTimeout(function(){
@@ -452,13 +434,13 @@ function Person(name) {
     }
 }
 
-var an = new Person('An')
-an.hello()// 1s后output： Hello，An
+var bottle = new Bottle('bottle')
+bottle.hello()// 1s 后打印： Hello，bottle
 ```
 
 
 
-### 四、call、apply、bind区别与实现
+### 四、call、apply、bind 区别与实现
 
 `call` 、`apply` 都是为了解决 `this` 的指向。作用是相同的，只是传参的方式不同。
 
@@ -484,6 +466,8 @@ getValue.apply(a, ['yck', '24'])
 - 不传入第一个参数，那么默认为 `window`
 - 改变了 `this` 指向，让新的对象可以执行该函数，那么思路是否可以变成新的对象添加一个函数，然后再执行完成后删除
 
+
+
 #### 模拟实现 call
 
 ```js
@@ -503,6 +487,8 @@ Function.prototype.myCall = function(context) {
 ```
 
 以上就是 `call` 的思路， `apply` 的实现也类似
+
+
 
 #### 模拟实现 apply
 
@@ -524,6 +510,8 @@ Function.prototype.myApply = function(context) {
     return result
 }
 ```
+
+
 
 #### 模拟实现 bind
 
