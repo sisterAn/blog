@@ -3,17 +3,83 @@
 `call()` 方法调用一个函数, 其具有一个指定的 `this` 值和分别地提供的参数(**参数的列表**)。
 
 ```js
-fun.call(thisArg, arg1, arg2, ...)
+func.call(thisArg, arg1, arg2, ...)
 ```
 
-- thisArg：在fun函数运行时指定的`this`值*。*
-- arg1, arg2, …：指定的参数列表。
+它运行 `func`，提供的第一个参数 `thisArg` 作为 `this`，后面的作为参数。
 
-需要注意的是，指定的 `this` 值并不一定是该函数执行时真正的 `this` 值，如果这个函数处于[非严格模式下](https://developer.mozilla.org/zh-CN/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode)，则指定为 `null` 和 `undefined` 的 `this` 值会自动指向全局对象(浏览器中就是 window 对象)，同时值为原始值(数字，字符串，布尔值)的 `this` 会指向该原始值的自动包装对象。
+#### 1. func 与 func.call
+
+先看一个例子：
+
+```js
+func(1, 2, 3);
+func.call(obj, 1, 2, 3)
+```
+
+他们都调用的是 `func`，参数是 `1`，`2` 和 `3`。
+
+唯一的区别是 `func.call` 也将 `this` 设置为 `obj`。
+
+需要注意的是，指定的 `this` 值并不一定是该函数执行时真正的 `this` 值，如果这个函数处于非严格模式下，则指定为 `null` 和 `undefined` 的 `this` 值会自动指向全局对象(浏览器中就是 window 对象)，同时值为原始值(数字，字符串，布尔值)的 `this` 会指向该原始值的自动包装对象。
 
 
 
-#### 使用 call 调用父构造函数
+#### 2. func.call 使用
+
+例如，在下面的代码中，我们在对象的上下文中调用 `Bottle.call(bottle)` 运行 `Bottle` ，并 `bottle` 传递为 `Bottle` 的 `this`：
+
+```js
+function Bottle() {
+  var hello = [this.name, 'say', this.word].join(' ');
+  console.log(hello);
+}
+
+var bottle = {
+  name: 'bottle', word: 'hello'
+};
+
+// 使用 call 将 bottle 传递为 Bottle 的 this
+Bottle.call(bottle); 
+// bottle say hello
+```
+
+
+
+#### 3. 使用 func.call 未指定 this
+
+##### 非严格模式
+
+```js
+// 非严格模式下
+var bottle = 'bottle'
+function say(){
+   // 注意：非严格模式下，this 为 Window
+   console.log('name is %s',this.bottle)
+}
+
+say.call()
+// name is bottle
+```
+
+##### 严格模式
+
+```js
+// 严格模式下
+'use strict'
+var bottle = 'bottle'
+function say(){
+   // 注意：在严格模式下 this 为 undefined
+   console.log('name is %s',this.bottle)
+}
+
+say.call()
+// Uncaught TypeError: Cannot read property 'bottle' of undefined
+```
+
+
+
+#### 4. call 在 JS 继承中的使用
 
 ```JS
 function Bottle(name, time) {
@@ -57,7 +123,8 @@ var littleBottle = new LittleBottle('littleBottle', 5);
 ```
 
 
-#### 使用 call 调取匿名函数
+
+#### 5. 解决 var 作用域
 
 ```js
 var bottle = [
@@ -88,77 +155,68 @@ for (var i = 0; i < bottle.length; i++) {
 
 
 
-#### 使用 call 方法调用函数并指定上下文中的 this
-
-```js
-function Bottle() {
-  var hello = [this.name, 'say', this.word].join(' ');
-  console.log(hello);
-}
-
-var bottle = {
-  name: 'bottle', word: 'hello'
-};
-
-Bottle.call(bottle); 
-// bottle say hello
-```
-
-
-#### 使用 call 调用函数并且没有确定第一个参数
-
-##### 非严格模式
-
-```js
-// 非严格模式下
-var bottle = 'bottle'
-function say(){
-   // 注意：非严格模式下，this 为 Window
-   console.log('name is %s',this.bottle)
-}
-
-say.call()
-// name is bottle
-```
-
-##### 严格模式
-
-```js
-// 严格模式下
-'use strict'
-var bottle = 'bottle'
-function say(){
-   // 注意：在严格模式下 this 为 undefined
-   console.log('name is %s',this.bottle)
-}
-
-say.call()
-// Uncaught TypeError: Cannot read property 'bottle' of undefined
-```
-
-
-
 ### 二、Function.prototype.apply()
 
-`apply()` 方法调用一个具有给定 `this` 值的函数，以及作为一个数组（或[类似数组对象](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Indexed_collections#Working_with_array-like_objects)）提供的参数。
-
-`call()` 和 `apply()` 的区别在于：
-
-- `call()` 方法接受的是 **若干个参数的列表**
-- `apply()` 方法接受的是 **一个包含多个参数的数组**
+`apply()` 方法调用一个具有给定 `this` 值的函数，以及作为一个数组（或[类似数组对象）提供的参数。
 
 ```Js
 func.apply(thisArg, [argsArray])
 ```
 
-- thisArg：在 fun 函数运行时指定的 `this` 值*。*
-- arg1, arg2, …：可选的。一个数组或者类数组对象，其中的数组元素将作为单独的参数传给 `func` 函数。
+它运行 `func` 设置 `this=context` 并使用类似数组的对象 `args` 作为参数列表。
+
+例如，这两个调用几乎相同：
+
+```Js
+func(1, 2, 3);
+func.apply(context, [1, 2, 3])
+```
+
+两个都运行 `func` 给定的参数是 `1,2,3`。但是 `apply` 也设置了 `this = context`。
+
+`call` 和 `apply` 之间唯一的语法区别是 `call` 接受一个参数列表，而 `apply` 则接受带有一个类似数组的对象。
 
 需要注意：Chrome 14 以及 Internet Explorer 9 仍然不接受类数组对象。如果传入类数组对象，它们会抛出异常。
 
 
 
-#### 用 apply 将数组添加到另一数组
+#### 1. call、apply 与 扩展运算符 
+
+我们已经知道了[JS 基础之:  var、let、const、解构、展开、函数](https://github.com/sisterAn/blog/issues/48)  一章中的扩展运算符 `...`，它可以将数组（或任何可迭代的）作为参数列表传递。因此，如果我们将它与 `call` 一起使用，就可以实现与 `apply` 几乎相同的功能。
+
+这两个调用结果几乎相同：
+
+```js
+let args = [1, 2, 3];
+
+func.call(context, ...args); // 使用 spread 运算符将数组作为参数列表传递
+func.apply(context, args);   // 与使用 apply 相同
+```
+
+如果我们仔细观察，那么 `call` 和 `apply` 的使用会有一些细微的差别。
+
+- 扩展运算符 `...` 允许将 **可迭代的** `参数列表` 作为列表传递给 `call`。
+- `apply` 只接受 **类似数组一样的** `参数列表`。 
+
+
+
+#### 2. apply 函数转移
+
+`apply` 最重要的用途之一是将调用传递给另一个函数，如下所示：
+
+```js
+let wrapper = function() {
+  return anotherFunction.apply(this, arguments);
+};
+```
+
+`wrapper` 通过 `anotherFunction.apply` 获得了：上下文 `this` 和 `anotherFunction` 的参数并返回其结果。
+
+当外部代码调用这样的 `wrapper` 时，它与原始函数的调用无法区分。
+
+#### 3. apply 连接数组
+
+ `array.push.apply` 将数组添加到另一数组上：
 
 ```js
 var array = ['a', 'b']
@@ -168,7 +226,20 @@ console.info(array) // ["a", "b", 0, 1, 2]
 ```
 
 
-#### 使用 apply 和内置函数
+
+#### 3. apply 来链接构造器
+
+```js
+Function.prototype.construct = function (aArgs) {
+  var oNew = Object.create(this.prototype);
+  this.apply(oNew, aArgs);
+  return oNew;
+};
+```
+
+
+
+#### 4. apply 和内置函数
 
 ```js
 /* 找出数组中最大/小的数字 */
@@ -222,17 +293,6 @@ function minOfArray(arr) {
 }
 var min = minOfArray([5, 6, 2, 3, 7])
 // max 同样也是如此
-```
-
-
-#### 使用 apply 来链接构造器
-
-```js
-Function.prototype.construct = function (aArgs) {
-  var oNew = Object.create(this.prototype);
-  this.apply(oNew, aArgs);
-  return oNew;
-};
 ```
 
 
