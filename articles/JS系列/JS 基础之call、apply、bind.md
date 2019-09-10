@@ -2,7 +2,8 @@
 
 `JS `系列暂定 27 篇，从基础，到原型，到异步，到设计模式，到架构模式等。
 
-本篇是`JS`系列中第 5 篇，文章主讲 JS `call` 、 `apply` 、 `bind` 、箭头函数以及柯里化，包括 `call` 、 `apply` 、 `bind` 、箭头函数的区别、对比使用以及模拟实现，深入 `call` 、 `apply` 、 `bind` 。
+本篇是`JS`系列中第 5 篇，文章主讲 JS 中 `call` 、 `apply` 、 `bind` 、箭头函数以及柯里化，着重介绍它们之间的区别、对比使用，深入了解 `call` 、 `apply` 、 `bind` 。
+
 
 
 ### 一、Function.prototype.call()
@@ -30,7 +31,7 @@ func.call(obj, 1, 2, 3)
 
 唯一的区别是 `func.call` 也将 `this` 设置为 `obj`。
 
-需要注意的是，指定的 `this` 值并不一定是该函数执行时真正的 `this` 值，如果这个函数处于非严格模式下，则指定为 `null` 和 `undefined` 的 `this` 值会自动指向全局对象(浏览器中就是 window 对象)，同时值为原始值(数字，字符串，布尔值)的 `this` 会指向该原始值的自动包装对象。
+需要注意的是，设置的 thisArg 值并不一定是该函数执行时真正的 `this` 值，如果这个函数处于非严格模式下，则指定为 `null` 和 `undefined` 的 `this` 值会自动指向全局对象(浏览器中就是 window 对象)，同时值为原始值(数字，字符串，布尔值)的 `this` 会指向该原始值的自动包装对象。
 
 
 
@@ -45,7 +46,7 @@ function sayWord() {
 }
 
 var bottle = {
-  name: , 
+  name: 'bottle', 
   word: 'hello'
 };
 
@@ -64,7 +65,7 @@ sayWord.call(bottle);
 // 非严格模式下
 var bottle = 'bottle'
 function say(){
-   // 注意：非严格模式下，this 为 Window
+   // 注意：非严格模式下，this 为 window
    console.log('name is %s',this.bottle)
 }
 
@@ -158,11 +159,11 @@ for (var i = 0; i < bottle.length; i++) {
 
 `apply()` 方法调用一个具有给定 `this` 值的函数，以及作为一个数组（或[类似数组对象）提供的参数。
 
-```Js
+```js
 func.apply(thisArg, [argsArray])
 ```
 
-它运行 `func` 设置 `this=context` 并使用类似数组的对象 `args` 作为参数列表。
+它运行 `func` 设置 `this = context` 并使用类数组对象 `args` 作为参数列表。
 
 例如，这两个调用几乎相同：
 
@@ -173,7 +174,7 @@ func.apply(context, [1, 2, 3])
 
 两个都运行 `func` 给定的参数是 `1,2,3`。但是 `apply` 也设置了 `this = context`。
 
-`call` 和 `apply` 之间唯一的语法区别是 `call` 接受一个参数列表，而 `apply` 则接受带有一个类似数组的对象。
+`call` 和 `apply` 之间唯一的语法区别是 `call` 接受一个参数列表，而 `apply` 则接受带有一个类数组对象。
 
 需要注意：Chrome 14 以及 Internet Explorer 9 仍然不接受类数组对象。如果传入类数组对象，它们会抛出异常。
 
@@ -189,13 +190,13 @@ func.apply(context, [1, 2, 3])
 let args = [1, 2, 3];
 
 func.call(context, ...args); // 使用 spread 运算符将数组作为参数列表传递
-func.apply(context, args);   // 与使用 apply 相同
+func.apply(context, args);   // 与使用 call 相同
 ```
 
 如果我们仔细观察，那么 `call` 和 `apply` 的使用会有一些细微的差别。
 
 - 扩展运算符 `...` 允许将 **可迭代的** `参数列表` 作为列表传递给 `call`。
-- `apply` 只接受 **类似数组一样的** `参数列表`。 
+- `apply` 只接受 **类数组一样的** `参数列表`。 
 
 
 
@@ -209,7 +210,7 @@ let wrapper = function() {
 };
 ```
 
-`wrapper` 通过 `anotherFunction.apply` 获得了：上下文 `this` 和 `anotherFunction` 的参数并返回其结果。
+`wrapper` 通过 `anotherFunction.apply` 获得了上下文 `this` 和 `anotherFunction` 的参数并返回其结果。
 
 当外部代码调用这样的 `wrapper` 时，它与原始函数的调用无法区分。
 
@@ -544,6 +545,8 @@ var list3 = leadingThirtysevenList(1, 2, 3); // [37, 1, 2, 3]
 
 当我们不想一遍又一遍重复相同的参数时，偏函数很方便。
 
+
+
 #### 3. 作为构造函数使用的绑定函数
 
 ```js
@@ -568,111 +571,7 @@ b1.sayHello()
 
 
 
-### 四、call、apply、bind 区别与实现
-
-`call` 、`apply` 都是为了解决 `this` 的指向。作用是相同的，只是传参的方式不同。
-
-除了第一个参数外，`call` 可以接收一个参数列表，`apply` 只能接收一个参数数组。
-
-```js
-let a = {
-    value: 1
-}
-function getValue(name, age) {
-    console.log(name)
-    console.log(age)
-    console.log(this.value)
-}
-getValue.call(a, 'yck', '24')
-getValue.apply(a, ['yck', '24'])
-```
-
-模拟实现 `call` 、`apply`
-
-可以从一下几点考虑实现
-
-- 不传入第一个参数，那么默认为 `window`
-- 改变了 `this` 指向，让新的对象可以执行该函数，那么思路是否可以变成新的对象添加一个函数，然后再执行完成后删除
-
-
-
-#### 1. 模拟实现 call
-
-```js
-Function.prototype.myCall = function(context) {
-    var context = context || windows
-    // 给 context 添加一个属性
-    // getValue.call(a, 'yck', '24') => a.fn = gatValue
-    context.fn = this
-    // 将 context 后面的参数取出来
-    var args = [...arguments].slice(1)
-    // getValue.call(a, 'yck', '24') => a.fn('yck', '24')
-    var result = context.fn(...args)
-    // 删除 fn
-    delete context.fn
-    return result
-}
-```
-
-以上就是 `call` 的思路， `apply` 的实现也类似
-
-
-
-#### 2. 模拟实现 apply
-
-```js
-Function.prototype.myApply = function(context) {
-    var context = context || window
-    context.fn = this
-    
-    var result
-    // 需要判断是否存储第二个参数
-    // 如果存在，就将第二个参数展开
-    if (arguments[1]) {
-        result = context.fn(...arguments[1])
-    } else {
-        result = context.fn()
-    }
-    
-    delete context.fn
-    return result
-}
-```
-
-
-
-#### 3. 模拟实现 bind
-
-调用绑定函数通常会导致执行包装函数，绑定函数有以下内部属性：
-
-- `[[BoundTargetFunction]]`：包装的函数（ `function` ）
-- `[[BoundThis]]`：调用包装函数的 this 值
-- `[[BoundArguments]]`：值列表，其元素用于对包装函数调用的第一个参数
-- `[[Call]]`：执行与此对象关联的代码。通过函数调用表达式调用，内部方法的参数是 `this` 值和参数列表
-
-当调用绑定函数时，它调用 `[[BoundTargetFunction]]` 上的内部方法 `[[Call]]` ，后跟参数 **Call(boundThis, args)** 。其中，`boundThis` 是 `[[BoundThis]]` ，`args` 是 `[[BoundArguments]]`，后跟函数调用传递的参数。
-
-```js
-Function.prototype.myBind = function(context) {
-    if (typeof this !== 'function') {
-        throw new TypeError('error')
-    }
-    var _this = this
-    var args = [...arguments].slice(1)
-    // 返回一个函数
-    return function Fun() {
-        // 因为返回一个函数， 我们可以 new Fun(), 所以需要判断
-        if (this instanceof Fun) {
-            return new _this(...args, ...arguments)
-        }
-        return _this.call(context, ...args, ...arguments)
-    }
-}
-```
-
-`bind` 和其他两个方法作用是一致的，只是该方法会返回一个函数，并且我们可以通过 `bind` 来实现柯里化。
-
-### 五、柯里化
+### 四、柯里化
 
 在计算机科学中，柯里化（Currying）是把接受多个参数的函数变换成接受一个单一参数(最初函数的第一个参数)的函数，并且返回接受余下的参数且返回结果的新函数的技术。这个技术由 Christopher Strachey 以逻辑学家 Haskell Curry 命名的，尽管它是 Moses Schnfinkel 和 Gottlob Frege 发明的。
 
@@ -702,7 +601,9 @@ add(1)(2);
 
 
 
-### 六、箭头函数
+### 五、扩展：箭头函数
+
+
 
 #### 1. 没有 this
 
@@ -730,9 +631,13 @@ bottle.sayHi()
 
 但箭头函数就没事，因为箭头函数没有 `this`。在外部上下文中，`this` 的查找与普通变量搜索完全相同。`this` 指向定义时的环境。
 
+
+
 #### 2. 不可 new 实例化
 
 不具有 `this` 自然意味着另一个限制：箭头函数不能用作构造函数。他们不能用 `new` 调用。
+
+
 
 #### 3. 箭头函数 vs bind
 
@@ -740,6 +645,8 @@ bottle.sayHi()
 
 - `.bind(this)` 创建该函数的 “绑定版本”。
 - 箭头函数 `=>` 不会创建任何绑定。该函数根本没有 `this`。在外部上下文中，`this` 的查找与普通变量搜索完全相同。
+
+
 
 #### 4. 没有 arguments 对象
 
@@ -778,6 +685,8 @@ function defer(f, ms) {
 ```
 
 在这里，我们必须创建额外的变量 `args` 和 `ctx`，以便 `setTimeout` 内部的函数可以接收它们。
+
+
 
 #### 5. 总结
 
