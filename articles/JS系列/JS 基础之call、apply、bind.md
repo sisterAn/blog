@@ -1,12 +1,21 @@
+### 引言
+
+`JS `系列暂定 27 篇，从基础，到原型，到异步，到设计模式，到架构模式等。
+
+本篇是`JS`系列中第 5 篇，文章主讲 JS `call` 、 `apply` 、 `bind` 、箭头函数以及柯里化，包括 `call` 、 `apply` 、 `bind` 、箭头函数的区别、对比使用以及模拟实现，深入 `call` 、 `apply` 、 `bind` 。
+
+
 ### 一、Function.prototype.call()
 
-`call()` 方法调用一个函数, 其具有一个指定的 `this` 值和分别地提供的参数(**参数的列表**)。
+`call()` 方法调用一个函数, 其具有一个指定的 `this` 值和多个参数(**参数的列表**)。
 
 ```js
 func.call(thisArg, arg1, arg2, ...)
 ```
 
 它运行 `func`，提供的第一个参数 `thisArg` 作为 `this`，后面的作为参数。
+
+
 
 #### 1. func 与 func.call
 
@@ -25,28 +34,29 @@ func.call(obj, 1, 2, 3)
 
 
 
-#### 2. func.call 使用
+#### 2. func.call 绑定上下文
 
-例如，在下面的代码中，我们在对象的上下文中调用 `Bottle.call(bottle)` 运行 `Bottle` ，并 `bottle` 传递为 `Bottle` 的 `this`：
+例如，在下面的代码中，我们在对象的上下文中调用 `sayWord.call(bottle)` 运行 `sayWord` ，并 `bottle` 传递为 `sayWord` 的 `this`：
 
 ```js
-function Bottle() {
-  var hello = [this.name, 'say', this.word].join(' ');
-  console.log(hello);
+function sayWord() {
+  var talk = [this.name, 'say', this.word].join(' ');
+  console.log(talk);
 }
 
 var bottle = {
-  name: 'bottle', word: 'hello'
+  name: , 
+  word: 'hello'
 };
 
-// 使用 call 将 bottle 传递为 Bottle 的 this
-Bottle.call(bottle); 
+// 使用 call 将 bottle 传递为 sayWord 的 this
+sayWord.call(bottle); 
 // bottle say hello
 ```
 
 
 
-#### 3. 使用 func.call 未指定 this
+#### 3. 使用 func.call 时未指定 this
 
 ##### 非严格模式
 
@@ -79,52 +89,41 @@ say.call()
 
 
 
-#### 4. call 在 JS 继承中的使用
+#### 4. call 在 JS 继承中的使用: 构造继承
+
+**基本思想**：在子类型的构造函数内部调用父类型构造函数。
+
+**注意**：函数只不过是在特定环境中执行代码的对象，所以这里使用 apply/call 来实现。
+
+**使用父类的构造函数来增强子类实例，等于是复制父类的实例属性给子类（没用到原型）**
 
 ```JS
-function Bottle(name, time) {
-  this.name = name
-  if (time < 6) {
-    throw RangeError(
-      this.name + ' is sleep'
-    );
-  }
+// 父类
+function SuperType (name) {
+  this.name = name; // 父类属性
 }
+SuperType.prototype.sayName = function () { // 父类原型方法
+  return this.name;
+};
 
-function SubBottle(name, time) {
-  // 使用 call 调用父类的构造函数
-  Bottle.call(this, name, time);
-  // 定义子类属性
-  this.category = 'subBottle';
-}
+// 子类
+function SubType () {
+  // 调用 SuperType 构造函数
+  // 在子类构造函数中，向父类构造函数传参
+  SuperType.call(this, 'SuperType'); 
+  // 为了保证子父类的构造函数不会重写子类的属性，需要在调用父类构造函数后，定义子类的属性
+  this.subName = "SubType"; 
+  // 子类属性
+};
 
-//等同于
-function LittleBottle(name, time) {
-  
-  // 这部分类是 Bottle.call(this, name, time); 的执行效果
-  this.name = name;
-  this.time = time;
-  if (time < 6) {
-    throw RangeError(
-      this.name + ' is sleep'
-    );
-  }
-    
-  // 定义子类属性
-  this.category = 'littleBottle';
-}
-
-// 实例对象
-var subBottle = new SubBottle('subBottle', 5);
-// Uncaught RangeError: subBottle is sleep
-
-var littleBottle = new LittleBottle('littleBottle', 5);
-// Uncaught RangeError: littleBottle is sleep
+// 子类实例
+let instance = new SubType(); 
+// 运行子类构造函数，并在子类构造函数中运行父类构造函数，this绑定到子类
 ```
 
 
 
-#### 5. 解决 var 作用域
+#### 5. 解决 var 作用域问题
 
 ```js
 var bottle = [
@@ -167,7 +166,7 @@ func.apply(thisArg, [argsArray])
 
 例如，这两个调用几乎相同：
 
-```Js
+```js
 func(1, 2, 3);
 func.apply(context, [1, 2, 3])
 ```
@@ -214,6 +213,8 @@ let wrapper = function() {
 
 当外部代码调用这样的 `wrapper` 时，它与原始函数的调用无法区分。
 
+
+
 #### 3. apply 连接数组
 
  `array.push.apply` 将数组添加到另一数组上：
@@ -227,10 +228,10 @@ console.info(array) // ["a", "b", 0, 1, 2]
 
 
 
-#### 3. apply 来链接构造器
+#### 4. apply 来链接构造器
 
 ```js
-Function.prototype.construct = function (aArgs) {
+Function.prototype.constructor = function (aArgs) {
   var oNew = Object.create(this.prototype);
   this.apply(oNew, aArgs);
   return oNew;
@@ -239,7 +240,7 @@ Function.prototype.construct = function (aArgs) {
 
 
 
-#### 4. apply 和内置函数
+#### 5. apply 和内置函数
 
 ```js
 /* 找出数组中最大/小的数字 */
@@ -299,84 +300,235 @@ var min = minOfArray([5, 6, 2, 3, 7])
 
 ### 三、Function.prototype.bind()
 
-`bind()` 方法会创建一个新绑定函数，当这个新绑定函数被调用时，`this` 键值为其提供的值，其参数列表前几项值为创建时指定的参数序列，绑定函数与被调函数具有相同的函数体（ES5中）。
+JavaScript 新手经常犯的一个错误是将一个方法从对象中拿出来，然后再调用，希望方法中的 `this` 是原来的对象（比如在回调中传入这个方法）。如果不做特殊处理的话，一般 `this` 就丢失了。
+
+ 例如：
 
 ```js
-var module = {
-    x: 42,
-    getX: function() {
-        return this.x
-    }
-}
+let bottle = {
+  nickname: "bottle",
+  sayHello() {
+    console.log(`Hello, ${this.nickname}!`)
+  },
+  sayHi(){
+    setTimeout(function(){
+      console.log('Hello, ', this.nickname)
+    }, 1000)
+  }
+};
 
-var unbindGetX = module.getX
-console.log(unbindGetX())
-// 在这种情况下，“this” 指向全局作用域
-// output: undefined
+// 问题一
+bottle.sayHi();
+// Hello, undefined!
 
-var bindGetX = unbindGetX.bind(module)
-// 创建一个新函数，将 this 绑定到 module 对象
-console.log(bindGetX())
-// output: 42
+// 问题二
+setTimeout(bottle.sayHello, 1000); 
+// Hello, undefined!
 ```
+
+问题一的 this.nickname 是 undefined ，原因是 this 指向是在运行函数时确定的，而不是定义函数时候确定的，再因为 sayHi  中 setTimeout 在全局环境下执行，所以 this 指向 setTimeout 的上下文：window。
+
+问题二的 this.nickname 是 undefined ，是因为 setTimeout 仅仅只是获取函数 bottle.sayHello 作为 setTimeout 回调函数，this 和 bottle 对象分离了。
+
+问题二可以写为：
+
+```js
+// 在这种情况下，this 指向全局作用域
+let func = bottle.sayHello;
+setTimeout(func, 1000); 
+// 用户上下文丢失
+// 浏览器上，访问的实际上是 Window 上下文
+```
+
+那么怎么解决这两个问题喃？
+
+**解决方案一： 缓存 this 与包装**
+
+首先通过缓存 this 解决问题一 `bottle.sayHi();` ：
+
+```js
+let bottle = {
+  nickname: "bottle",
+  sayHello() {
+    console.log(`Hello, ${this.nickname}!`)
+  },
+  sayHi(){
+    var _this = this // 缓存this
+    setTimeout(function(){
+      console.log('Hello, ', _this.nickname)
+    }, 1000)
+  }
+};
+
+bottle.sayHi();
+// Hello,  bottle
+```
+
+那问题二 `setTimeout(bottle.sayHello, 1000); ` 喃？
+
+```js
+let bottle = {
+  nickname: "bottle",
+  sayHello() {
+    console.log(`Hello, ${this.nickname}!`);
+  }
+};
+
+// 加一个包装层
+setTimeout(() => {
+  bottle.sayHello()
+}, 1000); 
+// Hello, bottle!
+```
+
+这样看似解决了问题二，但如果我们在 `setTimeout` 异步触发之前更新 `bottle` 值又会怎么样呢？
+
+```js
+var bottle = {
+  nickname: "bottle",
+  sayHello() {
+    console.log(`Hello, ${this.nickname}!`);
+  }
+};
+
+setTimeout(() => {
+  bottle.sayHello()
+}, 1000); 
+
+// 更新 bottle
+bottle = {
+  nickname: "haha",
+  sayHello() {
+    console.log(`Hi, ${this.nickname}!`)
+  }
+};
+// Hi, haha!
+```
+
+`bottle.sayHello()` 最终打印为 `Hi, haha!` ，那么怎么解决这种事情发生喃？
+
+**解决方案二： bind**
+
+`bind()` 最简单的用法是创建一个新绑定函数，当这个新绑定函数被调用时，`this` 键值为其提供的值，其参数列表前几项值为创建时指定的参数序列，绑定函数与被调函数具有相同的函数体（ES5中）。
+
+```js
+let bottle = {
+  nickname: "bottle",
+  sayHello() {
+    console.log(`Hello, ${this.nickname}!`);
+  }
+};
+
+// 未绑定，“this” 指向全局作用域
+let sayHello = bottle.sayHello
+console.log(sayHello())
+// Hello, undefined!
+
+// 绑定
+let bindSayHello = sayHello.bind(bottle)
+// 创建一个新函数，将 this 绑定到 bottle 对象
+console.log(bindSayHello())
+// Hello, bottle!
+```
+
+所以，从原来的函数和原来的对象创建一个绑定函数，则能很漂亮地解决上面两个问题：
+
+```js
+let bottle = {
+  nickname: "bottle",
+  sayHello() {
+    console.log(`Hello, ${this.nickname}!`);
+  },
+  sayHi(){
+    // 使用 bind
+    setTimeout(function(){
+      console.log('Hello, ', this.nickname)
+    }.bind(this), 1000)
+    
+    // 或箭头函数
+    setTimeout(() => {
+      console.log('Hello, ', this.nickname)
+    }, 1000)
+  }
+};
+
+// 问题一：完美解决
+bottle.sayHi()
+// Hello,  bottle
+// Hello,  bottle
+
+let sayHello = bottle.sayHello.bind(bottle); // (*)
+
+sayHello(); 
+// Hello, bottle!
+
+// 问题二：完美解决
+setTimeout(sayHello, 1000); 
+// Hello, bottle!
+
+// 更新 bottle
+bottle = {
+  nickname: "haha",
+  sayHello() {
+    console.log(`Hi, ${this.nickname}!`)
+  }
+};
+```
+
+问题一，可以通过 `bind` 或箭头函数完美解决。
+
+最终更新 `bottle` 后， `setTimeout(sayHello, 1000);` 打印依然是 `Hello, bottle!`， 问题二完美解决！
+
+
+
+#### 1. bind 与 new
 
 再看一个例子：
 
 ```js
-this.value = 11
-var module = {
-    value: 42
+this.nickname = 'window'
+let bottle = {
+  nickname: 'bottle'
 }
-function ubx() {
-    console.log("ubv-")
-    console.log(this.value)
-    console.log("-ubv")
+function sayHello() {
+  console.log('Hello, ', this.nickname)
 }
 
-var bindv = ubx.bind(module) // this 指向 module
-console.log(bindv()) 
-// ubv-
-// 42
-// -ubv
+let bindBottle = sayHello.bind(bottle) // this 指向 bottle
+console.log(bindBottle()) 
+// Hello,  bottle
 
-console.log(new bindv())  // this 指向 ubx {}
-// ubv-
-// undefined
-// -ubv
+console.log(new bindBottle())  // this 指向 sayHello {}
+// Hello,  undefined
 ```
 
-上面例子中，运行结果 `this.value` 输出为 `undefined` ，这不是全局 `value` ， 也不是 `ubx` 对象中的 `value` ，这说明 `bind` 的 `this` 对象失效了，`new` 的实现中生成一个新的对象，这个时候的 `this` 指向的是 `obj` 。
+上面例子中，运行结果 `this.nickname` 输出为 `undefined` ，这不是全局 `nickname` ， 也不是 `bottle` 对象中的 `nickname` ，这说明 `bind` 的 `this` 对象失效了，`new` 的实现中生成一个新的对象，这个时候的 `this` 指向的是 `sayHello` 。
 
-注意：绑定函数也可以使用 new 运算符构造：这样做就好像已经构造了目标函数一样。提供的 **this** 值将被忽略，而前置参数将提供给模拟函数。
+**注意** ：绑定函数也可以使用 `new` 运算符构造：这样做就好像已经构造了目标函数一样。提供的 **this** 值将被忽略，而前置参数将提供给模拟函数。
 
 
 
-#### 用法
-
-##### 1. 创建绑定函数
-
-`bind()` 最简单的用法是创建一个函数，使这个函数不论怎么调用都有同样的 **this** 值。JavaScript 新手经常犯的一个错误是将一个方法从对象中拿出来，然后再调用，希望方法中的 `this` 是原来的对象（比如在回调中传入这个方法）。如果不做特殊处理的话，一般会丢失原来的对象。从原来的函数和原来的对象创建一个绑定函数，则能很漂亮地解决这个问题：
+#### 2. 二次 bind
 
 ```js
-this.x = 9; 
-var module = {
-  x: 81,
-  getX: function() { return this.x; }
-};
+function sayHello() {
+  console.log('Hello, ', this.nickname)
+}
 
-module.getX(); // 返回 81
-
-var retrieveX = module.getX;
-retrieveX(); 
-// 返回 9, 在这种情况下，this 指向全局作用域
-
-// 创建一个新函数，将 this 绑定到 module 对象
-var boundGetX = retrieveX.bind(module);
-boundGetX(); // 返回 81
+sayHello = sayHello.bind( {nickname: "Bottle"} ).bind( {nickname: "AnGe" } );
+sayHello();
+// Hello,  Bottle
 ```
 
+输出依然是 `Hello,  Bottle` ，这是因为 `func.bind(...)` 返回的外来的绑定函数对象仅在创建的时候记忆上下文（如果提供了参数）。
 
-##### 2. 偏函数
+一个函数不能作为重复绑定。
+
+
+
+#### 2. 偏函数
+
+当我们确定一个函数的一些参数时，返回的函数（更加特定）被称为**偏函数**。我们可以使用 `bind` 来获取偏函数：
 
 ```js
 function list() {
@@ -385,117 +537,33 @@ function list() {
 
 var list1 = list(1, 2, 3); // [1, 2, 3]
 
-// Create a function with a preset leading argument
 var leadingThirtysevenList = list.bind(undefined, 37);
-
 var list2 = leadingThirtysevenList(); // [37]
 var list3 = leadingThirtysevenList(1, 2, 3); // [37, 1, 2, 3]
 ```
 
+当我们不想一遍又一遍重复相同的参数时，偏函数很方便。
 
-##### 3. 配合 setTimeout
+#### 3. 作为构造函数使用的绑定函数
 
 ```js
-function Bottle() {
-  this.name = 'bottle';
+function Bottle(nickname) {
+  this.nickname = nickname;
 }
-Bottle.prototype.hello = function() {
-  console.log('hello ' + this.name);
-};
-Bottle.prototype.say = function() {
-  setTimeout(this.hello.bind(this), 1000);
+Bottle.prototype.sayHello = function() { 
+  console.log('Hello, ', this.nickname)
 };
 
-var bottle = new Bottle();
-bottle.say();  
-// 一秒钟后, 调用 hello 方法，打印 hello bottle
-```
+let bottle = new Bottle('bottle');
+let BindBottle = Bottle.bind(null, 'bindBottle');
 
+let b1 = new BindBottle('b1');
+b1 instanceof Bottle; // true
+b1 instanceof BindBottle; // true
+new Bottle('bottle1') instanceof BindBottle; // true
 
-##### 4. 作为构造函数使用的绑定函数
-
-```js
-function Point(x, y) {
-  this.x = x;
-  this.y = y;
-}
-
-Point.prototype.toString = function() { 
-  return this.x + ',' + this.y; 
-};
-
-var p = new Point(1, 2);
-p.toString(); // '1,2'
-
-var emptyObj = {};
-var YAxisPoint = Point.bind(emptyObj, 0/*x*/);
-// 以下这行代码在 polyfill 可能不支持,
-// 在原生的 bind 方法运行没问题:
-//(译注：polyfill 的 bind 方法如果加上把 bind 的第一个参数，
-// 即新绑定的 this 执行 Object() 来包装为对象，Object(null) 则是 {} ，那么也可以支持)
-var YAxisPoint = Point.bind(null, 0/*x*/);
-
-var axisPoint = new YAxisPoint(5);
-axisPoint.toString(); // '0,5'
-
-axisPoint instanceof Point; // true
-axisPoint instanceof YAxisPoint; // true
-new Point(17, 42) instanceof YAxisPoint; // true
-```
-
-
-#### 然而实际使用时会碰到这样的问题：
-
-```js
-function Bottle(name) {
-    this.name = name
-    this.hello = function(){
-        setTimeout(function(){
-            console.log('Hello, ', this.name)
-        }, 1000)
-    }
-}
-
-var bottle = new Bottle('bottle')
-bottle.hello() // 1s 后打印： Hello，
-```
-
-这个时候输出的 `this.name` 是 `null` ，原因是 `this` 指向是在运行函数时确定的，而不是定义函数时候确定的，再因为 `setTimeout` 在全局环境下执行，所以 `this` 指向 `setTimeout` 的上下文：`window`。
-
-
-
-##### 解决方法一： 缓存 this
-
-```js
-function Bottle(name) {
-    this.name = name
-    this.hello = function(){
-        var _this = this // 缓存this
-        setTimeout(function(){
-            console.log('Hello, ', _this.name)
-        }, 1000)
-    }
-}
-
-var bottle = new Bottle('bottle')
-bottle.hello()// 1s 后打印：Hello,  bottle
-```
-
-
-##### 解决方法二： bind
-
-```js
-function Bottle(name) {
-    this.name = name
-    this.hello = function(){
-        setTimeout(function(){
-            console.log('Hello, ', this.name)
-        }.bind(this), 1000)
-    }
-}
-
-var bottle = new Bottle('bottle')
-bottle.hello()// 1s 后打印： Hello，bottle
+b1.sayHello()
+// Hello,  bindBottle
 ```
 
 
@@ -528,7 +596,7 @@ getValue.apply(a, ['yck', '24'])
 
 
 
-#### 模拟实现 call
+#### 1. 模拟实现 call
 
 ```js
 Function.prototype.myCall = function(context) {
@@ -550,7 +618,7 @@ Function.prototype.myCall = function(context) {
 
 
 
-#### 模拟实现 apply
+#### 2. 模拟实现 apply
 
 ```js
 Function.prototype.myApply = function(context) {
@@ -573,14 +641,12 @@ Function.prototype.myApply = function(context) {
 
 
 
-#### 模拟实现 bind
-
-`bind` 和其他两个方法作用是一致的，只是该方法会返回一个函数，并且我们可以通过 `bind` 来实现柯里化。
+#### 3. 模拟实现 bind
 
 调用绑定函数通常会导致执行包装函数，绑定函数有以下内部属性：
 
 - `[[BoundTargetFunction]]`：包装的函数（ `function` ）
-- `[[BoundThis]]`：调用包装函数的this值
+- `[[BoundThis]]`：调用包装函数的 this 值
 - `[[BoundArguments]]`：值列表，其元素用于对包装函数调用的第一个参数
 - `[[Call]]`：执行与此对象关联的代码。通过函数调用表达式调用，内部方法的参数是 `this` 值和参数列表
 
@@ -604,7 +670,7 @@ Function.prototype.myBind = function(context) {
 }
 ```
 
-
+`bind` 和其他两个方法作用是一致的，只是该方法会返回一个函数，并且我们可以通过 `bind` 来实现柯里化。
 
 ### 五、柯里化
 
@@ -631,3 +697,91 @@ add(1)(2);
 ```
 
 这里定义了一个 `add` 函数，它接受一个参数并返回一个新的函数。调用 `add` 之后，返回的函数就通过闭包的方式记住了 `add` 的第一个参数。所以说 `bind` 本身也是闭包的一种使用场景。
+
+**柯里化**是将 `f(a,b,c)` 可以被以 `f(a)(b)(c)` 的形式被调用的转化。JavaScript 实现版本通常保留函数被正常调用和在参数数量不够的情况下返回偏函数这两个特性。
+
+
+
+### 六、箭头函数
+
+#### 1. 没有 this
+
+```js
+let bottle = {
+  nickname: "bottle",
+  sayHi(){
+    setTimeout(function(){
+      console.log('Hello, ', this.nickname)
+    }, 1000)
+    
+    // 或箭头函数
+    setTimeout(() => {
+      console.log('Hi, ', this.nickname)
+    }, 1000)
+  }
+};
+
+bottle.sayHi()
+// Hello,  undefined
+// Hi,  bottle
+```
+
+报错是因为 `Hello,  undefined` 是因为运行时 `this=Window` ， `Window.nickname`  为 `undefined`。
+
+但箭头函数就没事，因为箭头函数没有 `this`。在外部上下文中，`this` 的查找与普通变量搜索完全相同。`this` 指向定义时的环境。
+
+#### 2. 不可 new 实例化
+
+不具有 `this` 自然意味着另一个限制：箭头函数不能用作构造函数。他们不能用 `new` 调用。
+
+#### 3. 箭头函数 vs bind
+
+箭头函数 `=>` 和正常函数通过 `.bind(this)` 调用有一个微妙的区别：
+
+- `.bind(this)` 创建该函数的 “绑定版本”。
+- 箭头函数 `=>` 不会创建任何绑定。该函数根本没有 `this`。在外部上下文中，`this` 的查找与普通变量搜索完全相同。
+
+#### 4. 没有 arguments 对象
+
+箭头函数也没有 `arguments` 变量。
+
+因为我们需要用当前的 `this` 和 `arguments` 转发一个调用，所有这对于装饰者来说非常好。
+
+例如，`defer(f, ms)` 得到一个函数，并返回一个包装函数，以 `毫秒` 为单位延迟调用：
+
+```js
+function defer(f, ms) {
+  return function() {
+    setTimeout(() => f.apply(this, arguments), ms)
+  };
+}
+
+function sayHi(who) {
+  alert('Hello, ' + who);
+}
+
+let sayHiDeferred = defer(sayHi, 2000);
+sayHiDeferred("John"); // 2 秒后打印 Hello, John
+```
+
+没有箭头功能的情况如下所示：
+
+```js
+function defer(f, ms) {
+  return function(...args) {
+    let ctx = this;
+    setTimeout(function() {
+      return f.apply(ctx, args);
+    }, ms);
+  };
+}
+```
+
+在这里，我们必须创建额外的变量 `args` 和 `ctx`，以便 `setTimeout` 内部的函数可以接收它们。
+
+#### 5. 总结
+
+- this 指向定义时的环境
+- **不可 new 实例化**
+- this 不可变
+- **没有 arguments 对象**
