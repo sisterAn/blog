@@ -8,6 +8,8 @@ func.call(thisArg, arg1, arg2, ...)
 
 它运行 `func`，提供的第一个参数 `thisArg` 作为 `this`，后面的作为参数。
 
+
+
 #### 1. func 与 func.call
 
 先看一个例子：
@@ -580,7 +582,7 @@ Function.prototype.myApply = function(context) {
 调用绑定函数通常会导致执行包装函数，绑定函数有以下内部属性：
 
 - `[[BoundTargetFunction]]`：包装的函数（ `function` ）
-- `[[BoundThis]]`：调用包装函数的this值
+- `[[BoundThis]]`：调用包装函数的 this 值
 - `[[BoundArguments]]`：值列表，其元素用于对包装函数调用的第一个参数
 - `[[Call]]`：执行与此对象关联的代码。通过函数调用表达式调用，内部方法的参数是 `this` 值和参数列表
 
