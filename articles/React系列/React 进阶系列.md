@@ -4,7 +4,9 @@
 
 ### 一、树
 
+一段特定的代码，在浏览器或移动端输出为特定的内容（例如图片或一段文字等），React 也是如此。
 
+React 程序在运行时会输出一个随时间变化的树，在浏览器上，是 DOM 树，在 React Native 上是视图层，我们希望平台根据这个树展示特定的 UI。
 
 ### 二、实例
 
@@ -15,8 +17,6 @@
 #### 1. ReactDOM.render
 
 #### 2. React.createElement
-
-
 
 #### 3. $typeof 
 
@@ -208,7 +208,6 @@ React 0.14 修复手段是用 Symbol 标记每个 React 元素（element）：
 ### 十一、react-router
 
 ### 十一、react-redux
-
 
 
 
