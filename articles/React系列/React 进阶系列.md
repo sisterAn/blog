@@ -4,13 +4,13 @@
 
 ### 一、树
 
-#### 宿主树
+#### 1. 宿主树
 
 一段特定的代码，在浏览器或移动端输出为特定的内容（例如图片或一段文字等），React 也是如此。
 
 React 程序在运行时会输出一个随时间变化的树，在浏览器上，是 DOM 树，在 iOS 上是视图层，我们希望平台根据这个树展示特定的 UI，因此我们称这个树为宿主树。
 
-#### 宿主实例
+#### 2. 宿主实例
 
 树由节点构成，我们称这些构成树的节点称为实例。
 
@@ -45,7 +45,7 @@ React 是声明式的描述，我们仅仅需要告诉 React 我们需要什么�
 
 注意：React 元素是不可变对象。一旦被创建，你就无法更改它的子元素或者属性。如果我们想要更新 React 元素的子元素或属性，都需要创建新的 React 元素树来描述它。
 
-即 React 元素是不可变的，也不是永远存在的，
+即 React 元素是不可变的，也不是永远存在的，它是在不断的删除和重新创建中。
 
 一个元素就像电影的单帧：它代表了某个特定时刻的 UI。
 
@@ -55,18 +55,14 @@ React 是声明式的描述，我们仅仅需要告诉 React 我们需要什么�
 
 ```js
 ReactDOM.render(
-  <button className="bottle" />,
+  <p>Hello, bottle!</p>,
   document.getElementById('root')
 );
 ```
 
-当我们调用 `ReactDOM.render(reactElement, domContainer)` 时，我们的意思是：**“亲爱的 React ，将我的 reactElement 映射到 domContaienr 的宿主树上去吧。“**
+当我们调用 `ReactDOM.render(reactElement, domContainer[, callback])` 时，它意思是：**“亲爱的 React ，将 reactElement 映射到 domContaienr 的宿主树上去吧。“**
 
-
-
-#### 2. React.createElement
-
-React 会查看 `reactElement.type` （在我们的例子中是 `button` ）然后告诉 React DOM 渲染器创建对应的宿主实例并设置正确的属性：
+React 会查看 `reactElement.type` （在我们的例子中是 `p` ）然后告诉 React DOM 渲染器创建对应的宿主实例并设置正确的属性：
 
 ```js
 // 在 ReactDOM 渲染器内部（简化版）
@@ -80,12 +76,14 @@ function createHostInstance(reactElement) {
 在我们的例子中，React 会这样做：
 
 ```js
-let domNode = document.createElement('button');
-domNode.className = 'blue';
+let domNode = document.createElement('p');
+domNode.children = 'Hello, bottle!';
 domContainer.appendChild(domNode);
 ```
 
 如果 React 元素在 `reactElement.props.children` 中含有子元素，React 会在第一次渲染中递归地为它们创建宿主实例。
+
+#### 2. React.createElement
 
 你觉得你在写 JSX：
 
@@ -105,14 +103,53 @@ React.createElement(
 )
 ```
 
-之后方法会返回一个对象给你，我们称此对象为 React 元素（ `element` ），它告诉 React 下一个要渲染什么。你的组件（ `component` ）返回一个它们组成的树（tree）。
+之后方法会返回一个对象给你，我们称此对象为 React 元素（ `element` ）。
+
+当你用 JSX 渲染一个组件时：
 
 ```js
+class Hello extends React.Component {
+  render() {
+    return <div class='bottle'>Hello {this.props.nickname}</div>;
+  }
+}
+
+ReactDOM.render(
+  <Hello nickname="bottle" />,
+  document.getElementById('root')
+);
+```
+
+实际上，你在这么做：
+
+```js
+class Hello extends React.Component {
+  render() {
+    return React.createElement(
+      'div', 
+      {
+        className: 'bottle',
+      }, 
+      `Hello ${this.props.nickname}`
+    );
+  }
+}
+
+ReactDOM.render(
+  React.createElement(Hello, {nickname: 'bottle'}, null),
+  document.getElementById('root'),
+);
+```
+
+`React.createElement` 会告诉 React 下一个要渲染什么。 实际上它返回一个对象：
+
+```js
+// <div className="bottle">hello bottle!</div>
 {
   type: 'div',
   props: {
-    className: 'bottle',
     children: 'hello bottle!',
+    className: 'bottle',
   },
   key: null,
   ref: null,
@@ -126,22 +163,20 @@ React.createElement(
 
 #### 3. $typeof 
 
-这又是一个与你学习使用 React 不相关的点，但了解后你会觉得舒坦。这篇文章里也提到了些关于安全的提示，你可能会感兴趣。也许有一天你会有自己的 UI 库，这些都会派上用场的，我真的希望如此。
-
-在客户端 UI 库变得普遍且具有基本保护作用之前，应用程序代码通常是先构建 HTML，然后把它插入 DOM 中：
+React 应用程序代码通常是先构建 HTML，然后把它插入 DOM 中：
 
 ```js
-const messageEl = document.getElementById('message');
-messageEl.innerHTML = '<p>' + message.text + '</p>';
+const messageElement = document.getElementById('app');
+messageElement.innerHTML = '<p>' + message.text + '</p>';
 ```
 
-这样看起来没什么问题，但当你 `message.text` 的值类似 `'<img src onerror="stealYourPassword()">'` 时，**你不会希望别人写的内容在你应用的 HTML 中逐字显示的。**
+这样看起来没什么问题，但当你 `message.text` 的值类似 `'<img src="https://avatars3.githubusercontent.com/u/19721451?s=460&v=4" />'` 时，你就会发现你的项目已经被 XSS 攻击了。
 
-（有趣的是：如果你只是在前端渲染，这里为 `<script>` 标签，JavaScript 代码不会被运行。但[不要因此](https://gomakethings.com/preventing-cross-site-scripting-attacks-when-using-innerhtml-in-vanilla-javascript/)让你陷入已经安全的错觉。）
+![XSS](https://user-images.githubusercontent.com/19721451/64854799-17b5db80-d651-11e9-9239-8e681b71e73f.png)
 
 为什么防止此类攻击，你可以用只处理文本的 `document.createTextNode()` 或者 `textContent` 等安全的 API。你也可以事先将用户输入的内容，用转义符把潜在危险字符（ `<`、`>` 等）替换掉。
 
-尽管如此，这个问题的成本代价很高，且很难做到用户每次输入都记得转换一次。**因此像 React 等新库会默认进行文本转义：**
+但是如果这样处理，这个问题的成本代价就会很高，且很难做到用户每次输入都记得转换一次。**因此像 React 等新库会默认进行文本转义：**
 
 ```js
 <p>
@@ -149,17 +184,23 @@ messageEl.innerHTML = '<p>' + message.text + '</p>';
 </p>
 ```
 
-如果 `message.text` 是一个带有 `<img>` 或其他标签的恶意字符串，它不会被当成真的 `<img>` 标签处理，React 会先进行转义 *然后* 插入 DOM 里。所以 `<img>` 标签会以文本的形式展现出来。
+如果 `message.text` 是一个带有 `<img>` 或其他标签的恶意字符串，它不会被当成真的 `<img>` 标签处理，React 会先进行转义，然后再插入到 DOM 里。所以 `<img>` 标签会以文本的形式展现出来。
 
-要在 React 元素中渲染任意 HTML，你不得不写 `dangerouslySetInnerHTML={{ __html: message.text }}` 。**其实这种愚蠢的写法是一个功能**，在 code reviews 和代码库审核时，你可以非常清晰的定位到代码。
+![React文本转义](https://user-images.githubusercontent.com/19721451/64854808-1a183580-d651-11e9-9858-b10961c8bcfb.png)
 
-------
+如果，你想要在 React 元素中渲染 HTML，你可以使用 `dangerouslySetInnerHTML={{ __html: message.text }}` ，它是 React 为浏览器 DOM 提供 `innerHTML` 的替换方案，它需要向其传递包含 key 为 `__html` 的对象，以此来警示你。
 
-**这意味着React完全不惧注入攻击了吗？不**，HTML 和 DOM 暴露了[大量攻击点](https://github.com/facebook/react/issues/3473#issuecomment-90594748)，对 React 或者其他 UI 库来说，要减轻伤害太难或进展缓慢。大部分存在的攻击方向涉及到属性，例如，如果你渲染 `<a href={user.website}`，要提防用户的网址是 `'javascript: stealYourPassword()'` 。 像 `<div {...userData}>` 写法几乎不受用户输入影响，但也有危险。
+```js
+<p dangerouslySetInnerHTML={{ __html: message.text }} />
+```
 
-React [可以](https://github.com/facebook/react/issues/10506)逐步提供更多保护，但在很多情况下，威胁是服务器产生的，这不管怎样都[应该](https://github.com/facebook/react/issues/3473#issuecomment-91327040)要避免。
+![XSS-dangerouslySetInnerHTML](https://user-images.githubusercontent.com/19721451/64854799-17b5db80-d651-11e9-9239-8e681b71e73f.png)
 
-不过，转义文本这第一道防线可以拦下许多潜在攻击，知道这样的代码是安全的就够了吗？
+[点击查看实例](https://stackblitz.com/edit/react-ghsk6h)
+
+
+
+由此说，React 就不会惧怕任何攻击了吗？不。但转义文本这第一道防线可以拦下许多潜在攻击。
 
 ```js
 // 自动转义
@@ -168,7 +209,48 @@ React [可以](https://github.com/facebook/react/issues/10506)逐步提供更多
 </p>
 ```
 
-**好吧，也不总是有效的**。这就是 `$$typeof` 的用武之地了。
+但仅仅是这样，对项目安全来说，完全是不够的。
+
+HTML 和 DOM 暴露了[大量攻击点](https://github.com/facebook/react/issues/3473#issuecomment-90594748)，大部分存在的攻击方向涉及到属性，例如，
+
+- 如果你渲染 `<a href={user.website}`，要提防用户的网址是 `'javascript: stealYourPassword()'` 。 
+- 像 `<div {...userData}>` 写法几乎不受用户输入影响，但也有危险。
+
+对 React 或者其他 UI 库来说，要减轻攻击伤害实在太难。虽然 React [正在](https://github.com/facebook/react/issues/10506)逐步提供更多保护，但很多情况下，威胁是服务器产生的，这不管怎样都[应该](https://github.com/facebook/react/issues/3473#issuecomment-91327040)要避免。
+
+例如：我们使用用户提供的数据作为 `props` 传递，就存在一个 XSS：
+
+```js
+var data = JSON.parse(decodeURI(location.search.substr(1)));
+
+function Foo(props) {
+  return <div><div {...props} /><span>{props.content}</span></div>;
+}
+
+ReactDOM.render(<Foo {...data} />, container);
+```
+
+这种情况下，此 URL 就是一个 XSS 漏洞：
+
+```js
+?{"content":"Hello","dangerouslySetInnerHTML":{"__html":"<a%20onclick=\"alert(%27p0wned%27)\">Click%20me</a>"}}
+```
+
+这是非常罕见的。有许多不同的方法可以防止获取这样的用户数据。然而，这样做也是不寻常的。所以 React 决定为这些类型的错误添加额外的保护层。
+
+要么：
+
+```js
+{ $$typeof:Symbol.for('react.rawhtml'), __html: myHTML }
+```
+
+或：
+
+```js
+{ [Symbol.for('react.rawhtml')]: myHTML }
+```
+
+这就是 `$$typeof` 的用武之地了。
 
 React 元素（elements）是设计好的 plain object：
 
@@ -220,7 +302,7 @@ React 0.14 修复手段是用 Symbol 标记每个 React 元素（element）：
 }
 ```
 
-这是个有效的办法，因为JSON不支持 `Symbol` 类型。**所以即使服务器存在用 JSON 作为文本返回安全漏洞，JSON 里也不包含 Symbol.for('react.element') **。React 会检测 `element.$$typeof`，如果元素丢失或者无效，会拒绝处理该元素。
+这是个有效的办法，因为 JSON 不支持 `Symbol` 类型。**所以即使服务器存在用 JSON 作为文本返回安全漏洞，JSON 里也不包含 Symbol.for('react.element') **。React 会检测 `element.$$typeof`，如果元素丢失或者无效，会拒绝处理该元素。
 
 特意用 `Symbol.for()` 的好处是 **Symbols 通用于 iframes 和 workers 等环境中**。因此无论在多奇怪的条件下，这方案也不会影响到应用不同部分传递可信的元素。同样，即使页面上有很多个 React 副本，它们也 「接受」 有效的 `$$typeof` 值。
 
@@ -230,21 +312,73 @@ React 0.14 修复手段是用 Symbol 标记每个 React 元素（element）：
 
 为什么是这个数字？因为 `0xeac7` 看起来有点像 「React」。
 
+
+
+#### 4. React.createElement 与 React Component
+
+`React.createElement` 是创建一个 React 元素，它与 React 组件 是不同的：
+
+- React Component 是一个模板。蓝图。全球定义。它可以是函数组件或类组件。
+- React 元素是从组件返回的元素。它是一个描述虚拟 DOM 节点的对象。对于函数组件，此元素是函数返回的对象，对于类组件，元素是组件的 render 方法返回的对象。React 元素不是您在浏览器中看到的真实 DOM。它们存储在内存中的 Virtual DOM 对象，你无法改变它们。
+
+当我们告诉 React 在浏览器中渲染元素树时，它首先生成该树的虚拟表示并将其保留在内存中以供日后使用。然后它将继续执行 DOM 操作，使树显示在浏览器中。
+
+当我们告诉 React 更新它先前渲染的元素树时，它会生成更新树的新虚拟表示。现在 React 在内存中有 2 个版本的树！
+
+要在浏览器中呈现更新的树，React 不会丢弃已呈现的内容。相反，它将比较它在内存中的 2 个虚拟版本，计算它们之间的差异，找出主树中需要更新的子树，并且只在浏览器中更新这些子树。
+
+这个过程就是所谓的树协调算法，它使 React 成为使用浏览器 DOM 树的一种非常有效的方法。
+
+这是 React 的智能**差异**算法。它只在主 DOM 树中更新实际**需要**更新的内容，同时保持其他所有内容相同。这种差异化过程是可能的，因为它在内存中保留了 React 的虚拟 DOM 表示。无论 UI 视图需要重新生成多少次，React 将只向浏览器提供所需的“部分”更新。
+
+
+
 ### 四、协调
 
+#### 1. Virtual DOM
+
+#### 2. diff
 
 
-#### 1. diff
 
-#### 2. Fiber
+#### 3. Fiber
+
+
 
 ### 五、渲染
 
 #### 1. 渲染器
 
-#### 2. 条件渲染
+将 React 渲染在不同的平台展示给用户，这就是渲染器，React DOM、React Native 都是 React 渲染器。那么， React 是如何渲染宿主实例的喃？主要有两种模式：
 
-#### 3. 列表渲染
+- 突变模式，更新子节点，不需要重新创建替换父节点，仅仅需要删除重新创建子节点。
+- 不变模式，更新子节点，始终替换掉顶级子树的宿主环境。
+
+#### 2. ReactDOM.render 
+
+如果我们在同一个 `domContainer` 中，调用多次 `ReactDOM.render` ，React 是如何处理的喃？
+
+```js
+ReactDOM.render(
+  <p className="bottle">hello Bottle!</p>,
+  document.getElementById('root')
+);
+
+// ... 之后 ...
+
+// 应该替换掉 p 宿主实例吗？
+// 还是在已有的 p 上更新属性？
+ReactDOM.render(
+  <p className="an">hello An!</p>,
+  document.getElementById('root')
+);
+```
+
+
+
+#### 3. 条件渲染
+
+#### 4. 列表渲染
 
 ### 六、组件
 
