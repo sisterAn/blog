@@ -2,6 +2,8 @@
 
 本系列文章不会介绍如何利用 React 构建用户界面，而是帮助你更深入的了解 React 编程模式。
 
+
+
 ### 一、树
 
 #### 1. 宿主树
@@ -17,6 +19,8 @@ React 程序在运行时会输出一个随时间变化的树，在浏览器上�
 在 DOM 环境中，实例就是我们通常所说的 DOM 节点，和我们平时通过 `document.createElement('div')` 时获取的对象一致，在 iOS 中，实例可以是从 JavaScript 到原生视图的唯一标识。
 
 宿主环境都有各自的实例以及对应的实例属性，例如 DOM 环境的 `domNode.className` 以及 iOS 环境的 `view.tintColor` 。这些实例属性是由原生的 API 来控制，在 React 应用程序中，你通常不会调用这些实例属性，这是 React 的工作。
+
+
 
 ### 三、元素
 
@@ -314,12 +318,56 @@ React 0.14 修复手段是用 Symbol 标记每个 React 元素（element）：
 
 
 
-#### 4. React.createElement 与 React Component
+#### 4. React 元素与组件
 
-`React.createElement` 是创建一个 React 元素，它与 React 组件 是不同的：
+这里涉及三种相关的东西，分别是：
 
-- React Component 是一个模板。蓝图。全球定义。它可以是函数组件或类组件。
-- React 元素是从组件返回的元素。它是一个描述虚拟 DOM 节点的对象。对于函数组件，此元素是函数返回的对象，对于类组件，元素是组件的 render 方法返回的对象。React 元素不是您在浏览器中看到的真实 DOM。它们存储在内存中的 Virtual DOM 对象，你无法改变它们。
+- 组件
+- 组件实例
+- 元素
+
+这有点令人惊讶，因为如果你习惯于其他 UI 框架，你可能认为只有两种，大致对应于类（如 `Widget` ）和实例（如新的 `Widget()` ）。React 的情况并非如此，组件实例与元素不是一回事，它们之间也没有一对一的关系。为了说明这一点，请考虑以下代码：
+
+```js
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import './style.css';
+
+class Hello extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log('This is a component instance:', this);
+  }
+
+  render() {
+    const another_element = <div>Hello Bottle!</div>;
+    console.log('This is also an element:', another_element);
+    return another_element;
+  }
+}
+
+console.log('This is a component:', Hello)
+
+const element = <Hello/>;
+
+console.log('This is an element:', element);
+
+ReactDOM.render(
+  element,
+  document.getElementById('root')
+);
+```
+
+对应上面的实例：
+
+- React 组件是一个模板、蓝图、全球定义，它可以是函数组件或类组件，`Hello` 就是一个组件。
+- `element` 是一个元素，它并不是 `Hello` 的实例，相反，它是创建组件实例的简单描述。它是包含 `key` 、 `props` 、 `ref` 和 `type` 属性的对象。此处， `key` 和 `ref` 为 `null` ， `props` 为空对象， `type` 为 `Hello` 
+- `Hello` 组件实例将在 `element` 元素被渲染时创建
+- `another_element` 也是一个元素，它也和 `element` 一样，拥有 `key` 、 `props` 、 `ref` 、 `type` 属性，但是它的`type` 属性值为 `div`，
+
+[点击查看实例](https://stackblitz.com/edit/react-t3gjmz)
+
+`React.createElement` 创建一个 React 元素，React 元素是从组件返回的元素。它是一个描述虚拟 DOM 节点的对象。对于函数组件，此元素是函数返回的对象，对于类组件，元素是组件的 `render` 方法返回的对象。React 元素不是您在浏览器中看到的真实 DOM。它们存储在内存中的 Virtual DOM 对象，你无法改变它们。
 
 当我们告诉 React 在浏览器中渲染元素树时，它首先生成该树的虚拟表示并将其保留在内存中以供日后使用。然后它将继续执行 DOM 操作，使树显示在浏览器中。
 
@@ -333,15 +381,137 @@ React 0.14 修复手段是用 Symbol 标记每个 React 元素（element）：
 
 
 
-### 四、协调
+### 四、Virtual DOM 与内核
 
 #### 1. Virtual DOM
 
+Virtual DOM 是一种变成概念。在这个概念中，UI 是以一种理想化的，或者说是虚拟化的形式保存在内存中，并通过 React DOM、React Native 等渲染器，使之与真实 DOM 同步，这一过程称为协调。
+
+这一方式赋予了 React 声明式的 API，你只需要告诉 React 你想要做什么，React 负责将这些声明性描述转化为真实的 DOM 或视图层展示给用户。这使得你从属性操作、事件处理以及手动 DOM 更新等一系列操作中解救出来。
+
+与其说 Virtual DOM 是一种技术，不如说，它是一种模式，在不同的平台上表达不同的东西。在 React 的世界里，术语 “Virtual DOM” 通常与 React 元素关联在一起，因为它们都是代表了用户界面的对象。而 React 也使用一个名为 “fibers” 的内部对象来存放组件树的附加信息。上述二者也被认为是 React 中 “Virtual DOM” 实现的一部分。
+
 #### 2. diff
 
+React 协调算法用于比较两棵 Virtual DOM 树，以确定 Actual DOM 树哪些部分需要修改。
 
+计算一个树形结构转换成另一个树形结构的最少操作，是一个复杂且值得研究的问题，传统 diff 算法通过循环递归的方法对节点进行操作，算法复杂度 为 `O(n^3)` ，其中 `n` 为树中节点的总数，这效率太低了，如果 React 只是单纯的引入 diff 算法，而没有任何的优化的话，其效率远远无法满足前端渲染所需要的性能。那么 React 是如何实现一个高效、稳定的 diff 算法。
+
+React 将 Virtual DOM 树转换为 Actual DOM 树的最小操作的过程称为调和， diff 算法便是调和的结果，React 通过制定大胆的策略，将 O(n^3) 的时间复杂度转换成 O(n) 。
+
+协调是人们普遍理解为 Virtual DOM 背后的算法。描述如下所示：
+
+当你呈现 React 应用程序时，会生成描述应用程序的节点树并将其保存在内存中。然后将该树刷新到渲染环境（例如，在浏览器应用程序的情况下，它被转换为一组 DOM 操作）。更新应用程序（通常通过 `setState` ）时，会生成一个新树。新树与旧树进行区分，以计算更新渲染应用程序所需的操作。
+
+虽然 Fiber 是协调器的重新编写，但 React 文档中描述的高级算法将大致相同。关键点是：
+
+- 假设不同的组件类型生成实质上不同的树。 React 不会尝试区分它们，而是完全替换旧树。
+- 使用键执行列表的区分。密钥应该“稳定，可预测且独特”。
+
+##### 协调与渲染
+
+DOM 只是 React 可以呈现的应用环境之一，其他主要目标是通过 React Native 的本机 iOS 和 Android 视图。 （这就是 “Virtual DOM” 有点用词不当的原因。）
+
+它可以支持这么多目标的原因是因为 React 的设计使得协调和渲染是分开的阶段。协调者负责计算树的哪些部分已经改变；然后渲染器使用该信息来实际更新渲染的应用程序。
+
+这种分离意味着 React DOM 和 React Native 可以使用自己的渲染器，同时共享由 React 核心提供的相同协调程序。
+
+Fiber 重新实现了协调。它主要不涉及渲染，但渲染器需要更改以支持（并利用）新架构。
+
+调度 
+
+确定何时应该进行工作的过程。
+
+工作 
+
+任何必须执行的计算。工作通常是更新的结果（例如 `setState`）。 
+
+React 的设计原则文档在这个主题上非常好，我在这里引用它： 
+
+>  在其当前实现中，React 以递归方式遍历树，并在单个 tick 中调用整个更新树的呈现函数。但是在将来它可能会开始延迟一些更新以避免丢帧。 这是 React 设计中的常见主题。一些流行的库实现了“推送”方法，其中在新数据可用时执行计算。然而，React 坚持“拉”方法，在这种方法中计算可以延迟到必要时。 React 不是通用的数据处理库。它是用于构建用户界面的库。我们认为它在应用程序中具有独特的位置，可以知道哪些计算现在是相关的，哪些不是。 如果某些东西在屏幕外，我们可以延迟任何与之相关的逻辑。如果数据的到达速度快于帧速率，我们可以合并并批量更新。我们可以优先考虑来自用户交互（例如由按钮点击引起的动画）的工作，而不是重要的背景工作（例如渲染刚刚从网络加载的新内容）以避免丢帧。 
+
+关键点是： 
+
+- 在 UI 中，不必立即应用每个更新;实际上，这样做可能会浪费，导致帧丢失并降低用户体验。 
+- 不同类型的更新具有不同的优先级 - 动画更新需要比例如来自数据存储的更新更快地完成。 
+- 基于推送的方法需要应用程序（你，程序员）决定如何安排工作。基于拉取的方法允许框架（ React ）变得聪明并为你做出决策。
+
+React 目前没有以显着的方式利用调度;更新导致整个子树立即重新渲染。改造 React 的核心算法以利用调度是 Fiber 背后的驱动理念。 
+
+现在我们已经准备好深入了解 Fiber 的实施。下一节比我们到目前为止所讨论的更具技术性。在继续之前，请确保你对之前的材料感到满意。
 
 #### 3. Fiber
+
+Fiber 是 React 16 中新的协调引擎，是 React 核心算法的持续重新实现。它的主要目的是使 Virtual DOM 可以进行增量式渲染：能够将渲染工作分割成块并将其分散到多个帧中。
+
+React Fiber 的目标是增加其对动画，布局和手势等区域的适用性。 其他主要功能包括在新更新进入时暂停，中止或重复工作的能力；为不同类型的更新分配优先级的能力；和新的并发原语。
+
+
+
+ 我们即将讨论React Fiber架构的核心。纤维是一种比应用程序开发人员通常想到的更低级别的抽象。如果您发现自己在理解它时感到沮丧，请不要气馁。继续尝试，它最终会有意义。 （当你最终得到它时，请建议如何改进这一部分。） 
+
+开始了！
+
+我们已经确定，Fiber 的主要目标是使 React 能够利用调度。具体来说，我们需要能够
+
+- 暂停工作，稍后再回来。
+- 为不同类型的工作分配优先权。
+- 重用以前完成的工作。
+- 如果不再需要，则中止工作。
+
+为了做到这一点，我们首先需要一种方法将工作分解为单元。从某种意义上说，这就是 Fiber 。Fiber 代表一种工作单元。
+
+更进一步，让我们回到 React 组件的概念作为数据的函数，通常表示为
+
+```js
+v = f(d)
+```
+
+因此，呈现 React 应用程序类似于调用其主体包含对其他函数的调用的函数，依此类推。在考虑 Fiber 时，这种类比很有用。
+
+计算机通常跟踪程序执行的方式是使用调用堆栈。执行函数时，会向堆栈添加新的堆栈帧。该堆栈帧表示该功能执行的工作。
+
+在处理 UI 时，问题在于如果同时执行太多工作，则可能导致动画丢帧并且看起来不稳定。更重要的是，如果它被更新的更新所取代，那么其中一些工作可能是不必要的。这是 UI 组件和功能之间的比较分解的地方，因为组件比一般的功能具有更多的特定问题。
+
+较新的浏览器（和 React Native ）实现了有助于解决这个问题的 API：requestIdleCallback 调度在空闲期间调用的低优先级函数，requestAnimationFrame 调度在下一个动画帧上调用的高优先级函数。问题是，为了使用这些API，您需要一种方法将渲染工作分解为增量单元。如果仅依赖于调用堆栈，它将继续工作直到堆栈为空。
+
+如果我们可以自定义调用堆栈的行为以优化渲染UI，那不是很好吗？如果我们可以随意中断调用堆栈并手动操作堆栈帧，那不是很好吗？
+
+这就是 React Fiber 的目的。Fiber 是堆栈的重新实现，专门用于 React 组件。你可以将单个 Fiber 视为虚拟堆栈帧。
+
+重新实现堆栈的优点是，你可以将堆栈帧保留在内存中，然后执行它们（无论何时）。这对于实现我们的调度目标至关重要。
+
+除了调度之外，手动处理堆栈帧还可以释放并发和错误边界等功能。我们将在以后的部分中介绍这些主题。
+
+在下一节中，我们将更多地关注 Fiber 的结构。
+
+
+
+##### `type` and `key`
+
+
+
+##### `child` and `sibling`
+
+
+
+##### `return`
+
+
+
+##### `pendingProps` and `memoizedProps`
+
+
+
+##### `pendingWorkPriority`
+
+
+
+##### `alternate`
+
+
+
+##### `output`
 
 
 
@@ -354,31 +524,106 @@ React 0.14 修复手段是用 Symbol 标记每个 React 元素（element）：
 - 突变模式，更新子节点，不需要重新创建替换父节点，仅仅需要删除重新创建子节点。
 - 不变模式，更新子节点，始终替换掉顶级子树的宿主环境。
 
-#### 2. ReactDOM.render 
+#### 2. 多次 ReactDOM.render 
 
 如果我们在同一个 `domContainer` 中，调用多次 `ReactDOM.render` ，React 是如何处理的喃？
 
 ```js
+// let domContainer = document.getElementById('root');
+// let domNode = document.createElement('p');
+// domNode.textContent='Hello Bottle!';
+// domContainer.appendChild(domNode);
 ReactDOM.render(
-  <p className="bottle">hello Bottle!</p>,
+  <p>hello Bottle!</p>,
   document.getElementById('root')
 );
 
-// ... 之后 ...
-
-// 应该替换掉 p 宿主实例吗？
-// 还是在已有的 p 上更新属性？
+// 能重用宿主实例吗？能！(p → p)
+// domNode.textContent='Hello An!';
 ReactDOM.render(
-  <p className="an">hello An!</p>,
+  <p>hello An!</p>,
+  document.getElementById('root')
+);
+
+// 能重用宿主实例吗？不能！(p → button)
+// domContainer.removeChild(domNode);
+// domNode = document.createElement('button');
+// domNode.className = 'add';
+// domNode.textContent = 'Add';
+// domContainer.appendChild(domNode);
+ReactDOM.render(
+  <button className='add'>Add</button>,
+  document.getElementById('root')
+);
+
+// 能重用宿主实例吗？能！(button → button)
+// domNode.className = 'sub';
+// domNode.textContent = 'Sub';
+ReactDOM.render(
+  <button className='sub'>Sub</button>,
   document.getElementById('root')
 );
 ```
 
+即：**如果相同的元素类型在同一个地方先后出现两次，React 会重用已有的宿主实例。**
 
+同样的处理方式也适用于 React 子树。
 
 #### 3. 条件渲染
 
+```js
+// 第一次渲染
+ReactDOM.render(
+  <div>
+    <input />
+  </div>,
+  domContainer
+);
+
+// 下一次渲染
+ReactDOM.render(
+  <div>
+    <p>Hello Bottle!</p>
+    <input />
+  </div>,
+  domContainer
+);
+```
+
+在这个例子中，`<input>` 宿主实例会被重新创建。React 会遍历整个元素树，并将其与先前的版本进行比较：
+
+- `dialog → dialog` ：能够重用宿主实例吗？**能 — 因为类型匹配。**
+  - `(null) → p` ：需要插入一个新的 `p` 宿主实例。
+  - `input → input` ：能够重用宿主实例吗？**能 — 因为类型匹配。**
+
+因此，React 这样执行更新：
+
+```js
+let inputNode = divNode.firstChild;
+let pNode = document.createElement('p');
+pNode.textContent = 'Hello Bottle';
+divNode.insertBefore(pNode, inputNode);
+```
+
 #### 4. 列表渲染
+
+```js
+function ShoppingList({ list }) {
+  return (
+    <form>
+      {list.map(item => (
+        <p key={item.productId}>
+          You bought {item.name}
+          <br />
+          Enter how many do you want: <input />
+        </p>
+      ))}
+    </form>
+  )
+}
+```
+
+
 
 ### 六、组件
 
@@ -394,11 +639,15 @@ ReactDOM.render(
 
 #### 4. function 组件与 class 组件的区别
 
+
+
 ### 七、setState
 
 #### 1. setState 机制
 
 #### 2. setState 与 useState
+
+
 
 ### 八、Hooks
 
@@ -412,11 +661,19 @@ ReactDOM.render(
 
 #### 5. useEffect
 
+
+
 ### 九、副作用
+
+
 
 ### 十、上下文
 
+
+
 ### 十一、react-router
+
+
 
 ### 十一、react-redux
 
