@@ -165,7 +165,7 @@ ReactDOM.render(
 
 
 
-#### 3. $typeof 
+#### 3. `$typeof` 
 
 React 应用程序代码通常是先构建 HTML，然后把它插入 DOM 中：
 
@@ -487,11 +487,11 @@ v = f(d)
 
 
 
-##### `type` and `key`
+##### `type` 和 `key`
 
 
 
-##### `child` and `sibling`
+##### `child` 和 `sibling`
 
 
 
@@ -499,7 +499,7 @@ v = f(d)
 
 
 
-##### `pendingProps` and `memoizedProps`
+##### `pendingProps` 和 `memoizedProps`
 
 
 
@@ -653,6 +653,12 @@ function ShoppingList({ list }) {
 
 #### 1. 状态同步
 
+**函数组件** 的本质是函数，没有 state 的概念的，因此**不存在生命周期**一说，仅仅是一个 **render 函数**而已。
+
+但是引入 **Hooks** 之后就变得不同了，它能让组件在不使用 class 的情况下使用 state 以及其他的 React特性，相比与 class 的生命周期概念来说，它更接近于实现状态同步，而不是响应生命周期事件。但我们可以利用 `useState`、 `useEffect()` 和 `useLayoutEffect()` 来模拟实现生命周期。
+
+即：**Hooks 组件更接近于实现状态同步，而不是响应生命周期事件**。
+
 #### 2. 顺序
 
 #### 3. setInterval
@@ -661,7 +667,13 @@ function ShoppingList({ list }) {
 
 #### 5. useEffect
 
+##### 5.1 `[]`
 
+##### 5.2 在 useEffect 中网络请求
+
+##### 5.3 无限重复请求问题
+
+##### 5.4 useEffect 里获取 state、props
 
 ### 九、副作用
 
@@ -676,7 +688,6 @@ function ShoppingList({ list }) {
 
 
 ### 十一、react-redux
-
 
 
 
