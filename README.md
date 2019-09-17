@@ -13,6 +13,14 @@
 - [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 - [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
 
+### 资源推荐
+
+- [小木木进阶系列与每一一题](https://muyiy.cn/blog/)
+- [Dan Abramov 的博客](https://overreacted.io)
+- [FEX 技术周刊](http://fex.baidu.com/weekly/)
+- [正则表达式填字游戏](https://regexcrossword.com)
+- [freecodecamp](https://www.freecodecamp.org/news/)
+
 ### React 系列
 
 - [Hooks 与 React 生命周期的关系](https://github.com/sisterAn/blog/issues/34)
