@@ -1,7 +1,6 @@
-### 引言
-只需要花费 3 分钟的时间，学习更多用于调试的控制台命令吧！
-
 ![1*0d5jlHyPf6IIrSnodPb3mA](https://user-images.githubusercontent.com/19721451/65444339-6be76980-de62-11e9-8332-a1c025eeee5c.png)
+
+只需要花费 3 分钟的时间，学习更多用于调试的控制台命令吧！
 
 
 ### console API
