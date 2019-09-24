@@ -1,3 +1,4 @@
+### 引言
 只需要花费 3 分钟的时间，学习更多用于调试的控制台命令吧！
 
 ![1*0d5jlHyPf6IIrSnodPb3mA](https://user-images.githubusercontent.com/19721451/65444339-6be76980-de62-11e9-8332-a1c025eeee5c.png)
@@ -36,7 +37,7 @@ console.assert('', 'Hello Bottle');
 // Assertion failed: Hello Bottle
 ```
 
-当我们想要检查值是否存在，并且希望保持控制台干净（避免记录较长的属性列表等），我们可以使用 `assert` 方法。
+当我们想要检查值是否存在，并且希望保持控制台干净（避免记录较长的属性列表等），我们可以使用 `console.assert` 方法。
 
 
 
