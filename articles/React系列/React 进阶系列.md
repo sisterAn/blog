@@ -172,9 +172,9 @@ const messageElement = document.getElementById('app');
 messageElement.innerHTML = '<p>' + message.text + '</p>';
 ```
 
-这样看起来没什么问题，但当你 `message.text` 的值类似 `'<img src="https://avatars3.githubusercontent.com/u/19721451?s=460&v=4" />'` 时，你就会发现你的项目已经被 XSS 攻击了。
+这样看起来没什么问题，但当你 `message.text` 的值类似 `'<img src onerror="alert(/xss/)" />'` 时，你就会发现你的项目已经被 XSS 攻击了。
 
-![XSS](https://user-images.githubusercontent.com/19721451/64854799-17b5db80-d651-11e9-9239-8e681b71e73f.png)
+![XSS](https://user-images.githubusercontent.com/19721451/65688093-0fbc5980-e09d-11e9-83d4-08e367fb095b.png)
 
 为什么防止此类攻击，你可以用只处理文本的 `document.createTextNode()` 或者 `textContent` 等安全的 API。你也可以事先将用户输入的内容，用转义符把潜在危险字符（ `<`、`>` 等）替换掉。
 
@@ -188,7 +188,7 @@ messageElement.innerHTML = '<p>' + message.text + '</p>';
 
 如果 `message.text` 是一个带有 `<img>` 或其他标签的恶意字符串，它不会被当成真的 `<img>` 标签处理，React 会先进行转义，然后再插入到 DOM 里。所以 `<img>` 标签会以文本的形式展现出来。
 
-![React文本转义](https://user-images.githubusercontent.com/19721451/64854808-1a183580-d651-11e9-9858-b10961c8bcfb.png)
+![React createElement](https://user-images.githubusercontent.com/19721451/65688098-13e87700-e09d-11e9-9af4-40764a375a9e.png)
 
 如果，你想要在 React 元素中渲染 HTML，你可以使用 `dangerouslySetInnerHTML={{ __html: message.text }}` ，它是 React 为浏览器 DOM 提供 `innerHTML` 的替换方案，它需要向其传递包含 key 为 `__html` 的对象，以此来警示你。
 
@@ -196,7 +196,7 @@ messageElement.innerHTML = '<p>' + message.text + '</p>';
 <p dangerouslySetInnerHTML={{ __html: message.text }} />
 ```
 
-![XSS-dangerouslySetInnerHTML](https://user-images.githubusercontent.com/19721451/64854799-17b5db80-d651-11e9-9239-8e681b71e73f.png)
+![XSS](https://user-images.githubusercontent.com/19721451/65688093-0fbc5980-e09d-11e9-83d4-08e367fb095b.png)
 
 [点击查看实例](https://stackblitz.com/edit/react-ghsk6h)
 
