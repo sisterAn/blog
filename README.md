@@ -12,7 +12,6 @@
 - [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 - [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 - [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
-- webpack
 
 ### 资源推荐
 
@@ -91,6 +90,10 @@
 - JS 基础之架构模式（一）：MVC模式
 - JS 基础之架构模式（二）：MVP模式
 - JS 基础之架构模式（三）：MVVM模式
+
+### webpack
+
+- [深入 webpack 系列](https://github.com/sisterAn/blog/issues/60)
 
 ### 浏览器
 
