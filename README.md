@@ -93,7 +93,12 @@
 
 ### webpack
 
+- 深入 JavaScript 打包机制
 - [深入 webpack 系列](https://github.com/sisterAn/blog/issues/60)
+- webapck4 零配置
+- 手写 webpack 插件
+- webpack4 源码解读
+- webpack5 展望
 
 ### 浏览器
 
