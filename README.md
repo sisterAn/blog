@@ -94,12 +94,12 @@
 ### webpack
 
 - [深入 JavaScript 打包机制](https://github.com/sisterAn/minipack)
-- [webpack 系列一：优化打包速度]()
-- [webpack 系列二：优化开发体验]()
-- [webpack 系列三：优化包体积]()
-- [webpack 系列四：优化首屏加载时间及流畅度]()
-- [webpack 系列五：包分析]()
-- [深入 webpack 系列](https://github.com/sisterAn/blog/issues/60)
+- [webpack 系列一：优化打包速度](https://github.com/sisterAn/blog/issues/63)
+- [webpack 系列二：优化开发体验](https://github.com/sisterAn/blog/issues/64)
+- [webpack 系列三：优化包体积](https://github.com/sisterAn/blog/issues/65)
+- [webpack 系列四：优化首屏加载时间及流畅度](https://github.com/sisterAn/blog/issues/66)
+- [webpack 系列五：包分析](https://github.com/sisterAn/blog/issues/67)
+- webpack 系列6：详细配置
 - [webapck4 零配置](https://github.com/sisterAn/blog/issues/62)
 - 手写 webpack 插件
 - webpack4 源码解读
