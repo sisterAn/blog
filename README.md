@@ -94,7 +94,7 @@
 ### webpack
 
 - [深入 JavaScript 打包机制](https://github.com/sisterAn/minipack)
-- [webpack 系列一：优化打包速度](https://github.com/sisterAn/blog/issues/63)
+- [webpack 系列一：优化90%打包速度](https://github.com/sisterAn/blog/issues/63)
 - [webpack 系列二：优化开发体验](https://github.com/sisterAn/blog/issues/64)
 - [webpack 系列三：优化包体积](https://github.com/sisterAn/blog/issues/65)
 - [webpack 系列四：优化首屏加载时间及流畅度](https://github.com/sisterAn/blog/issues/66)
