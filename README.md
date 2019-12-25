@@ -2,6 +2,7 @@
 
 ### 随思随想
 
+- [2020年，前端之路](https://github.com/sisterAn/blog/issues/70)
 - [数组扁平化、去重、排序](https://github.com/sisterAn/blog/issues/28)
 - [Set、WeakSet、Map及WeakMap](https://github.com/sisterAn/blog/issues/24)
 - [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/sisterAn/blog/issues/19)
