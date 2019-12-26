@@ -1,3 +1,5 @@
+![](http://resource.muyiy.cn/image/20191226223904.png)
+
 ### 前言
 
 之前好友希望能介绍一下 webapck 相关的内容，所以最近花费了两个多月的准备，终于完成了 webapck 系列，它包括一下几部分：
@@ -15,7 +17,8 @@
 
 所有的内容之后会陆续放出，如果你有任何想要了解的内容或者有任何疑问，关注公众号【前端瓶子君】回复【123】添加好友，我会解答你的疑问。
 
-这里我选择以 JavaScript 打包器为第一篇，在这里你将会深入理解打包器是什么，它的实现原理是什么？解决了什么问题？如果你理解了这些，接下来的 webpack 优化就会很简单。
+作为一个前端开发人员，我们花费大量的时间去处理 webpack、gulp 等打包工具，将高级 JavaScript 项目打包成更复杂、更难以解读的文件包，运行在浏览器中，那么理解 JavaScript 打包机制就很必要，它帮助你更好的调试项目、更快的定位问题产生的问题，并且帮助你更好的理解、使用 webpack 等打包工具。
+在这章你将会深入理解 JavaScript 打包器是什么，它的打包机制是什么？解决了什么问题？如果你理解了这些，接下来的 webpack 优化就会很简单。
 
 ### 一、什么是模块
 
@@ -49,7 +52,7 @@
 - UMD（通用模块定义）：它本质上一段 JavaScript 代码，放置在库的顶部，可让任何加载程序、任何环境加载它们；
 - ES2015（ES6）：定义了异步导入和导出模块的语义，会编译成 `require/exports` 来执行的，这也是我们现今最常用的模块定义；
 
-### 一、什么是打包器
+### 二、什么是打包器
 
 所谓打包器，就是前端开发人员用来将 JavaScript 模块打包到一个可以在浏览器中运行的优化的 JavaScript 文件的工具，例如 webapck、rollup、gulp 等。
 
@@ -316,7 +319,7 @@ const {code} = transformFromAst(ast, null, {
 })
 ```
 
-![code](https://user-images.githubusercontent.com/19721451/71477272-0cfc0c80-2824-11ea-9a0d-e62d441e4563.png)
+![](http://resource.muyiy.cn/image/20191226223524.png)
 
 #### 3. 获取它所有的依赖模块
 
@@ -393,9 +396,9 @@ function createAsset(filename) {
 }
 ```
 
-![module](https://user-images.githubusercontent.com/19721451/71477286-17b6a180-2824-11ea-8dbf-3194db9490d0.png)
+![](http://resource.muyiy.cn/image/20191226223551.png)
 
-### 六、递归解析所有的依赖项，生成一个依赖关系图
+### 五、递归解析所有的依赖项，生成一个依赖关系图
 
 **步骤一：获取入口文件：**
 
@@ -459,9 +462,9 @@ for (let filename in queue) {
 }
 ```
 
-![graph](https://user-images.githubusercontent.com/19721451/71477294-2735ea80-2824-11ea-8a2a-e6bab640111d.png)
+![](http://resource.muyiy.cn/image/20191226223604.png)
 
-### 七、使用依赖图，返回一个可以在浏览器运行的 JavaScript 文件
+### 六、使用依赖图，返回一个可以在浏览器运行的 JavaScript 文件
 
 **步骤一：创建一个了立即执行函数，用于在浏览器上直接运行**
 
@@ -536,7 +539,7 @@ const result = `
 - 由于一般情况下 `require` 都是 `require` 相对路径，而不是绝对路径，所以重写 `fn` 的 `require` 方法，将 `require` 相对路径转换成 `require` 绝对路径，即 `localRequire` 函数
 - 将 `module.exports` 传入到 `fn` 中，将依赖模块内容需要输出给其它模块使用时，当 `require` 某一依赖模块时，就可以直接通过 `module.exports` 将结果返回
 
-### 八、输出到 dist/bundle.js
+### 七、输出到 dist/bundle.js
 
 ```js
 // 打包
@@ -548,9 +551,18 @@ fs.writeFile(`${output.path}/${output.filename}`, result, (err) => {
 })
 ```
 
-### 九、总结
+### 八、总结及源码
 
 本来想简单的写写，结果修修改改又那么多🤦‍♀️🤦‍♀️🤦‍♀️，但总要吃透才好。
 
 源码地址：https://github.com/sisterAn/minipack
 
+### 九、走在最后
+
+1. ❤️玩得开心，不断学习，并始终保持编码。👨💻
+
+2. 如有任何问题或更独特的见解，欢迎评论或直接联系瓶子君（公众号回复 123 即可）！👀👇
+
+3. 👇欢迎关注：前端瓶子君，每日更新！👇
+
+![](http://resource.muyiy.cn/image/20191226225937.jpg)
