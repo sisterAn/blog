@@ -485,7 +485,7 @@ let modules = ''
 
 遍历 `graph`，将每个 `mod` 以 `key: value,` 的方式加入到 `modules`，
 
-**注意：由于依赖关系图要传入以上立即执行函数中，然后写入到 `dist/bundle.js` 运行，所以，`code` 需要放在 `function(require, module, exports){${mod.code}}` 中，避免污染全局变量或其它模块**
+**注意：由于依赖关系图要传入以上立即执行函数中，然后写入到 `dist/bundle.js` 运行，所以，`code` 需要放在 `function(require, module, exports){${mod.code}}` 中，避免污染全局变量或其它模块同，时，代码在转换成 code 后，使用的是 commonJS 系统，而浏览器不支持 commonJS（浏览器没有 module 、exports、require、global），所以这里我们需要实现它们，并注入到包装器函数内。**
 
 ```js
 for (let filename in graph) {
@@ -556,6 +556,8 @@ fs.writeFile(`${output.path}/${output.filename}`, result, (err) => {
 本来想简单的写写，结果修修改改又那么多🤦‍♀️🤦‍♀️🤦‍♀️，但总要吃透才好。
 
 源码地址：https://github.com/sisterAn/minipack
+
+参考了[minipack](https://github.com/ronami/minipack)，解决了它会出现模块被重复打包的问题，同时借鉴了webpack以filename为唯一标识符进行模块定义。
 
 ### 九、走在最后
 
