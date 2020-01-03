@@ -96,14 +96,14 @@
 
 - [窥探原理：手写一个 JavaScript 打包器](https://github.com/sisterAn/blog/issues/69)
 - [窥探原理：手写一个 JavaScript 打包器源码](https://github.com/sisterAn/minipack)
-- [webpack 系列一：所有配置](https://github.com/sisterAn/blog/issues/68)
-- [webpack 系列二：优化90%打包速度](https://github.com/sisterAn/blog/issues/63)
-- [webpack 系列三：优化开发体验](https://github.com/sisterAn/blog/issues/64)
-- [webpack 系列四：优化包体积](https://github.com/sisterAn/blog/issues/65)
-- [webpack 系列五：优化首屏加载时间及流畅度](https://github.com/sisterAn/blog/issues/66)
-- [webpack 系列六：包分析](https://github.com/sisterAn/blog/issues/67)
-- [webpack 系列七：详细配置](https://github.com/sisterAn/webapck-template)
-- [webapck4 零配置](https://github.com/sisterAn/blog/issues/62)
+- [webpack 系列一：最佳配置指北](https://github.com/sisterAn/blog/issues/68)
+- webpack 系列二：优化90%打包速度
+- webpack 系列三：优化开发体验
+- webpack 系列四：优化包体积
+- webpack 系列五：优化首屏加载时间及流畅度
+- webpack 系列六：包分析
+- webpack 系列七：详细配置
+- webapck4 零配置
 - 手写 webpack 插件
 - webpack4 源码解读
 - webpack5 展望
