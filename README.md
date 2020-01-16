@@ -13,6 +13,7 @@
 - [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 - [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 - [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
+- [是时候抛弃Postman了，试试直接在 VS Code上调试并共享你的REST API调用](https://github.com/sisterAn/blog/issues/72)
 
 ### 资源推荐
 
