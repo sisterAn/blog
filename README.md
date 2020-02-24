@@ -100,7 +100,7 @@
 - [窥探原理：手写一个 JavaScript 打包器源码](https://github.com/sisterAn/minipack)
 - [webpack 系列一：最佳配置指北](https://github.com/sisterAn/blog/issues/68)
 - [五种可视化方案分析 webpack 打包性能瓶颈](https://github.com/sisterAn/blog/issues/67)
-- [webpack  优化90%打包速度](https://github.com/sisterAn/blog/issues/63)
+- [玩转 webpack，使你的打包速度提升 90%](https://github.com/sisterAn/blog/issues/63)
 - webpack 系列三：优化开发体验
 - webpack 系列四：优化包体积
 - webpack 系列五：优化首屏加载时间及流畅度
