@@ -64,12 +64,13 @@
 
 ### JS 系列
 
+- [从 JavaScript 发展历史中聊ECMAScript](https://github.com/sisterAn/blog/issues/74)
 - [JS 基础之:  var、let、const、解构、展开、函数](https://github.com/sisterAn/blog/issues/48)
-- [JS 基础之: 深入 constructor、prototype、`__proto__`、[[Prototype]] 及 原型链](https://github.com/sisterAn/blog/issues/5)
-- [JS 基础之: 继承的 六 种实现方式](https://github.com/sisterAn/blog/issues/41)
-- [JS 基础之:  深入剖析 instanceof 运算符](https://github.com/sisterAn/blog/issues/6)
-- [JS 基础之: call、apply、bind](https://github.com/sisterAn/blog/issues/8)
-- [JS 基础之异步（一）](https://github.com/sisterAn/blog/issues/11)
+- [深入 constructor、prototype、`__proto__`、[[Prototype]] 及 原型链](https://github.com/sisterAn/blog/issues/5)
+- [前端必知必会之 JS 继承的 六 种实现方式](https://github.com/sisterAn/blog/issues/41)
+- [一文深入剖析 instanceof 运算符](https://github.com/sisterAn/blog/issues/6)
+- [深入 call、apply、bind、箭头函数以及柯里化](https://github.com/sisterAn/blog/issues/8)
+- [前端必知必会之 JS 单线程与异步](https://github.com/sisterAn/blog/issues/11)
 - [JS 基础之异步（二）：callback](https://github.com/sisterAn/blog/issues/12)
 - [JS 基础之异步（三）：Promise源码实现](https://github.com/sisterAn/blog/issues/13)
 - [JS 基础之异步（四）：Generator（生成器、迭代器源码实现）](https://github.com/sisterAn/blog/issues/20)

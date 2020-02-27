@@ -1,6 +1,6 @@
 已知，JavaScript 是单线程的，天生异步，适合 IO 密集型，不适合 CPU 密集型，但是，为什么是异步的喃，异步由何而来的喃，我们将在这里逐渐讨论实现。
 
-### 一、科普：进程与线程
+### 一、进程与线程
 
 #### 1. 浏览器是多进程的
 
@@ -15,11 +15,11 @@
 
 浏览器的渲染进程是多线程的，页面的渲染，JavaScript 的执行，事件的循环，都在这个进程内进行：
 
-- GUI 渲染线程：负责渲染浏览器界面，当界面需要重绘（Repaint）或由于某种操作引发回流(reflow)时，该线程就会执行。
+- GUI 渲染线程：负责渲染浏览器界面，当界面需要重绘（Repaint）或由于某种操作引发回流(Reflow)时，该线程就会执行。
 - JavaScript 引擎线程：也称为 JavaScript 内核，负责处理 Javascript 脚本程序、解析 Javascript 脚本、运行代码等。（例如 V8 引擎）
 - 事件触发线程：用来控制浏览器事件循环，注意这不归 JavaScript 引擎线程管，当事件被触发时，该线程会把事件添加到待处理队列的队尾，等待 JavaScript 引擎的处理。
 - 定时触发器线程：传说中的 `setInterval` 与 `setTimeout` 所在线程，注意，W3C 在 HTML 标准中规定，规定要求 `setTimeout` 中低于 4ms 的时间间隔算为 4ms 。
-- 异步 http 请求线程：在 `XMLHttpRequest` 在连接后是通过浏览器新开一个线程请求，将检测到状态变更时，如果设置有回调函数，异步线程就**产生状态变更事件**，将这个回调再放入事件队列中。再由 JavaScript 引擎执行。
+- 异步 http 请求线程：在 `XMLHttpRequest` 连接后通过浏览器新开一个线程请求，将检测到状态变更时，如果设置有回调函数，异步线程就**产生状态变更事件**，将这个回调再放入事件队列中。再由 JavaScript 引擎执行。
 
 注意，**GUI 渲染线程与 JavaScript 引擎线程是互斥的**，当 JavaScript 引擎执行时 GUI 线程会被挂起（相当于被冻结了），GUI 更新会被保存在一个队列中**等到 JavaScript 引擎空闲时**立即被执行。所以如果 JavaScript 执行的时间过长，这样就会造成页面的渲染不连贯，导致页面渲染加载阻塞。
 
@@ -37,7 +37,7 @@
 
 如果 JavaScript 引擎线程不是单线程的，那么可以同时执行多段 JavaScript，如果这多段 JavaScript 都修改 DOM，那么就会出现 DOM 冲突。
 
-你可能会说，[web worker](http://www.ruanyifeng.com/blog/2018/07/web-worker.html) 就支持多线程，但是 web worker 不能访问 DOM。
+你可能会说，[web worker](http://www.ruanyifeng.com/blog/2018/07/web-worker.html) 就支持多线程，但是 web worker 不能访问 window 对象，document 对象等。
 
 **原因：避免 DOM 渲染的冲突**
 
@@ -127,7 +127,7 @@ fs.readFile('data.json', 'utf8', function(err, data) {
 - 消息队列：消息队列是一个先进先出的队列，它里面存放着各种消息。
 - 事件循环：事件循环是指主线程重复从消息队列中取消息、执行的过程。
 
-#### 事件循环（eventloop）
+#### 1. 事件循环（eventloop）
 
 主线程不断的从消息队列中取消息，执行消息，这个过程称为事件循环，这种机制叫事件循环机制，取一次消息并执行的过程叫一次循环。
 
@@ -183,7 +183,7 @@ function() { // ajax加载完成之后
 
 **事件循环是JavaScript实现异步的具体解决方案，其中同步代码，直接执行；异步函数先放在异步队列中，待同步函数执行完毕后，轮询执行 异步队列 的回调函数。**
 
-#### 消息队列
+#### 2. 消息队列
 
 其中，消息就是注册异步任务时添加的回调函数。
 
@@ -207,7 +207,7 @@ var message = function () {
 
 主线程在执行完当前循环中的所有代码后，就会到消息队列取出这条消息(也就是 `message` 函数)，并执行它。到此为止，就完成了工作线程对主线程的 `通知` ，回调函数也就得到了执行。如果一开始主线程就没有提供回调函数，AJAX 线程在收到 HTTP 响应后，也就没必要通知主线程，从而也没必要往消息队列放消息。
 
-![异步过程](https://img-blog.csdnimg.cn/2018122817595652.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2x1bmFoYWlqaWFv,size_16,color_FFFFFF,t_70)
+![](http://resource.muyiy.cn/image/20200225193339.png)
 
 异步过程中的回调函数，一定不在当前这一轮事件循环中执行。
 
