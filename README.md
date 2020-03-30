@@ -102,12 +102,9 @@
 - [webpack 系列一：最佳配置指北](https://github.com/sisterAn/blog/issues/68)
 - [五种可视化方案分析 webpack 打包性能瓶颈](https://github.com/sisterAn/blog/issues/67)
 - [玩转 webpack，使你的打包速度提升 90%](https://github.com/sisterAn/blog/issues/63)
-- webpack 系列三：优化开发体验
-- webpack 系列四：优化包体积
-- webpack 系列五：优化首屏加载时间及流畅度
-- webpack 系列六：包分析
-- webpack 系列七：详细配置
-- webapck4 零配置
+- [webpack 系列三：优化开发体验](https://github.com/sisterAn/blog/issues/64)
+- [webpack 系列四：优化包体积](https://github.com/sisterAn/blog/issues/65)
+- [webpack 系列五：优化首屏加载时间及流畅度](https://github.com/sisterAn/blog/issues/66)
 - 手写 webpack 插件
 - webpack4 源码解读
 - webpack5 展望
