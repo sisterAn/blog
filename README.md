@@ -8,12 +8,9 @@
 - [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/sisterAn/blog/issues/19)
 - [深度优先遍历与广度优先遍历](https://github.com/sisterAn/blog/issues/25)
 - [CommonJS 规范总结与扩展](https://github.com/sisterAn/blog/issues/4)
-- [珍藏多年的 Git 问题和操作清单 ](https://github.com/sisterAn/blog/issues/39)
-- [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
 - [探讨 requestAnimationFrame](https://github.com/sisterAn/blog/issues/30)
 - [浅谈节流与防抖](https://github.com/sisterAn/blog/issues/36)
 - [ES6 之 Proxy](https://github.com/sisterAn/blog/issues/31)
-- [是时候抛弃Postman了，试试直接在 VS Code上调试并共享你的REST API调用](https://github.com/sisterAn/blog/issues/72)
 
 ### 资源推荐
 
@@ -53,14 +50,12 @@
 - React 源码漂流（十五）之 useCallback
 - React 源码漂流（十六）之 useContext
 
-### 小程序
+### 工具
 
-- [小程序 自定义富文本编辑器](https://github.com/sisterAn/blog/issues/9)
-- [Taro 小程序拖拽排序](https://github.com/sisterAn/blog/issues/10)
-- [Taro event handler 传递参数有问题](https://github.com/sisterAn/blog/issues/15)
-- [Taro 阻止事件冒泡](https://github.com/sisterAn/blog/issues/16)
-- [Taro 对接腾讯云对象存储服务COS](https://github.com/sisterAn/blog/issues/17)
-- [Taro 小程序总结](https://github.com/sisterAn/blog/issues/18)
+- [珍藏多年的 Git 问题和操作清单 ](https://github.com/sisterAn/blog/issues/39)
+- [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
+- [是时候抛弃Postman了，试试直接在 VS Code上调试并共享你的REST API调用](https://github.com/sisterAn/blog/issues/72)
+
 
 ### JS 系列
 
@@ -109,10 +104,18 @@
 - webpack4 源码解读
 - webpack5 展望
 
+### 小程序
+
+- [小程序 自定义富文本编辑器](https://github.com/sisterAn/blog/issues/9)
+- [Taro 小程序拖拽排序](https://github.com/sisterAn/blog/issues/10)
+- [Taro event handler 传递参数有问题](https://github.com/sisterAn/blog/issues/15)
+- [Taro 阻止事件冒泡](https://github.com/sisterAn/blog/issues/16)
+- [Taro 对接腾讯云对象存储服务COS](https://github.com/sisterAn/blog/issues/17)
+- [Taro 小程序总结](https://github.com/sisterAn/blog/issues/18)
+
 ### 浏览器
 
 - [多图预警，种草 DevTools 新特性（ Chrome 80 ）](https://github.com/sisterAn/blog/issues/73)
-
 - [浏览器的重绘与回流（Repaint、Reflow）](https://github.com/sisterAn/blog/issues/33)
 - [HTTP 状态码备忘单](https://github.com/sisterAn/blog/issues/46)
 - [调试 JavaScript 和 Node 时应使用的8个控制台命令](https://github.com/sisterAn/blog/issues/59)
