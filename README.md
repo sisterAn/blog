@@ -52,6 +52,7 @@
 
 ### 工具
 
+- [12 个提高JavaScript编码效率的 NPM技巧](https://github.com/sisterAn/blog/issues/75)
 - [珍藏多年的 Git 问题和操作清单 ](https://github.com/sisterAn/blog/issues/39)
 - [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
 - [是时候抛弃Postman了，试试直接在 VS Code上调试并共享你的REST API调用](https://github.com/sisterAn/blog/issues/72)
