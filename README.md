@@ -3,6 +3,7 @@
 ### 随思随想
 
 - 2020年，前端之路
+- [一行 CSS 为网页添加暗黑模式支持](https://github.com/sisterAn/blog/issues/76)
 - [数组扁平化、去重、排序](https://github.com/sisterAn/blog/issues/28)
 - [Set、WeakSet、Map及WeakMap](https://github.com/sisterAn/blog/issues/24)
 - [['1', '2', '3'\]\.map\(parseInt\) what & why ?](https://github.com/sisterAn/blog/issues/19)
