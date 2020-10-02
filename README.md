@@ -53,6 +53,7 @@
 
 ### 工具
 
+- [高效编码必备的7个VSCode插件](https://github.com/sisterAn/blog/issues/77)
 - [12 个提高JavaScript编码效率的 NPM技巧](https://github.com/sisterAn/blog/issues/75)
 - [珍藏多年的 Git 问题和操作清单 ](https://github.com/sisterAn/blog/issues/39)
 - [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
