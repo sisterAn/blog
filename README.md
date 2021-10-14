@@ -133,6 +133,17 @@
 - [关于 npm，必须要懂的知识](https://github.com/sisterAn/blog/issues/40)
 - [是时候抛弃Postman了，试试直接在 VS Code上调试并共享你的REST API调用](https://github.com/sisterAn/blog/issues/72)
 
+
+### TS 系列
+
+- [为什么要使用 TypeScript ? TypeScript 相对于 JavaScript 的优势是什么？](https://github.com/sisterAn/blog/issues/124)
+- [TypeScript 中 const 和 readonly 的区别？枚举和常量枚举的区别？](https://github.com/sisterAn/blog/issues/125)
+- [TypeScript 中 Interface 与 Type 的区别？在写 TypeScript 的时候，该用哪个比较好？](https://github.com/sisterAn/blog/issues/126)
+- [TypeScript 中，关于 any 类型，你需要知道的一切](https://github.com/sisterAn/blog/issues/127)
+- [TypeScript 中 any、unknown、never 和 void 有什么区别？](https://github.com/sisterAn/blog/issues/128)
+- [盘点 TypeScript 中我们常用的那些神奇符号](https://github.com/sisterAn/blog/issues/129)
+- [void 在 JavaScript 与 TypeScript 中的对比使用](https://github.com/sisterAn/blog/issues/58)
+
 ### 随思随想
 
 - [（译）Flutter 最佳实践](https://github.com/sisterAn/blog/issues/78)
@@ -149,15 +160,6 @@
 
 这部分已独立，前往 https://github.com/sisterAn/JavaScript-Algorithms 
 
-### TS 系列
-
-- [为什么要使用 TypeScript ? TypeScript 相对于 JavaScript 的优势是什么？](https://github.com/sisterAn/blog/issues/124)
-- [TypeScript 中 const 和 readonly 的区别？枚举和常量枚举的区别？](https://github.com/sisterAn/blog/issues/125)
-- [TypeScript 中 Interface 与 Type 的区别？在写 TypeScript 的时候，该用哪个比较好？](https://github.com/sisterAn/blog/issues/126)
-- [TypeScript 中，关于 any 类型，你需要知道的一切](https://github.com/sisterAn/blog/issues/127)
-- [TypeScript 中 any、unknown、never 和 void 有什么区别？](https://github.com/sisterAn/blog/issues/128)
-- [盘点 TypeScript 中我们常用的那些神奇符号](https://github.com/sisterAn/blog/issues/129)
-- [void 在 JavaScript 与 TypeScript 中的对比使用](https://github.com/sisterAn/blog/issues/58)
 
 ### Node.js 系列
 
