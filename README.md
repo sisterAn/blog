@@ -57,6 +57,7 @@
 - [CSS 实现多行文本展开收起效果](https://github.com/sisterAn/blog/issues/120)
 - [CSS 如何画一个实心、带边缘色（气泡聊天框）、圆角的三角形](https://github.com/sisterAn/blog/issues/121)
 - [N 炫酷的CSS3 loading加载动画，总有一款适合你](https://github.com/sisterAn/blog/issues/122)
+- [伪类与伪元素是怎么回事儿？](https://github.com/sisterAn/blog/issues/123)
 
 ### 浏览器、网络
 
@@ -150,6 +151,12 @@
 
 ### TS 系列
 
+- [为什么要使用 TypeScript ? TypeScript 相对于 JavaScript 的优势是什么？](https://github.com/sisterAn/blog/issues/124)
+- [TypeScript 中 const 和 readonly 的区别？枚举和常量枚举的区别？](https://github.com/sisterAn/blog/issues/125)
+- [TypeScript 中 Interface 与 Type 的区别？在写 TypeScript 的时候，该用哪个比较好？](https://github.com/sisterAn/blog/issues/126)
+- [TypeScript 中，关于 any 类型，你需要知道的一切](https://github.com/sisterAn/blog/issues/127)
+- [TypeScript 中 any、unknown、never 和 void 有什么区别？](https://github.com/sisterAn/blog/issues/128)
+- [盘点 TypeScript 中我们常用的那些神奇符号](https://github.com/sisterAn/blog/issues/129)
 - [void 在 JavaScript 与 TypeScript 中的对比使用](https://github.com/sisterAn/blog/issues/58)
 
 ### Node.js 系列
